@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.projectsdjqm.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_meal_plan"
+        android:name="com.example.projectsdjqm.ui.meal_plan.MealPlanFragment"
+        android:label="@string/title_meal_plan"
+        tools:layout="@layout/fragment_meal_plan" />
+
+    <fragment
+        android:id="@+id/navigation_ingredient_storage"
+        android:name="com.example.projectsdjqm.ui.ingredient_storage.IngredientStorageFragment"
+        android:label="@string/title_ingredient_storage"
+        tools:layout="@layout/fragment_ingredient_storage" />
+
+    <fragment
+        android:id="@+id/navigation_recipe_list"
+        android:name="com.example.projectsdjqm.ui.recipe_list.RecipeListFragment"
+        android:label="@string/title_recipe_list"
+        tools:layout="@layout/fragment_recipe_list" />
+
+    <fragment
+        android:id="@+id/navigation_shopping_list"
+        android:name="com.example.projectsdjqm.ui.shopping_list.ShoppingListFragment"
+        android:label="@string/title_shopping_list"
+        tools:layout="@layout/fragment_shopping_list" />
+</navigation>

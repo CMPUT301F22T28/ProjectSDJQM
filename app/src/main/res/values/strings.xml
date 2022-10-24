@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ProjectSDJQM</string>
+    <string name="title_home">Home</string>
+    <string name="title_meal_plan">Meal Plan</string>
+    <string name="title_ingredient_storage">Ingredient</string>
+    <string name="title_recipe_list">Recipe List</string>
+    <string name="title_shopping_list">Shopping List</string>
+</resources>

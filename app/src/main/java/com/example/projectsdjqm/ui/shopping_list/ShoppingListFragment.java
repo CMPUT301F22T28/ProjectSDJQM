@@ -20,14 +20,14 @@ public class ShoppingListFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        MealPlanViewModel mealPlanViewModel =
-                new ViewModelProvider(this).get(MealPlanViewModel.class);
+        ShoppingListViewModel shoppingListViewModel =
+                new ViewModelProvider(this).get(ShoppingListViewModel.class);
 
         binding = FragmentShoppingListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textShoppingList;
-        mealPlanViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        shoppingListViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

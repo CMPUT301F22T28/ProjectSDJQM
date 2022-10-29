@@ -5,13 +5,18 @@
  */
 package com.example.projectsdjqm.ingredient_storage;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.projectsdjqm.MainActivity;
 import com.example.projectsdjqm.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -46,6 +51,21 @@ public class IngredientActivity extends AppCompatActivity implements
                 addIngredientFragment.show(getSupportFragmentManager(), "ADD_INGREDIENT");
             }
         });
+
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.nav_view);
+        navigation.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        Intent a = new Intent(IngredientActivity.this, MainActivity.class);
+                        startActivity(a);
+                        break;
+                }
+                return false;
+            }
+        });
+
     }
 
     // Edit button triggered

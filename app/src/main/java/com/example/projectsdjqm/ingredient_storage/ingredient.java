@@ -62,7 +62,7 @@ public class ingredient {
         return Location;
     }
 
-    public int getAmount() {
+    public int getCount() {
         return Amount;
     }
 
@@ -85,7 +85,7 @@ public class ingredient {
         Location = location;
     }
 
-    public void setAmount(int amount) {
+    public void setCount(int amount) {
         Amount = amount;
     }
 

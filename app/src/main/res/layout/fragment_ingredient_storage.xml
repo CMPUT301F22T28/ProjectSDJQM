@@ -6,66 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".ui.ingredient_storage.IngredientStorageFragment">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/text_ingredient_storage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:weightSum="2">
-
-
-        <ListView
-            android:id="@+id/ingredient_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_weight="1.9">
-        </ListView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight=".1"
-            android:weightSum="2"
-            android:orientation="horizontal"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                android:id="@+id/total_cost"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Total Cost:"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_weight="1.8"
-                android:layout_marginEnd="5dp">
-            </TextView>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/add_ingredient"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight=".2"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_gravity="center"
-                android:contentDescription="Add Ingredient"
-                android:minWidth="32dp"
-                android:minHeight="32dp"
-                app:srcCompat="@android:drawable/ic_input_add" />
-
-        </LinearLayout>
-
-
-    </LinearLayout>
-
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

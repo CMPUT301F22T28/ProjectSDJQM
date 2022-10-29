@@ -9,11 +9,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.projectsdjqm.home.HomeFragment;
 import com.example.projectsdjqm.ingredient_storage.IngredientActivity;
+import com.example.projectsdjqm.ingredient_storage.IngredientFragment;
+import com.example.projectsdjqm.meal_plan.MealPlanFragment;
+import com.example.projectsdjqm.recipe_list.Recipe;
+import com.example.projectsdjqm.recipe_list.RecipeListFragment;
+import com.example.projectsdjqm.shopping_list.ShoppingListFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -21,52 +30,62 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.projectsdjqm.databinding.ActivityMainBinding;
 
+
+// nav bar help:
+// https://www.youtube.com/watch?v=Bb8SgfI4Cm4
+
+
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding binding;
+    ActivityMainBinding binding;
 
-    /*
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // blinds all of the fragments in the navigation bar and all other fragments
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_meal_plan, R.id.navigation_ingredient_storage,  R.id.navigation_recipe_list, R.id.navigation_shopping_list)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
-    }
+        binding.navView.setOnItemSelectedListener(item -> {
 
- */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    replaceFragment(new HomeFragment());
+                    break;
 
+                case R.id.navigation_ingredient_storage:
+                    replaceFragment(new IngredientFragment());
+                    break;
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.nav_view);
-        navigation.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.navigation_ingredient_storage:
-                        Intent a = new Intent(MainActivity.this, IngredientActivity.class);
-                        startActivity(a);
-                        break;
-                }
-                return false;
+                case R.id.navigation_recipe_list:
+                    replaceFragment(new RecipeListFragment());
+                    break;
+
+                case R.id.navigation_meal_plan:
+                    replaceFragment(new MealPlanFragment());
+                    break;
+
+                case R.id.navigation_shopping_list:
+                    replaceFragment(new ShoppingListFragment());
+                    break;
+
             }
+
+            return true;
         });
+
+
     }
 
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container, fragment);
+        fragmentTransaction.commit();
+
+
+    }
 
 
 }

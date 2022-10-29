@@ -1,4 +1,4 @@
-package com.example.projectsdjqm.ui.meal_plan;
+package com.example.projectsdjqm.shopping_list;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,21 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.projectsdjqm.databinding.FragmentMealPlanBinding;
+import com.example.projectsdjqm.databinding.FragmentShoppingListBinding;
+import com.example.projectsdjqm.meal_plan.MealPlanViewModel;
 
-public class MealPlanFragment extends Fragment {
+public class ShoppingListFragment extends Fragment {
 
-    private FragmentMealPlanBinding binding;
+    private FragmentShoppingListBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         MealPlanViewModel mealPlanViewModel =
                 new ViewModelProvider(this).get(MealPlanViewModel.class);
 
-        binding = FragmentMealPlanBinding.inflate(inflater, container, false);
+        binding = FragmentShoppingListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textMealPlan;
+        final TextView textView = binding.textShoppingList;
         mealPlanViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }

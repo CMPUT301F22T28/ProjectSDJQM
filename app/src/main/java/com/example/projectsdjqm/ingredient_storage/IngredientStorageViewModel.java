@@ -1,16 +1,16 @@
-package com.example.projectsdjqm.ui.meal_plan;
+package com.example.projectsdjqm.ingredient_storage;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class MealPlanViewModel extends ViewModel {
+public class IngredientStorageViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public MealPlanViewModel() {
+    public IngredientStorageViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is meal plan fragment");
+        mText.setValue("This is ingredient storage fragment");
     }
 
     public LiveData<String> getText() {

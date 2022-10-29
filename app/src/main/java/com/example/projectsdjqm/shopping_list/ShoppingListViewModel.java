@@ -1,16 +1,16 @@
-package com.example.projectsdjqm.ui.recipe_list;
+package com.example.projectsdjqm.shopping_list;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class RecipeListViewModel extends ViewModel {
+public class ShoppingListViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public RecipeListViewModel() {
+    public ShoppingListViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is recipe list fragment");
+        mText.setValue("This is shopping list fragment");
     }
 
     public LiveData<String> getText() {

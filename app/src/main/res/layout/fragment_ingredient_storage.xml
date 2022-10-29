@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.ingredient_storage.IngredientStorageFragment">
+    tools:context=".ingredient_storage.IngredientStorageFragment">
 
     <TextView
         android:id="@+id/text_ingredient_storage"

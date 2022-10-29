@@ -1,4 +1,4 @@
-package com.example.projectsdjqm.ui.ingredient_storage;
+package com.example.projectsdjqm.ingredient_storage;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

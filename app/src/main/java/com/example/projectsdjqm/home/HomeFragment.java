@@ -1,4 +1,4 @@
-package com.example.projectsdjqm.ui.home;
+package com.example.projectsdjqm.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

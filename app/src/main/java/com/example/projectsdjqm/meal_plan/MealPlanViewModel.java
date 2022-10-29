@@ -1,16 +1,16 @@
-package com.example.projectsdjqm.ui.home;
+package com.example.projectsdjqm.meal_plan;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class HomeViewModel extends ViewModel {
+public class MealPlanViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public HomeViewModel() {
+    public MealPlanViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+        mText.setValue("This is meal plan fragment");
     }
 
     public LiveData<String> getText() {

@@ -12,10 +12,9 @@ package com.example.projectsdjqm.recipe_list;
 
 import android.media.Image;
 
-import com.example.projectsdjqm.ingredient_storage.ingredient;
+import com.example.projectsdjqm.ingredient_storage.Ingredient;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class recipe {
     /*
@@ -34,18 +33,18 @@ public class recipe {
     private String RecipeCategory;
     private String Comments;
     private Image Photograph;
-    private ArrayList<ingredient> ListofIngredients;
+    private ArrayList<Ingredient> listofIngredients;
 
     /* Constructor for Food */
     public recipe(String Title, String PreparationTime, int NumberofServings, String RecipeCategory,
-                  String Comments, Image Photograph, ArrayList<ingredient> ListofIngredients) {
+                  String Comments, Image Photograph, ArrayList<Ingredient> listofIngredients) {
         this.Title = Title;
         this.PreparationTime = PreparationTime;
         this.NumberofServings = NumberofServings;
         this.RecipeCategory = RecipeCategory;
         this.Comments = Comments;
         this.Photograph = Photograph;
-        this.ListofIngredients = ListofIngredients;
+        this.listofIngredients = listofIngredients;
 
     }
 
@@ -74,8 +73,8 @@ public class recipe {
         return Comments;
     }
 
-    public ArrayList<ingredient> getListofIngredients() {
-        return ListofIngredients;
+    public ArrayList<Ingredient> getListofIngredients() {
+        return listofIngredients;
     }
 
     /* Setters */
@@ -103,7 +102,7 @@ public class recipe {
         Photograph = photograph;
     }
 
-    public void setListofIngredients(ArrayList<ingredient> listofIngredients) {
-        ListofIngredients = listofIngredients;
+    public void setListofIngredients(ArrayList<Ingredient> listofIngredients) {
+        this.listofIngredients = listofIngredients;
     }
 }

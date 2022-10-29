@@ -1,3 +1,10 @@
+/**
+ * Home Page
+ * Users can get quick updates on the status of their Meal Plan, Ingredient List, Recipe, and
+ * Shopping List
+ * @version 1.0
+ * @author Muchen Li
+ */
 package com.example.projectsdjqm.home;
 
 import android.os.Bundle;
@@ -18,6 +25,7 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        // blinds the fragment to MainActivity and create the view
         HomeViewModel homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 

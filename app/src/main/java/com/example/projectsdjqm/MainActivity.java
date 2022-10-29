@@ -1,3 +1,8 @@
+/**
+ * MainActivity of the program that binds to the navigation view
+ * @version 1.0
+ * @author Muchen Li
+ */
 package com.example.projectsdjqm;
 
 import android.os.Bundle;
@@ -20,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // blinds all of the fragments in the navigation bar and all other fragments
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

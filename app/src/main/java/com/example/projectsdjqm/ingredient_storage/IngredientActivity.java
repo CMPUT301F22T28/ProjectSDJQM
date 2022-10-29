@@ -16,8 +16,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.projectsdjqm.MainActivity;
 import com.example.projectsdjqm.R;
+import com.example.projectsdjqm.meal_plan.MealPlanFragment;
+import com.example.projectsdjqm.recipe_list.Recipe;
+import com.example.projectsdjqm.recipe_list.RecipeListActivity;
+import com.example.projectsdjqm.shopping_list.ShoppingListFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,6 +30,11 @@ import java.util.Date;
 public class IngredientActivity extends AppCompatActivity implements
         IngredientFragment.OnFragmentInteractionListener,
         IngredientList.IngredientButtonListener {
+
+
+
+
+    BottomNavigationView bottomNavigationView;
 
     ListView ingredientlistview;
     IngredientList ingredientAdapter;
@@ -34,6 +44,51 @@ public class IngredientActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ingredient_main);
+
+
+
+        bottomNavigationView = findViewById(R.id.nav_view);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_ingredient_storage);
+
+
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
+
+                    case R.id.navigation_ingredient_storage:
+                        startActivity(new Intent(getApplicationContext(), IngredientActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
+
+                    case R.id.navigation_meal_plan:
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
+
+                    case R.id.navigation_recipe_list:
+                        startActivity(new Intent(getApplicationContext(), RecipeListActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
+
+                    case R.id.navigation_shopping_list:
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
+                }
+                return false;
+            }
+        });
+
+
+
+
+
 
         ingredientlistview = findViewById(R.id.ingredient_list);
 
@@ -52,19 +107,6 @@ public class IngredientActivity extends AppCompatActivity implements
             }
         });
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.nav_view);
-        navigation.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.navigation_home:
-                        Intent a = new Intent(IngredientActivity.this, MainActivity.class);
-                        startActivity(a);
-                        break;
-                }
-                return false;
-            }
-        });
 
     }
 

@@ -16,7 +16,7 @@ import com.example.projectsdjqm.ingredient_storage.Ingredient;
 
 import java.util.ArrayList;
 
-public class recipe {
+public class Recipe {
     /*
      *  Each Recipe entry has the following fields:
      *      Title
@@ -36,7 +36,7 @@ public class recipe {
     private ArrayList<Ingredient> listofIngredients;
 
     /* Constructor for Food */
-    public recipe(String Title, String PreparationTime, int NumberofServings, String RecipeCategory,
+    public Recipe(String Title, String PreparationTime, int NumberofServings, String RecipeCategory,
                   String Comments, Image Photograph, ArrayList<Ingredient> listofIngredients) {
         this.Title = Title;
         this.PreparationTime = PreparationTime;

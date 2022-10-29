@@ -23,6 +23,7 @@ import com.example.projectsdjqm.shopping_list.ShoppingListFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +37,9 @@ public class IngredientActivity extends AppCompatActivity implements
 
     BottomNavigationView bottomNavigationView;
 
+    FirebaseFirestore db;
+
+
     ListView ingredientlistview;
     IngredientList ingredientAdapter;
     ArrayList<Ingredient> ingredientlist;
@@ -46,11 +50,9 @@ public class IngredientActivity extends AppCompatActivity implements
         setContentView(R.layout.ingredient_main);
 
 
-
+        // bottomnav stuff
         bottomNavigationView = findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_ingredient_storage);
-
-
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -84,6 +86,13 @@ public class IngredientActivity extends AppCompatActivity implements
                 return false;
             }
         });
+
+
+
+
+        // firestore stuff
+        // must complete adding dependencies, etc before next line:
+        // db = FirebaseFirestore.getInstance();
 
 
 

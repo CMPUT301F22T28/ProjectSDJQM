@@ -1,61 +1,41 @@
-package com.example.projectsdjqm;
+package com.example.projectsdjqm.recipe_list;
 
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.example.projectsdjqm.home.HomeFragment;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.projectsdjqm.ingredient_storage.Ingredient;
+import com.example.projectsdjqm.MainActivity;
+import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.IngredientActivity;
-import com.example.projectsdjqm.ingredient_storage.IngredientFragment;
 import com.example.projectsdjqm.meal_plan.MealPlanFragment;
-import com.example.projectsdjqm.recipe_list.Recipe;
-
-import com.example.projectsdjqm.recipe_list.RecipeListActivity;
-import com.example.projectsdjqm.recipe_list.RecipeListFragment;
 import com.example.projectsdjqm.shopping_list.ShoppingListFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import com.example.projectsdjqm.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationBarView;
 
-/**
- * nav bar help:
- * // non-deprecated https://stackoverflow.com/questions/68021770/setonnavigationitemselectedlistener-deprecated
- * // vid https://www.youtube.com/watch?v=lOTIedfP1OA
- */
 
-
-public class MainActivity extends AppCompatActivity {
+public class RecipeListActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
 
 
     @Override
-    protected  void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.recipe_main);
+
 
         bottomNavigationView = findViewById(R.id.nav_view);
-        bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_recipe_list);
+
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-
                     case R.id.navigation_home:
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         overridePendingTransition(0,0);
@@ -81,10 +61,12 @@ public class MainActivity extends AppCompatActivity {
                         overridePendingTransition(0,0);
                         return true;
 
+
                 }
                 return false;
             }
         });
+
     }
 
 

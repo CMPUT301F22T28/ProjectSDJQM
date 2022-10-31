@@ -27,6 +27,9 @@
                 android:value="" />
         </activity>
         <activity android:name=".ingredient_storage.IngredientActivity"></activity>
+        <activity android:name=".recipe_list.RecipeListActivity"></activity>
+        <activity android:name=".meal_plan.MealPlanActivity"></activity>
+        <activity android:name=".shopping_list.ShoppingListActivity"></activity>
 
     </application>
 

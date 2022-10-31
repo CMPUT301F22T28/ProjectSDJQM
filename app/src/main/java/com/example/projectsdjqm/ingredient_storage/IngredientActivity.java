@@ -1,7 +1,8 @@
 /**
  * IngredientActivity
- * @version 1.0
- * @author Muchen Li
+ * @version 1.1
+ * @author Muchen Li & Defrim Binakaj
+ * @date Oct 30, 2022
  */
 package com.example.projectsdjqm.ingredient_storage;
 
@@ -16,10 +17,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.projectsdjqm.MainActivity;
 import com.example.projectsdjqm.R;
-import com.example.projectsdjqm.meal_plan.MealPlanFragment;
-import com.example.projectsdjqm.recipe_list.Recipe;
+import com.example.projectsdjqm.meal_plan.MealPlanActivity;
 import com.example.projectsdjqm.recipe_list.RecipeListActivity;
-import com.example.projectsdjqm.shopping_list.ShoppingListFragment;
+import com.example.projectsdjqm.shopping_list.ShoppingListActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
@@ -69,7 +69,7 @@ public class IngredientActivity extends AppCompatActivity implements
                         return true;
 
                     case R.id.navigation_meal_plan:
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        startActivity(new Intent(getApplicationContext(), MealPlanActivity.class));
                         overridePendingTransition(0,0);
                         return true;
 
@@ -79,7 +79,7 @@ public class IngredientActivity extends AppCompatActivity implements
                         return true;
 
                     case R.id.navigation_shopping_list:
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        startActivity(new Intent(getApplicationContext(), ShoppingListActivity.class));
                         overridePendingTransition(0,0);
                         return true;
                 }

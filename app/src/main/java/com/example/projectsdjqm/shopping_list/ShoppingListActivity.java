@@ -1,52 +1,46 @@
 /**
- * MainActivity
+ * ShoppingListActivity
  * @version 1.1
- * @author Defrim Binakaj & Muchen Li
- * @date Oct 29, 2022
+ * @author Muchen Li & Defrim Binakaj
+ * @date Oct 30, 2022
  */
-package com.example.projectsdjqm;
+package com.example.projectsdjqm.shopping_list;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.example.projectsdjqm.ingredient_storage.IngredientActivity;
-
-import com.example.projectsdjqm.meal_plan.MealPlanActivity;
-import com.example.projectsdjqm.recipe_list.RecipeListActivity;
-import com.example.projectsdjqm.shopping_list.ShoppingListActivity;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.projectsdjqm.MainActivity;
+import com.example.projectsdjqm.R;
+import com.example.projectsdjqm.ingredient_storage.IngredientActivity;
+import com.example.projectsdjqm.meal_plan.MealPlanActivity;
+import com.example.projectsdjqm.recipe_list.RecipeListActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-/**
- * nav bar help:
- * // non-deprecated https://stackoverflow.com/questions/68021770/setonnavigationitemselectedlistener-deprecated
- * // vid https://www.youtube.com/watch?v=lOTIedfP1OA
- */
 
-
-public class MainActivity extends AppCompatActivity {
+public class ShoppingListActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
 
 
     @Override
-    protected  void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home_main);
+        setContentView(R.layout.shopping_list_main);
+
 
         bottomNavigationView = findViewById(R.id.nav_view);
-        bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_shopping_list);
+
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-
                     case R.id.navigation_home:
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         overridePendingTransition(0,0);
@@ -72,10 +66,12 @@ public class MainActivity extends AppCompatActivity {
                         overridePendingTransition(0,0);
                         return true;
 
+
                 }
                 return false;
             }
         });
+
     }
 
 

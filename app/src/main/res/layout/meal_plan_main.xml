@@ -29,7 +29,7 @@
 
 
         <ListView
-            android:id="@+id/recipe_list"
+            android:id="@+id/meal_plan_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -40,14 +40,14 @@
         </ListView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_recipe"
+            android:id="@+id/add_meal_plan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".2"
             android:clickable="true"
             android:focusable="true"
             android:layout_gravity="right"
-            android:contentDescription="Add Ingredient"
+            android:contentDescription="Add Meal Plan"
             android:minWidth="30dp"
             android:minHeight="30dp"
             app:srcCompat="@android:drawable/ic_input_add" />

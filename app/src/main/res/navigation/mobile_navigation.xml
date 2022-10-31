@@ -5,33 +5,33 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_home">
 
-    <fragment
+    <activity
         android:id="@+id/navigation_home"
-        android:name="com.example.projectsdjqm.home.HomeFragment"
+        android:name="com.example.projectsdjqm.MainActivity"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/home_main" />
 
-    <fragment
+    <activity
         android:id="@+id/navigation_meal_plan"
-        android:name="com.example.projectsdjqm.meal_plan.MealPlanFragment"
+        android:name="com.example.projectsdjqm.meal_plan.MealPlanActivity"
         android:label="@string/title_meal_plan"
-        tools:layout="@layout/fragment_meal_plan" />
+        tools:layout="@layout/meal_plan_main" />
 
-    <fragment
+    <activity
         android:id="@+id/navigation_ingredient_storage"
-        android:name="com.example.projectsdjqm.ingredient_storage.IngredientStorageFragment"
+        android:name="com.example.projectsdjqm.ingredient_storage.IngredientActivity"
         android:label="@string/title_ingredient_storage"
-        tools:layout="@layout/fragment_ingredient_storage" />
+        tools:layout="@layout/ingredient_main" />
 
-    <fragment
+    <activity
         android:id="@+id/navigation_recipe_list"
-        android:name="com.example.projectsdjqm.recipe_list.RecipeListFragment"
+        android:name="com.example.projectsdjqm.recipe_list.RecipeListActivity"
         android:label="@string/title_recipe_list"
-        tools:layout="@layout/fragment_recipe_list" />
+        tools:layout="@layout/recipe_main" />
 
-    <fragment
+    <activity
         android:id="@+id/navigation_shopping_list"
-        android:name="com.example.projectsdjqm.shopping_list.ShoppingListFragment"
+        android:name="com.example.projectsdjqm.shopping_list.ShoppingListActivity"
         android:label="@string/title_shopping_list"
-        tools:layout="@layout/fragment_shopping_list" />
+        tools:layout="@layout/shopping_list_main" />
 </navigation>

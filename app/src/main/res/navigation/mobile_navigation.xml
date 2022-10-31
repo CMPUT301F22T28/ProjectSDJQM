@@ -15,7 +15,7 @@
         android:id="@+id/navigation_meal_plan"
         android:name="com.example.projectsdjqm.meal_plan.MealPlanActivity"
         android:label="@string/title_meal_plan"
-        tools:layout="@layout/meal_plan_main" />
+        tools:layout="@layout/mealplan_main" />
 
     <activity
         android:id="@+id/navigation_ingredient_storage"
@@ -33,5 +33,5 @@
         android:id="@+id/navigation_shopping_list"
         android:name="com.example.projectsdjqm.shopping_list.ShoppingListActivity"
         android:label="@string/title_shopping_list"
-        tools:layout="@layout/shopping_list_main" />
+        tools:layout="@layout/shoppinglist_main" />
 </navigation>

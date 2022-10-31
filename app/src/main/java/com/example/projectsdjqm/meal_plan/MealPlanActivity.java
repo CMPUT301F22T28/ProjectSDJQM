@@ -30,7 +30,7 @@ public class MealPlanActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.meal_plan_main);
+        setContentView(R.layout.mealplan_main);
 
 
         bottomNavigationView = findViewById(R.id.nav_view);

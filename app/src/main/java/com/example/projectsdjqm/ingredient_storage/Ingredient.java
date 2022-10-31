@@ -1,8 +1,9 @@
 /**
- *  Classname: Ingredient
- *  Based on project problem description
- *  @version 1.0
- *  @author Muchen Li.
+ * Ingredient
+ * Based on project problem description
+ * @version 1.0
+ * @author Muchen Li
+ * @date Oct 24, 2022
  */
 
 package com.example.projectsdjqm.ingredient_storage;

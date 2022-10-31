@@ -1,11 +1,8 @@
 /**
- *  Classname: Food
- *
- *  Version information: version 1
- *
- *  Date: 2022/09/23
- *
- *  Copyright notice: All rights reserved, used by permission of Muchen Li.
+ * Recipe
+ * @version 1.0
+ * @author Muchen Li
+ * @date Oct 24, 2022
  */
 
 package com.example.projectsdjqm.recipe_list;
@@ -19,58 +16,58 @@ import java.util.ArrayList;
 public class Recipe {
     /*
      *  Each Recipe entry has the following fields:
-     *      Title
+     *      RecipeTitle
      *      Preparation time
      *      Number of servings
      *      Recipe category
-     *      Comments
-     *      Photograph
+     *      RecipeComments
+     *      RecipePhotograph
      *      List of ingredients
      */
-    private String Title;
-    private String PreparationTime;
-    private int NumberofServings;
+    private String RecipeTitle;
+    private String RecipePreparationTime;
+    private int RecipeNumberofServings;
     private String RecipeCategory;
-    private String Comments;
-    private Image Photograph;
+    private String RecipeComments;
+    private Image RecipePhotograph;
     private ArrayList<Ingredient> listofIngredients;
 
     /* Constructor for Food */
-    public Recipe(String Title, String PreparationTime, int NumberofServings, String RecipeCategory,
-                  String Comments, Image Photograph, ArrayList<Ingredient> listofIngredients) {
-        this.Title = Title;
-        this.PreparationTime = PreparationTime;
-        this.NumberofServings = NumberofServings;
+    public Recipe(String RecipeTitle, String RecipePreparationTime, int RecipeNumberofServings, String RecipeCategory,
+                  String RecipeComments, Image RecipePhotograph, ArrayList<Ingredient> listofIngredients) {
+        this.RecipeTitle = RecipeTitle;
+        this.RecipePreparationTime = RecipePreparationTime;
+        this.RecipeNumberofServings = RecipeNumberofServings;
         this.RecipeCategory = RecipeCategory;
-        this.Comments = Comments;
-        this.Photograph = Photograph;
+        this.RecipeComments = RecipeComments;
+        this.RecipePhotograph = RecipePhotograph;
         this.listofIngredients = listofIngredients;
 
     }
 
     /* Getters */
-    public String getTitle() {
-        return Title;
+    public String getRecipeTitle() {
+        return RecipeTitle;
     }
 
-    public String getPreparationTime() {
-        return PreparationTime;
+    public String getRecipePreparationTime() {
+        return RecipePreparationTime;
     }
 
-    public int getNumberofServings() {
-        return NumberofServings;
+    public int getRecipeNumberofServings() {
+        return RecipeNumberofServings;
     }
 
     public String getRecipeCategory() {
         return RecipeCategory;
     }
 
-    public Image getPhotograph() {
-        return Photograph;
+    public Image getRecipePhotograph() {
+        return RecipePhotograph;
     }
 
-    public String getComments() {
-        return Comments;
+    public String getRecipeComments() {
+        return RecipeComments;
     }
 
     public ArrayList<Ingredient> getListofIngredients() {
@@ -78,28 +75,28 @@ public class Recipe {
     }
 
     /* Setters */
-    public void setTitle(String title) {
-        Title = title;
+    public void setRecipeTitle(String recipeTitle) {
+        RecipeTitle = recipeTitle;
     }
 
-    public void setPreparationTime(String preparationTime) {
-        PreparationTime = preparationTime;
+    public void setRecipePreparationTime(String recipePreparationTime) {
+        RecipePreparationTime = recipePreparationTime;
     }
 
-    public void setNumberofServings(int numberofServings) {
-        NumberofServings = numberofServings;
+    public void setRecipeNumberofServings(int recipeNumberofServings) {
+        RecipeNumberofServings = recipeNumberofServings;
     }
 
-    public void setComments(String comments) {
-        Comments = comments;
+    public void setRecipeComments(String recipeComments) {
+        RecipeComments = recipeComments;
     }
 
     public void setRecipeCategory(String recipeCategory) {
         RecipeCategory = recipeCategory;
     }
 
-    public void setPhotograph(Image photograph) {
-        Photograph = photograph;
+    public void setRecipePhotograph(Image recipePhotograph) {
+        RecipePhotograph = recipePhotograph;
     }
 
     public void setListofIngredients(ArrayList<Ingredient> listofIngredients) {

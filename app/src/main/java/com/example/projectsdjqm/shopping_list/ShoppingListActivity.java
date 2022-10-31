@@ -30,7 +30,7 @@ public class ShoppingListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.shopping_list_main);
+        setContentView(R.layout.shoppinglist_main);
 
 
         bottomNavigationView = findViewById(R.id.nav_view);

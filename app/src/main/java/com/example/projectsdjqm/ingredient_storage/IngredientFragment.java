@@ -81,7 +81,7 @@ public class IngredientFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.add_ingredient_fragment, null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.ingredient_add_fragment, null);
 
         ingredientDescription = view.findViewById(R.id.edit_ingredient_desc);
         ingredientCategory = view.findViewById(R.id.edit_ingredient_category);

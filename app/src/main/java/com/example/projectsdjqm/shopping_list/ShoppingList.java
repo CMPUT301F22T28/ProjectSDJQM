@@ -19,6 +19,7 @@ public class ShoppingList {
      */
     private ArrayList<Ingredient> listOfIngredients;
     private boolean pickedUp;
+    private int totalCost;
 
 
     public ShoppingList(ArrayList<Ingredient> listOfIngredients, boolean pickedUp) {
@@ -31,6 +32,8 @@ public class ShoppingList {
 
     public boolean getPickedUp() {return pickedUp;}
 
+    public int getTotalCost() {return totalCost;}
+
     /* Setters */
     public void setListOfIngredients(ArrayList<Ingredient> listOfIngredients) {
         this.listOfIngredients = listOfIngredients;
@@ -40,7 +43,8 @@ public class ShoppingList {
         this.pickedUp = pickedUp;
     }
 
-
-
-
+    public void setTotalCost(int totalCost) {
+        this.totalCost = totalCost;
+    }
+    
 }

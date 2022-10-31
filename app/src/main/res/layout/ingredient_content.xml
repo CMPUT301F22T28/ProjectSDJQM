@@ -106,7 +106,7 @@
                 android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/ingredient_count"
+                    android:id="@+id/ingredient_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight=".5"
@@ -115,7 +115,7 @@
                     android:layout_marginEnd="10dp"/>
 
                 <TextView
-                    android:id="@+id/ingredient_unitcost"
+                    android:id="@+id/ingredient_unit"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight=".5"

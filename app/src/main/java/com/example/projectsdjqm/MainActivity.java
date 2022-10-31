@@ -1,3 +1,14 @@
+/**
+ * MainActivity
+ *
+ * @version 1.1
+ * @author Defrim Binakaj
+ * @date Oct 29, 2022
+ *
+ * @version 1.0
+ * @author Muchen Li
+ * @date Oct 27, 2022
+ */
 package com.example.projectsdjqm;
 
 import android.content.Intent;

@@ -1,7 +1,15 @@
 /**
- *  IngredientList
- *  @version 1.0
- *  @author Muchen Li
+ * IngredientList
+ * Custom array adapter for Ingredient
+ *
+ * @version 1.1
+ * @update fixed some minor bugs
+ * @author Muchen Li
+ * @date Oct 30, 2022
+ *
+ * @version 1.0
+ * @author Muchen Li
+ * @date Oct 27, 2022
  */
 package com.example.projectsdjqm.ingredient_storage;
 
@@ -23,11 +31,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-/* Create custom array adapter for Food */
+/* Create custom array adapter for Ingredient */
 public class IngredientList extends ArrayAdapter<Ingredient> {
     private IngredientButtonListener ingredientButtonListener;
 
-    /* Interface for food button lister*/
+    /* Interface for ingredient button lister*/
     public interface IngredientButtonListener {
         void onEditIngredientClickListener(int position);
         void onDeleteIngredientClickListener(int position);
@@ -36,14 +44,14 @@ public class IngredientList extends ArrayAdapter<Ingredient> {
     private final ArrayList<Ingredient> ingredientList;
     private final Context context;
 
-    /* Constructor for FoodList */
+    /* Constructor for IngredientList */
     public IngredientList(Context context, ArrayList<Ingredient> ingredientList) {
         super(context,0, ingredientList);
         this.context = context;
         this.ingredientList = ingredientList;
     }
 
-    /* Food button listener */
+    /* Ingredient button listener */
     public void setIngredientButtonListener(IngredientButtonListener ingredientButtonListener) {
         this.ingredientButtonListener = ingredientButtonListener;
     }
@@ -71,28 +79,28 @@ public class IngredientList extends ArrayAdapter<Ingredient> {
         Ingredient ingredient = ingredientList.get(position);
 
         // Get ingredient description
-        TextView FoodDescTextView = view.findViewById(R.id.ingredient_description);
-        FoodDescTextView.setText(ingredient.getIngredientDescription());
+        TextView IngredientDescTextView = view.findViewById(R.id.ingredient_description);
+        IngredientDescTextView.setText(ingredient.getIngredientDescription());
 
         // Get ingredient best before date
         TextView IngredientBestBeforeTextView = view.findViewById(R.id.ingredient_bestbeforedate);
         IngredientBestBeforeTextView.setText(getBestBeforeDate(ingredient));
 
         // Get ingredient location
-        TextView FoodLocationTextView = view.findViewById(R.id.ingredient_location);
-        FoodLocationTextView.setText(getLocation(ingredient));
+        TextView IngredientLocationTextView = view.findViewById(R.id.ingredient_location);
+        IngredientLocationTextView.setText(getLocation(ingredient));
 
         // Get ingredient amount
-        TextView FoodCountTextView = view.findViewById(R.id.ingredient_count);
-        FoodCountTextView.setText(getAmount(ingredient));
+        TextView IngredientAmountTextView = view.findViewById(R.id.ingredient_amount);
+        IngredientAmountTextView.setText(getAmount(ingredient));
 
         // Get ingredient unit
-        TextView FoodUnitCostTextView = view.findViewById(R.id.ingredient_unitcost);
-        FoodUnitCostTextView.setText(getUnit(ingredient));
+        TextView IngredientUnitTextView = view.findViewById(R.id.ingredient_unit);
+        IngredientUnitTextView.setText(getUnit(ingredient));
 
         // Get ingredient category
-        TextView FoodCategoryTextView = view.findViewById(R.id.ingredient_category);
-        FoodDescTextView.setText(getCategory(ingredient));
+        TextView IngredientCategoryTextView = view.findViewById(R.id.ingredient_category);
+        IngredientCategoryTextView.setText(getCategory(ingredient));
 
         // Edit and Delete buttons
         viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
@@ -137,7 +145,7 @@ public class IngredientList extends ArrayAdapter<Ingredient> {
 
     private String getUnit(Ingredient ingredient) {
         int unit = ingredient.getIngredientUnit();
-        return String.format("Unit Cost($): %s", unit);
+        return String.format("Unit: %s", unit);
     }
 
     private String getCategory(Ingredient ingredient) {

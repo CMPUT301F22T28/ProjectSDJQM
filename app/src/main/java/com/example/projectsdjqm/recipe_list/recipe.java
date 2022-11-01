@@ -79,27 +79,28 @@ public class recipe {
 
     /* Setters */
     public void setTitle(String title) {
-        Title = title;
+        this.Title = title;
     }
 
     public void setPreparationTime(String preparationTime) {
-        PreparationTime = preparationTime;
+        this.PreparationTime = preparationTime;
     }
 
     public void setNumberofServings(int numberofServings) {
-        NumberofServings = numberofServings;
+        this.NumberofServings = numberofServings;
     }
 
     public void setComments(String comments) {
-        Comments = comments;
+        this.Comments = comments;
     }
 
     public void setRecipeCategory(String recipeCategory) {
-        RecipeCategory = recipeCategory;
+
+        this.RecipeCategory = recipeCategory;
     }
 
     public void setPhotograph(Image photograph) {
-        Photograph = photograph;
+        this.Photograph = photograph;
     }
 
     public void setListofIngredients(ArrayList<Ingredient> listofIngredients) {

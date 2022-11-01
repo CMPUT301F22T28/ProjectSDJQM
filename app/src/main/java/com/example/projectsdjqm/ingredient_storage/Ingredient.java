@@ -34,6 +34,7 @@ public class Ingredient {
     private String IngredientDescription;
     private Date IngredientBestBeforeDate;
     private Location IngredientLocation;
+    //private boolean IngredientPickedUp;
     private int IngredientAmount;
     private int IngredientUnit;
     private String IngredientCategory;
@@ -47,6 +48,7 @@ public class Ingredient {
         this.IngredientAmount = Count;
         this.IngredientUnit = Unit;
         this.IngredientCategory = IngredientCategory;
+        //this.IngredientPickedUp = IngredientPickedUp;
     }
 
     /* Getters */
@@ -72,28 +74,31 @@ public class Ingredient {
 
     public String getIngredientCategory() {return IngredientCategory;}
 
+    //public boolean getIngredientPickedUp() {return IngredientPickedUp;}
+
     /* Setters */
     public void setIngredientDescription(String ingredientDescription) {
-        IngredientDescription = ingredientDescription;
+        this.IngredientDescription = ingredientDescription;
     }
 
     public void setIngredientBestBeforeDate(Date ingredientBestBeforeDate) {
-        IngredientBestBeforeDate = ingredientBestBeforeDate;
+        this.IngredientBestBeforeDate = ingredientBestBeforeDate;
     }
 
     public void setIngredientLocation(Ingredient.Location ingredientLocation) {
-        IngredientLocation = ingredientLocation;
+        this.IngredientLocation = ingredientLocation;
     }
 
     public void setIngredientAmount(int ingredientAmount) {
-        IngredientAmount = ingredientAmount;
+        this.IngredientAmount = ingredientAmount;
     }
 
     public void setIngredientUnit(int ingredientUnit) {
-        IngredientUnit = ingredientUnit;
+        this.IngredientUnit = ingredientUnit;
     }
 
     public void setIngredientCategory(String ingredientCategory) {
-        IngredientCategory = ingredientCategory;
+        this.IngredientCategory = ingredientCategory;
     }
+
 }

@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.projectsdjqm.MainActivity;
@@ -23,7 +24,12 @@ import com.example.projectsdjqm.shopping_list.ShoppingListActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -92,11 +98,8 @@ public class IngredientActivity extends AppCompatActivity implements
 
         // firestore stuff
         // must complete adding dependencies, etc before next line:
-        // db = FirebaseFirestore.getInstance();
-
-
-
-
+        db = FirebaseFirestore.getInstance();
+        final CollectionReference collectionReference = db.collection("Ingredients");
 
 
         ingredientlistview = findViewById(R.id.ingredient_list);
@@ -115,7 +118,23 @@ public class IngredientActivity extends AppCompatActivity implements
                 addIngredientFragment.show(getSupportFragmentManager(), "ADD_INGREDIENT");
             }
         });
-
+/*
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                ingredientlist.clear();
+                for (QueryDocumentSnapshot doc : value) {
+                    String desc = doc.getId();
+                    String BBD = (String) String.valueOf(doc.getData().get("Best Before Date"));
+                    String Amt = (String) String.valueOf(doc.getData().get("Amount"));
+                    String Location = (String) String.valueOf(doc.getData().get("Location"));
+                    String Unit = (String) String.valueOf(doc.getData().get("Unit"));
+                    String Category = (String) doc.getData().get("Category");
+                }
+                ingredientAdapter.notifyDataSetChanged();
+            }
+        });
+*/
 
     }
 

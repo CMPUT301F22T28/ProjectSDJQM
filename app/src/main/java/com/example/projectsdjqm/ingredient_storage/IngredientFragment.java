@@ -10,6 +10,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -192,6 +193,7 @@ public class IngredientFragment extends DialogFragment {
             } catch (NumberFormatException ex) {
                 isValid = false;
                 ingredientAmount.setError("Enter a positive number");
+                Log.d("NumberFormatLog", "error on numberformat is " + ex.getMessage());
                 ex.printStackTrace();
             }
 

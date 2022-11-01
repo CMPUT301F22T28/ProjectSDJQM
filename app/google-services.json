@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "892698616322",
+    "project_id": "foodbookapp-7bc73",
+    "storage_bucket": "foodbookapp-7bc73.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:892698616322:android:7881b427adf2cdc2db7d1b",
+        "android_client_info": {
+          "package_name": "com.example.projectsdjqm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "892698616322-k10l5o3kuvm4634rmm5qe9jd4hei2p63.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_nc_AKpdoKdv-6sL2u6gXxXjzJBLWaVA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "892698616322-k10l5o3kuvm4634rmm5qe9jd4hei2p63.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

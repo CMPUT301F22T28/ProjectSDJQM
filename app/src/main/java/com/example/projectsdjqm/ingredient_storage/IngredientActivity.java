@@ -172,15 +172,10 @@ public class IngredientActivity extends AppCompatActivity implements
         ingredient.setIngredientCategory(category);
     }
 
-    @Override
-    public ArrayList<Ingredient> getIngredientList() {
-        return ingredientlist;
-    };
     /*
      sort list by a certain type: description, category,
      best before date, location
      */
-    @Override
     public void sortIngredientList(ArrayList<Ingredient> list, String sorting_type) {
         IngredientList adapter;
         switch (sorting_type) {

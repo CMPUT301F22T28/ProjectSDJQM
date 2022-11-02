@@ -108,10 +108,8 @@ public class IngredientActivity extends AppCompatActivity implements
         ingredientlistview = findViewById(R.id.ingredient_list);
 
         ingredientlist = new ArrayList<>();
-//        ingredientlist.add(new Ingredient("egg",new Date(),Ingredient.Location.Pantry,3,2,"back"));
-//        ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
-//        ingredientlist.add(new Ingredient("orange",new Date(2023,5,3),Ingredient.Location.Freezer,5,4,"category"));
-        ingredientlist.add(new Ingredient("aaa",new Date(2023,5,3),Ingredient.Location.Freezer,5,4,"aaa"));
+        ingredientlist.add(new Ingredient("egg",new Date(),Ingredient.Location.Pantry,3,2,"back"));
+        ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
         ingredientlist.add(new Ingredient("ccc",new Date(2023,5,3),Ingredient.Location.Freezer,5,4,"ccc"));
         ingredientAdapter = new IngredientList(this, ingredientlist);
         ingredientAdapter.setIngredientButtonListener(this);
@@ -174,10 +172,15 @@ public class IngredientActivity extends AppCompatActivity implements
         ingredient.setIngredientCategory(category);
     }
 
+    @Override
+    public ArrayList<Ingredient> getIngredientList() {
+        return ingredientlist;
+    };
     /*
      sort list by a certain type: description, category,
      best before date, location
      */
+    @Override
     public void sortIngredientList(ArrayList<Ingredient> list, String sorting_type) {
         IngredientList adapter;
         switch (sorting_type) {
@@ -222,8 +225,10 @@ public class IngredientActivity extends AppCompatActivity implements
                         long time1 = ingredient1.getIngredientBestBeforeDate().getTime();
                         if (time <= time1) {
                             return -1;
+                        } else if (time == time1) {
+                            return 0;
                         } else {
-                            return 1;
+                                return 1;
                         }
                     }
                 });

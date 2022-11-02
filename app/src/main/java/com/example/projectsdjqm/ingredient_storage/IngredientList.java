@@ -92,7 +92,7 @@ public class IngredientList extends ArrayAdapter<Ingredient> {
 
         // Get ingredient category
         TextView FoodCategoryTextView = view.findViewById(R.id.ingredient_category);
-        FoodDescTextView.setText(getCategory(ingredient));
+        FoodCategoryTextView.setText(getCategory(ingredient));
 
         // Edit and Delete buttons
         viewHolder.editButton.setOnClickListener(new View.OnClickListener() {

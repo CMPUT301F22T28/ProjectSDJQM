@@ -99,8 +99,10 @@ public class IngredientList extends ArrayAdapter<Ingredient> {
         IngredientUnitTextView.setText(getUnit(ingredient));
 
         // Get ingredient category
+
         TextView IngredientCategoryTextView = view.findViewById(R.id.ingredient_category);
         IngredientCategoryTextView.setText(getCategory(ingredient));
+
 
         // Edit and Delete buttons
         viewHolder.editButton.setOnClickListener(new View.OnClickListener() {

@@ -1,69 +1,78 @@
+/**
+ * MealPlanActivity
+ * @version 1.1
+ * @author Muchen Li & Defrim Binakaj
+ * @date Oct 30, 2022
+ */
 package com.example.projectsdjqm.meal_plan;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.projectsdjqm.MainActivity;
 import com.example.projectsdjqm.R;
+import com.example.projectsdjqm.ingredient_storage.IngredientActivity;
+import com.example.projectsdjqm.recipe_list.RecipeListActivity;
+import com.example.projectsdjqm.shopping_list.ShoppingListActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationBarView;
 
-import java.util.ArrayList;
-import java.util.Date;
 
-public class MealplanActivity extends AppCompatActivity implements MealPlanFragment.OnFragmentIteractionListener{
+public class MealPlanActivity extends AppCompatActivity {
 
-    ListView mealplanlistview;
-    MealplanList mealplanAdapter;
-    ArrayList<Mealplan> mealplanlist;
+    BottomNavigationView bottomNavigationView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.mealplan_activity);
+        setContentView(R.layout.mealplan_main);
 
-        mealplanlistview = findViewById(R.id.meal_plan_list);
 
-        mealplanlist = new ArrayList<>();
-        mealplanAdapter = new MealplanList(this, mealplanlist);
-        mealplanlistview.setAdapter(mealplanAdapter);
+        bottomNavigationView = findViewById(R.id.nav_view);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_meal_plan);
 
-        // floating button for add meal plan
-        final FloatingActionButton addmealplanButton = findViewById(R.id.add_mealplan_button);
-        addmealplanButton.setOnClickListener(new View.OnClickListener() {
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                MealPlanFragment addmealplanFragment = new MealPlanFragment();
-                MealPlanFragment.show(getSupportFragmentManager(), "ADD_INGREDIENT");
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
+
+                    case R.id.navigation_ingredient_storage:
+                        startActivity(new Intent(getApplicationContext(), IngredientActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
+
+                    case R.id.navigation_meal_plan:
+                        startActivity(new Intent(getApplicationContext(), MealPlanActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
+
+                    case R.id.navigation_recipe_list:
+                        startActivity(new Intent(getApplicationContext(), RecipeListActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
+
+                    case R.id.navigation_shopping_list:
+                        startActivity(new Intent(getApplicationContext(), ShoppingListActivity.class));
+                        overridePendingTransition(0,0);
+                        return true;
+
+
+                }
+                return false;
             }
         });
 
-//        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.nav_view);
-//        navigation.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//                switch (item.getItemId()) {
-//                    case R.id.navigation_home:
-//                        Intent a = new Intent(IngredientActivity.this, MainActivity.class);
-//                        startActivity(a);
-//                        break;
-//                }
-//                return false;
-//            }
-//        });
-
     }
-
-
-
-
-
 
 
 }

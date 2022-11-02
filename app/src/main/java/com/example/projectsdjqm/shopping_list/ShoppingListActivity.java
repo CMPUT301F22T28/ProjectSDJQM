@@ -80,7 +80,7 @@ public class ShoppingListActivity extends AppCompatActivity {
                 return false;
             }
         });
-
+/*
         shoppingListView = findViewById(R.id.shopping_list);
 
         shoppingCartList = new ArrayList<>();
@@ -90,9 +90,9 @@ public class ShoppingListActivity extends AppCompatActivity {
 
         final FloatingActionButton addToStorageButton = findViewById(R.id.add_to_storage);
 
-        /*
-           add checked items to ingredient storage if add button is clicked
-         */
+
+           //add checked items to ingredient storage if add button is clicked
+
         addToStorageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,5 +112,9 @@ public class ShoppingListActivity extends AppCompatActivity {
                         .show();
             }
         });
+
+ */
+
     }
+
 }

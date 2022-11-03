@@ -103,8 +103,10 @@ public class IngredientFragment extends DialogFragment {
             switch (ingredient.getIngredientLocation()) {
                 case Freezer:
                     ingredientRadioGroup.check(R.id.Freezer);
+                    break;
                 case Fridge:
                     ingredientRadioGroup.check(R.id.Fridge);
+                    break;
                 default:
                     ingredientRadioGroup.check(R.id.Pantry);
             }

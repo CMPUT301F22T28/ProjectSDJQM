@@ -140,7 +140,7 @@ public class IngredientList extends ArrayAdapter<Ingredient> {
 
     private String getAmount(Ingredient ingredient) {
         int amount = ingredient.getIngredientAmount();
-        return String.format("Count: %s", amount);
+        return String.format("Amount: %s", amount);
     }
 
     private String getUnit(Ingredient ingredient) {

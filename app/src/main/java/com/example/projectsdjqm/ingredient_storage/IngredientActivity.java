@@ -51,7 +51,7 @@ public class IngredientActivity extends AppCompatActivity implements
 
     FirebaseFirestore db;
 
-    final String TAG = "Sample";
+    final String TAG = "Ingredient Activity";
     Spinner spinner;
     public ListView ingredientlistview;
     IngredientList ingredientAdapter;
@@ -63,6 +63,7 @@ public class IngredientActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ingredient_main);
 
+        Log.d(TAG, "onCreate");
         db = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = db.collection("Ingredients");
 
@@ -77,31 +78,26 @@ public class IngredientActivity extends AppCompatActivity implements
                     case R.id.navigation_home:
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         overridePendingTransition(0,0);
-                        finish();
                         return true;
 
                     case R.id.navigation_ingredient_storage:
                         startActivity(new Intent(getApplicationContext(), IngredientActivity.class));
                         overridePendingTransition(0,0);
-                        finish();
                         return true;
 
                     case R.id.navigation_meal_plan:
                         startActivity(new Intent(getApplicationContext(), MealPlanActivity.class));
                         overridePendingTransition(0,0);
-                        finish();
                         return true;
 
                     case R.id.navigation_recipe_list:
                         startActivity(new Intent(getApplicationContext(), RecipeListActivity.class));
                         overridePendingTransition(0,0);
-                        finish();
                         return true;
 
                     case R.id.navigation_shopping_list:
                         startActivity(new Intent(getApplicationContext(), ShoppingListActivity.class));
                         overridePendingTransition(0,0);
-                        finish();
                         return true;
                 }
                 return false;
@@ -164,7 +160,35 @@ public class IngredientActivity extends AppCompatActivity implements
             }
         });
 
+    }
 
+    protected void onStart(){
+        super.onStart();
+        Log.d(TAG, "onStart");
+    }
+    protected void onRestart(){
+        super.onRestart();
+        Log.d(TAG, "onRestart");
+    }
+
+    protected void onPause(){
+        super.onPause();
+        Log.d(TAG, "onPause");
+    }
+
+    protected void onResume(){
+        super.onResume();
+        Log.d(TAG, "onResume");
+    }
+
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+    }
+
+    protected void onDestory() {
+        super.onDestroy();
+        Log.d(TAG,"onDestory");
     }
 
     // Edit button triggered

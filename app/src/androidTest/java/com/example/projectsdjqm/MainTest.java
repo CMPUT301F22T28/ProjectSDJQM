@@ -49,6 +49,7 @@ import java.util.Locale;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.PickerActions.setDate;
@@ -172,10 +173,10 @@ public class MainTest {
         solo.waitForText("frozenbroccoli", 1, 2000);
         onView(withId(R.id.edit_ingredient_desc)).perform(clearText(), typeText("broccoli"));
         onView(withId(R.id.edit_ingredient_category)).perform(clearText(), typeText("veggie"));
-        onView(withId(R.id.edit_bestbeforedate_picker)).perform(click());
+        onView(withId(R.id.edit_bestbeforedate_picker)).perform(scrollTo(),click());
         onView(isAssignableFrom(DatePicker.class)).perform(setDate(2022, 11, 8));
-        onView(withId(R.id.edit_amount)).perform(clearText(), typeText("12"));
-        onView(withId(R.id.edit_unit)).perform(clearText(), typeText("8"));
+        onView(withId(R.id.edit_amount)).perform(scrollTo(),clearText(), typeText("12"));
+        onView(withId(R.id.edit_unit)).perform(scrollTo(),clearText(), typeText("8"));
         solo.clickOnButton("OK");
         solo.waitForText("broccoli", 1, 2000);
         Ingredient editedingre = (Ingredient) ingredientlist.getItemAtPosition(0); // Get item from first position

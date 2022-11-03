@@ -53,7 +53,7 @@ public class IngredientActivity extends AppCompatActivity implements
 
     final String TAG = "Sample";
     Spinner spinner;
-    ListView ingredientlistview;
+    public ListView ingredientlistview;
     IngredientList ingredientAdapter;
     ArrayList<Ingredient> ingredientlist;
     Ingredient selectedIngredient;

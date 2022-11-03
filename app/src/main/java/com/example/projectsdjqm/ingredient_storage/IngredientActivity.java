@@ -11,7 +11,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,6 +37,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -44,8 +50,9 @@ public class IngredientActivity extends AppCompatActivity implements
     BottomNavigationView bottomNavigationView;
 
     FirebaseFirestore db;
-    final String TAG = "Sample";
 
+    final String TAG = "Sample";
+    Spinner spinner;
     ListView ingredientlistview;
     IngredientList ingredientAdapter;
     ArrayList<Ingredient> ingredientlist;
@@ -100,6 +107,9 @@ public class IngredientActivity extends AppCompatActivity implements
         ingredientlistview = findViewById(R.id.ingredient_list);
 
         ingredientlist = new ArrayList<>();
+        //ingredientlist.add(new Ingredient("egg",new Date(),Ingredient.Location.Pantry,3,2,"back"));
+        //ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
+        //ingredientlist.add(new Ingredient("ccc",new Date(2023,5,3),Ingredient.Location.Freezer,5,4,"ccc"));
         ingredientAdapter = new IngredientList(this, ingredientlist);
         ingredientAdapter.setIngredientButtonListener(this);
         ingredientlistview.setAdapter(ingredientAdapter);
@@ -132,6 +142,23 @@ public class IngredientActivity extends AppCompatActivity implements
             }
 
         });
+
+        // sort the ingredient list when a sorting method is selected
+        spinner = findViewById(R.id.spinner);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
+                String result = parent.getItemAtPosition(i).toString();
+//                Toast.makeText(IngredientActivity.this, result,Toast.LENGTH_SHORT).show();
+                sortIngredientList(ingredientlist, result);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
 
     }
 
@@ -201,6 +228,69 @@ public class IngredientActivity extends AppCompatActivity implements
         ingredient.setIngredientAmount(amount);
         ingredient.setIngredientUnit(unit);
         ingredient.setIngredientCategory(category);
+    }
+
+    /*
+     sort list by a certain type: description, category,
+     best before date, location
+     */
+    public void sortIngredientList(ArrayList<Ingredient> list, String sorting_type) {
+        IngredientList adapter;
+        switch (sorting_type) {
+            case "description":
+                Collections.sort(list, new Comparator<Ingredient>() {
+                    @Override
+                    public int compare(Ingredient ingredient, Ingredient ingredient1) {
+                        return ingredient.getIngredientDescription()
+                                .compareTo(ingredient1.getIngredientDescription());
+                    }
+                });
+                adapter = new IngredientList(this, list);
+                ingredientlistview.setAdapter(adapter);
+                break;
+            case "category":
+                Collections.sort(list, new Comparator<Ingredient>() {
+                    @Override
+                    public int compare(Ingredient ingredient, Ingredient ingredient1) {
+                        return ingredient.getIngredientCategory()
+                                .compareTo(ingredient1.getIngredientCategory());
+                    }
+                });
+                adapter = new IngredientList(this, list);
+                ingredientlistview.setAdapter(adapter);
+                break;
+            case "location":
+                Collections.sort(list, new Comparator<Ingredient>() {
+                    @Override
+                    public int compare(Ingredient ingredient, Ingredient ingredient1) {
+                        return ingredient.getIngredientLocation().toString()
+                                .compareTo(ingredient1.getIngredientLocation().toString());
+                    }
+                });
+                adapter = new IngredientList(this, list);
+                ingredientlistview.setAdapter(adapter);
+                break;
+            case "bbd":
+                Collections.sort(list, new Comparator<Ingredient>() {
+                    @Override
+                    public int compare(Ingredient ingredient, Ingredient ingredient1) {
+                        long time = ingredient.getIngredientBestBeforeDate().getTime();
+                        long time1 = ingredient1.getIngredientBestBeforeDate().getTime();
+                        if (time <= time1) {
+                            return -1;
+                        } else if (time == time1) {
+                            return 0;
+                        } else {
+                                return 1;
+                        }
+                    }
+                });
+                adapter = new IngredientList(this, list);
+                ingredientlistview.setAdapter(adapter);
+                break;
+            default:
+                break;
+        }
     }
 
 }

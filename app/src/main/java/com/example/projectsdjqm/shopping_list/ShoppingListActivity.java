@@ -22,10 +22,20 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 
+import android.app.AlertDialog;
+import android.view.View;
+import android.widget.ListView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import java.util.ArrayList;
+
 public class ShoppingListActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
 
+//    ArrayList<Ingredient> checkedIngredientList;
+    ListView shoppingListView;
+    ShoppingListAdapter shoppingListAdapter;
+    ArrayList<ShoppingList> shoppingCartList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,13 +76,45 @@ public class ShoppingListActivity extends AppCompatActivity {
                         overridePendingTransition(0,0);
                         return true;
 
-
                 }
                 return false;
             }
         });
+/*
+        shoppingListView = findViewById(R.id.shopping_list);
+
+        shoppingCartList = new ArrayList<>();
+        shoppingListAdapter = new ShoppingListAdapter(this, shoppingCartList);
+//        ingredientAdapter.setIngredientButtonListener(this);
+        shoppingListView.setAdapter(shoppingListAdapter);
+
+        final FloatingActionButton addToStorageButton = findViewById(R.id.add_to_storage);
+
+
+           //add checked items to ingredient storage if add button is clicked
+
+        addToStorageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                for (int i=0; i < shoppingCartList.size(); i++) {
+                    if (shoppingCartList.get(i).getPickedUp()) {
+                        // add ingredient from checkedIngredientList to ingredient storage
+
+                        // remove thi shoppingItem from shoppingCartList
+                        shoppingCartList.remove(i);
+                    }
+                }
+                new AlertDialog.Builder(ShoppingListActivity.this)
+                        .setMessage("Checked Items from shopping list have been added into your" +
+                                " storage! Please complete details: location, actual amount, and " +
+                                "unit!")
+                        .setPositiveButton("Ok", null)
+                        .show();
+            }
+        });
+
+ */
 
     }
-
 
 }

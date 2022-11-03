@@ -30,6 +30,11 @@ import androidx.test.rule.ActivityTestRule;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import com.example.projectsdjqm.ingredient_storage.IngredientActivity;
 import com.example.projectsdjqm.ingredient_storage.IngredientList;
+import com.example.projectsdjqm.meal_plan.MealPlanActivity;
+import com.example.projectsdjqm.recipe_list.Recipe;
+import com.example.projectsdjqm.recipe_list.RecipeListActivity;
+import com.example.projectsdjqm.shopping_list.ShoppingList;
+import com.example.projectsdjqm.shopping_list.ShoppingListActivity;
 import com.robotium.solo.Solo;
 
 
@@ -77,41 +82,30 @@ public class MainTest {
      * @return
      */
 
-//    public static BoundedMatcher<View, DatePicker> matchesDate(final int year, final int month, final int day) {
-//        return new BoundedMatcher<View, DatePicker>(DatePicker.class) {
-//
-//            @Override
-//            public void describeTo(Description description) {
-//                description.appendText("matches date:");
-//            }
-//
-//            @Override
-//            protected boolean matchesSafely(DatePicker item) {
-//                return (year == item.getYear() && month == item.getMonth() && day == item.getDayOfMonth());
-//            }
-//        };
-//    }
-
-
-
     @Test
     public void checkActivitySwitch(){
         // Asserts that the current activity is the MainActivity. Otherwise, show “Wrong Activity”
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        // press the main page navigation bar within the main page to check intent shifting
         onView(withId(R.id.navigation_home))
                 .perform(click());
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        // press the ingredient page navigation bar within the main page to check intent shifting
         onView(withId(R.id.navigation_ingredient_storage))
                 .perform(click());
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class );
-//        onView(withId(R.id.navigation_meal_plan))
-//                .perform(click());
-//        solo.assertCurrentActivity("Wrong Activity", MealPlanActivity.class);
-//        onView(withId(R.id.navigation_recipe_list))
-//                .perform(click());
-//        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
-//        onView(withId(R.id.navigation_shopping_list))
-//                .perform(click());
+        // press the mealplan page navigation bar within the ingredient page to check intent shifting
+        onView(withId(R.id.navigation_meal_plan))
+                .perform(click());
+        solo.assertCurrentActivity("Wrong Activity", MealPlanActivity.class);
+        // press the recipe page navigation bar within the mealplan page to check intent shifting
+        onView(withId(R.id.navigation_recipe_list))
+                .perform(click());
+        solo.assertCurrentActivity("Wrong Activity", RecipeListActivity.class);
+        // press the shoppinglist page navigation bar within the recipe page to check intent shifting
+        onView(withId(R.id.navigation_shopping_list))
+                .perform(click());
+        solo.assertCurrentActivity("Wrong Activity", ShoppingListActivity.class);
     }
     /**
      * Check adding an ingredient
@@ -121,9 +115,11 @@ public class MainTest {
     public void check_add_ingredient(){
         // Asserts that the current activity is the MainActivity. Otherwise, show “Wrong Activity”
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        // navigate to ingredient page
         onView(withId(R.id.navigation_ingredient_storage))
                 .perform(click());
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class );
+        // try to add an ingredient with description, category, bbd, location, amount and unit
         solo.clickOnView(solo.getView(R.id.add_ingredient));
         solo.enterText((EditText) solo.getView(R.id.edit_ingredient_desc), "frozen broccoli");
         solo.enterText((EditText) solo.getView(R.id.edit_ingredient_category), "food");
@@ -137,12 +133,19 @@ public class MainTest {
         IngredientActivity activity = (IngredientActivity)solo.getCurrentActivity();
         final ListView ingredientlist = activity.ingredientlistview; // Get the listview
         Ingredient newingre = (Ingredient) ingredientlist.getItemAtPosition(0); // Get item from first position
+        // check whether this ingredient is being added into the foodbook, retrieve
+        // attribute of the added ingredient and verify
         assertEquals("frozen broccoli", newingre.getIngredientDescription());
         assertEquals("food", newingre.getIngredientCategory());
 //        assertEquals(new Date(2022,11,3), newingre.getIngredientBestBeforeDate());
         assertEquals(Ingredient.Location.Pantry, newingre.getIngredientLocation());
         assertEquals(10, newingre.getIngredientAmount());
         assertEquals(5, newingre.getIngredientUnit());
+
+    }
+
+    @Test
+    public void check_edit_ingredient(){
 
     }
 //    @Test

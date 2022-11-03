@@ -51,26 +51,31 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navigation_home:
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         overridePendingTransition(0,0);
+                        finish();
                         return true;
 
                     case R.id.navigation_ingredient_storage:
                         startActivity(new Intent(getApplicationContext(), IngredientActivity.class));
                         overridePendingTransition(0,0);
+                        finish();
                         return true;
 
                     case R.id.navigation_meal_plan:
                         startActivity(new Intent(getApplicationContext(), MealPlanActivity.class));
                         overridePendingTransition(0,0);
+                        finish();
                         return true;
 
                     case R.id.navigation_recipe_list:
                         startActivity(new Intent(getApplicationContext(), RecipeListActivity.class));
                         overridePendingTransition(0,0);
+                        finish();
                         return true;
 
                     case R.id.navigation_shopping_list:
                         startActivity(new Intent(getApplicationContext(), ShoppingListActivity.class));
                         overridePendingTransition(0,0);
+                        finish();
                         return true;
 
                 }

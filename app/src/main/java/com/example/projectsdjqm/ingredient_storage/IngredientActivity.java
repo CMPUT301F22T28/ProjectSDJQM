@@ -77,26 +77,31 @@ public class IngredientActivity extends AppCompatActivity implements
                     case R.id.navigation_home:
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         overridePendingTransition(0,0);
+                        finish();
                         return true;
 
                     case R.id.navigation_ingredient_storage:
                         startActivity(new Intent(getApplicationContext(), IngredientActivity.class));
                         overridePendingTransition(0,0);
+                        finish();
                         return true;
 
                     case R.id.navigation_meal_plan:
                         startActivity(new Intent(getApplicationContext(), MealPlanActivity.class));
                         overridePendingTransition(0,0);
+                        finish();
                         return true;
 
                     case R.id.navigation_recipe_list:
                         startActivity(new Intent(getApplicationContext(), RecipeListActivity.class));
                         overridePendingTransition(0,0);
+                        finish();
                         return true;
 
                     case R.id.navigation_shopping_list:
                         startActivity(new Intent(getApplicationContext(), ShoppingListActivity.class));
                         overridePendingTransition(0,0);
+                        finish();
                         return true;
                 }
                 return false;
@@ -177,13 +182,13 @@ public class IngredientActivity extends AppCompatActivity implements
         ingredientlist.remove(position);
         ingredientAdapter.notifyDataSetChanged();
         collectionReference
-                .document(String.valueOf(selectedIngredient))
+                .document(selectedIngredient.getIngredientDescription())
                 .delete();
     }
 
     @Override
     public void onOkPressedAdd(Ingredient newIngredient) {
-        //db = FirebaseFirestore.getInstance();
+
         final CollectionReference collectionReference = db.collection("Ingredients");
         final String ingredientDesc = newIngredient.getIngredientDescription().toString();
         final String ingredientCate = newIngredient.getIngredientCategory().toString();

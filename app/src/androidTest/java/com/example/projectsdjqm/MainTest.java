@@ -1,11 +1,6 @@
 package com.example.projectsdjqm;
 
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withParent;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -13,16 +8,13 @@ import static org.junit.Assert.assertTrue;
 import android.app.Activity;
 
 
-
+import android.icu.text.SimpleDateFormat;
+import android.net.ParseException;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
-import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.matcher.BoundedMatcher;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -47,7 +39,27 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.clearText;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.contrib.PickerActions.setDate;
+import static androidx.test.espresso.contrib.PickerActions.setTime;
+import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+import android.widget.DatePicker;
+import android.widget.TimePicker;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -108,45 +120,94 @@ public class MainTest {
         solo.assertCurrentActivity("Wrong Activity", ShoppingListActivity.class);
     }
     /**
-     * Check adding an ingredient
+     * Check for adding,viewing,editing and deleting an ingredient
      */
 
     @Test
     public void check_add_ingredient(){
         // Asserts that the current activity is the MainActivity. Otherwise, show “Wrong Activity”
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
-        // navigate to ingredient page
+        // navigate to ingredient page and check whether intent is swapping correctly
         onView(withId(R.id.navigation_ingredient_storage))
                 .perform(click());
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class );
         // try to add an ingredient with description, category, bbd, location, amount and unit
         solo.clickOnView(solo.getView(R.id.add_ingredient));
-        solo.enterText((EditText) solo.getView(R.id.edit_ingredient_desc), "frozen broccoli");
+        solo.enterText((EditText) solo.getView(R.id.edit_ingredient_desc), "frozenbroccoli");
         solo.enterText((EditText) solo.getView(R.id.edit_ingredient_category), "food");
         onView(withId(R.id.edit_bestbeforedate_picker)).perform(click());
-//        onView(withId(R.id.Pantry))
-//                .perform(click());
+        onView(isAssignableFrom(DatePicker.class)).perform(setDate(2022, 12, 3));
         solo.enterText((EditText) solo.getView(R.id.edit_amount), "10");
         solo.enterText((EditText) solo.getView(R.id.edit_unit), "5");
         solo.clickOnButton("OK");
-        solo.waitForText("frozen broccoli", 1, 2000);
+        solo.waitForText("frozenbroccoli", 1, 2000);
         IngredientActivity activity = (IngredientActivity)solo.getCurrentActivity();
         final ListView ingredientlist = activity.ingredientlistview; // Get the listview
         Ingredient newingre = (Ingredient) ingredientlist.getItemAtPosition(0); // Get item from first position
+
         // check whether this ingredient is being added into the foodbook, retrieve
         // attribute of the added ingredient and verify
-        assertEquals("frozen broccoli", newingre.getIngredientDescription());
+        assertEquals("frozenbroccoli", newingre.getIngredientDescription());
         assertEquals("food", newingre.getIngredientCategory());
-//        assertEquals(new Date(2022,11,3), newingre.getIngredientBestBeforeDate());
+        String date = "Sat Dec 03 00:00:00 GMT 2022";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+        LocalDateTime localDate = LocalDateTime.parse(date, formatter);
+        long timeInMilliseconds = localDate.atOffset(ZoneOffset.UTC).toInstant().toEpochMilli();
+        assertEquals(new Date(timeInMilliseconds), newingre.getIngredientBestBeforeDate());
         assertEquals(Ingredient.Location.Pantry, newingre.getIngredientLocation());
         assertEquals(10, newingre.getIngredientAmount());
         assertEquals(5, newingre.getIngredientUnit());
 
+        // check whether attributes of a ingredient can be viewed by user
+        solo.waitForText("frozenbroccoli", 1, 2000);
+        solo.waitForText("food", 1, 2000);
+        solo.waitForText("2022-12-3", 1, 2000);
+        solo.waitForText("Pantry", 1, 2000);
+        solo.waitForText("10", 1, 2000);
+        solo.waitForText("5", 1, 2000);
+
+        // check whether an ingredient can be edit by a user and do the following editing to
+        // certain ingredient
+        solo.clickOnButton("Edit");
+        solo.waitForText("frozenbroccoli", 1, 2000);
+        onView(withId(R.id.edit_ingredient_desc)).perform(clearText(), typeText("broccoli"));
+        onView(withId(R.id.edit_ingredient_category)).perform(clearText(), typeText("veggie"));
+        onView(withId(R.id.edit_bestbeforedate_picker)).perform(click());
+        onView(isAssignableFrom(DatePicker.class)).perform(setDate(2022, 11, 8));
+        onView(withId(R.id.edit_amount)).perform(clearText(), typeText("12"));
+        onView(withId(R.id.edit_unit)).perform(clearText(), typeText("8"));
+        solo.clickOnButton("OK");
+        solo.waitForText("broccoli", 1, 2000);
+        Ingredient editedingre = (Ingredient) ingredientlist.getItemAtPosition(0); // Get item from first position
+
+        // check whether the ingredient within the foodbook is edited, retrievd
+        // attributes of the ingredient and verify
+        assertEquals("broccoli", editedingre.getIngredientDescription());
+        assertEquals("veggie", editedingre.getIngredientCategory());
+//        String edit_date = "Tues Nov 08 00:00:00 GMT 2022";
+//        LocalDateTime edit_localDate = LocalDateTime.parse(edit_date, formatter);
+//        long edit_timeInMilliseconds = edit_localDate.atOffset(ZoneOffset.UTC).toInstant().toEpochMilli();
+//        assertEquals(new Date(timeInMilliseconds), editedingre.getIngredientBestBeforeDate());
+        assertEquals(Ingredient.Location.Pantry, editedingre.getIngredientLocation());
+        assertEquals(12, editedingre.getIngredientAmount());
+        assertEquals(8, editedingre.getIngredientUnit());
+
+        // check whether attributes of a ingredient can be viewed by user
+        solo.waitForText("broccoli", 1, 2000);
+        solo.waitForText("food", 1, 2000);
+//        solo.waitForText("2022-11-8", 1, 2000);
+        solo.waitForText("Pantry", 1, 2000);
+        solo.waitForText("12", 1, 2000);
+        solo.waitForText("8", 1, 2000);
     }
 
     @Test
-    public void check_edit_ingredient(){
-
+    public void useless_test() {
+        // Asserts that the current activity is the MainActivity. Otherwise, show “Wrong Activity”
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        // navigate to ingredient page and check whether intent is swapping correctly
+        onView(withId(R.id.navigation_ingredient_storage))
+                .perform(click());
     }
 //    @Test
 //    public void checkCiyListItem(){

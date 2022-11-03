@@ -52,7 +52,7 @@ public class IngredientActivity extends AppCompatActivity implements
     FirebaseFirestore db;
 
     Spinner spinner;
-    ListView ingredientlistview;
+    public ListView ingredientlistview;
     IngredientList ingredientAdapter;
     ArrayList<Ingredient> ingredientlist;
 
@@ -111,9 +111,9 @@ public class IngredientActivity extends AppCompatActivity implements
         ingredientlistview = findViewById(R.id.ingredient_list);
 
         ingredientlist = new ArrayList<>();
-        ingredientlist.add(new Ingredient("egg",new Date(),Ingredient.Location.Pantry,3,2,"back"));
-        ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
-        ingredientlist.add(new Ingredient("ccc",new Date(2023,5,3),Ingredient.Location.Freezer,5,4,"ccc"));
+//        ingredientlist.add(new Ingredient("egg",new Date(),Ingredient.Location.Pantry,3,2,"back"));
+//        ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
+//        ingredientlist.add(new Ingredient("ccc",new Date(2023,5,3),Ingredient.Location.Freezer,5,4,"ccc"));
         ingredientAdapter = new IngredientList(this, ingredientlist);
         ingredientAdapter.setIngredientButtonListener(this);
         ingredientlistview.setAdapter(ingredientAdapter);

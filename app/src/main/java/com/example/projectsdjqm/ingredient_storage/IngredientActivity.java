@@ -128,7 +128,7 @@ public class IngredientActivity extends AppCompatActivity implements
                     String Category = (String) doc.getData().get("Category");
                     //ingredientlist.add(new Ingredient(desc, BBD,Location,Amt,Unit,Category));
                 }
-                ingredientAdapter.notifyDataSetChanged();
+                ingredientAdapter.notifyDataSetChanged(); 
             }
 
         });

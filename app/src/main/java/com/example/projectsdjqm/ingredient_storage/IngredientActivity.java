@@ -46,10 +46,16 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 
+/**
+ * IngredientActivity:
+ * The main page of the ingredient storage feature.
+ * Grants access to other types of ingredient storage functions
+ */
 public class IngredientActivity extends AppCompatActivity implements
         IngredientFragment.OnFragmentInteractionListener,
         IngredientList.IngredientButtonListener {
-
+    
+    // all init
     BottomNavigationView bottomNavigationView;
     FirebaseFirestore db;
     final String TAG = "Ingredient Activity";
@@ -59,6 +65,7 @@ public class IngredientActivity extends AppCompatActivity implements
     public ArrayList<Ingredient> ingredientlist;
     Ingredient selectedIngredient;
 
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -217,6 +224,7 @@ public class IngredientActivity extends AppCompatActivity implements
                 .delete();
     }
 
+    // perform add click
     @Override
     public void onOkPressedAdd(Ingredient newIngredient) {
 
@@ -250,6 +258,7 @@ public class IngredientActivity extends AppCompatActivity implements
 
     }
 
+    // perform edit click
     @Override
     public void onOkPressedEdit(Ingredient ingredient,
                                 String description,
@@ -268,10 +277,7 @@ public class IngredientActivity extends AppCompatActivity implements
 
     }
 
-    /*
-     sort list by a certain type: description, category,
-     best before date, location
-     */
+    // sort list by a certain type: description, category, best before date, location
     public void sortIngredientList(ArrayList<Ingredient> list, String sorting_type) {
         IngredientList adapter;
         switch (sorting_type) {

@@ -29,6 +29,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+/**
+ * IngredientFragment:
+ * Fragment of the ingredient storage
+ */
 public class IngredientFragment extends DialogFragment {
     public interface OnFragmentInteractionListener {
         void onOkPressedAdd(Ingredient newIngredient);
@@ -40,7 +44,8 @@ public class IngredientFragment extends DialogFragment {
                              int unit,
                              String category);
     }
-
+    
+    // attr init
     private EditText ingredientDescription;
     private DatePicker ingredientBestBeforeDate;
     private RadioGroup ingredientRadioGroup;
@@ -50,24 +55,24 @@ public class IngredientFragment extends DialogFragment {
     private EditText ingredientAmount;
     private EditText ingredientUnit;
     private EditText ingredientCategory;
-
     private Ingredient ingredient;
     private Boolean isEdit = false;
 
     private OnFragmentInteractionListener listener;
 
-    /* Constructor for editing */
+    // Constructor for editing
     public IngredientFragment(Ingredient ingredient) {
         super();
         this.ingredient = ingredient;
         this.isEdit = true;
     }
 
-    /* Default constructor */
+    // Default constructor
     public IngredientFragment() {
         super();
     }
 
+    // fragment listener
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -135,7 +140,7 @@ public class IngredientFragment extends DialogFragment {
         return alertDialog;
     }
 
-    /* Custom listener class to prevent dialog from closing if input is invalid */
+    // Custom listener class to prevent dialog from closing if input is invalid
     class CustomListener implements View.OnClickListener {
         private final Dialog dialog;
 
@@ -242,6 +247,9 @@ public class IngredientFragment extends DialogFragment {
 
                 dialog.dismiss();
             }
+            
         }
+        
     }
+    
 }

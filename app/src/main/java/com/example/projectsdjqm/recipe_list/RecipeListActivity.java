@@ -2,7 +2,7 @@
  * RecipeListActivity
  * @version 1.2
  * @author Muchen Li & Defrim Binakaj @ Qingya Ye
- * @date Oct 30, 2022
+ * @date Nov 3, 2022
  */
 package com.example.projectsdjqm.recipe_list;
 
@@ -238,12 +238,41 @@ public class RecipeListActivity extends AppCompatActivity
                          String comments,
                          Drawable photo,
                          ArrayList<Ingredient> list) {
+        String oldTitle = recipe.getTitle();
         recipe.setTitle(title);
         recipe.setPreparationTime(preparationTime);
         recipe.setRecipeCategory(category);
         recipe.setComments(comments);
         recipe.setNumberofServings(servingNumber);
         recipe.setListofIngredients(list);
+        final CollectionReference collectionReference = db.collection("Recipes");
+        final String recipePrepTime = recipe.getPreparationTime();
+        final int recipeSerNum = recipe.getNumberofServings();
+        final String recipeCate = recipe.getRecipeCategory();
+        final String recipeComm = recipe.getComments();
+        final ArrayList<Ingredient> recipeIng = recipe.getListofIngredients();
+
+        HashMap<String, Object> data = new HashMap<>();
+
+        data.put("Preparation Time", recipePrepTime);
+        data.put("Serving Number", recipeSerNum);
+        data.put("Category", recipeCate);
+        data.put("Comments", recipeComm);
+        //data.put("Photo", recipePhoto);
+        data.put("Ingredient List",recipeIng);
+
+        if (title == oldTitle) {
+            collectionReference
+                    .document(title)
+                    .update(data);
+        } else {
+            collectionReference
+                    .document(oldTitle)
+                    .delete();
+            collectionReference
+                    .document(title)
+                    .set(data);
+        }
         recipeAdapter.notifyDataSetChanged();
     };
 

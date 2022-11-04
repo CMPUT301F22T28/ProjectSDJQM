@@ -166,24 +166,41 @@ public class IngredientActivity extends AppCompatActivity implements
                 {
                     Log.d(TAG, String.valueOf(doc.getData().get("Category")));
                     String description = doc.getId();
-                    int amount = (Integer) doc.getData().get("Amount");
+                    int amount = Integer.valueOf(doc.getData().get("Amount").toString());
 //                    String bbd = (String) doc.getData().get("Best Before Date");
                     String category = (String) doc.getData().get("Category");
-//                    String province = (String) doc.getData().get("Province Name");
+                    String location_str = String.valueOf(doc.getData().get("Location"));
+                    Ingredient.Location location;
+                    switch (location_str) {
+                        case "Fridge":
+                            location = Ingredient.Location.Fridge;
+                            break;
+                        case "Freezer":
+                            location = Ingredient.Location.Freezer;
+                            break;
+                        default:
+                            location = Ingredient.Location.Pantry;
+                    }
+//                    if (location_str == "Pantry") {
+//                        location = Ingredient.Location.Pantry;
+//                    } else if (location_str == "Freezer") {
+//                        location = Ingredient.Location.Freezer;
+//                    } else {
+//                        location = Ingredient.Location.Fridge;
+//                    }
 //                    Ingredient.Location location = (Ingredient.Location) doc.getData().get("Location");
-//                    int unit = (Integer) doc.getData().get("Unit");
+                    int unit = Integer.valueOf(doc.getData().get("Unit").toString());
+
                     ingredientlist.add(new Ingredient(
                             description,
                             new Date(),
-                            Ingredient.Location.Pantry,
-                            3,
-                            3,
+                            location,
+                            amount,
+                            unit,
                             category));
 
-//                    ingredientlist.add(new (city, province)); // Adding the cities and provinces from FireStore
                 }
                 ingredientAdapter.notifyDataSetChanged();
-//                cityAdapter.notifyDataSetChanged();
             }
         });
 

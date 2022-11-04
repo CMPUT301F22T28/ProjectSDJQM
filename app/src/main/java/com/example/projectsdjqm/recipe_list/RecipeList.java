@@ -1,3 +1,8 @@
+/**
+ * RecipeList
+ * @version 1
+ * @author Qingya Ye
+ */
 package com.example.projectsdjqm.recipe_list;
 
 import android.content.Context;

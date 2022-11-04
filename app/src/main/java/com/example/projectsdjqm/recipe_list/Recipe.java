@@ -1,11 +1,9 @@
 /**
- *  Classname: Food
- *
- *  Version information: version 1
- *
- *  Date: 2022/09/23
- *
- *  Copyright notice: All rights reserved, used by permission of Muchen Li.
+ * Recipe
+ * Based on project problem description
+ * @version 1.1
+ * @author Qingya Ye
+ * @date Nov 1, 2022
  */
 
 package com.example.projectsdjqm.recipe_list;

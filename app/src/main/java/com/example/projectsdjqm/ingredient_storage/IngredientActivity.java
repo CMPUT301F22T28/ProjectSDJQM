@@ -1,7 +1,7 @@
 /**
  * IngredientActivity
  * @version 1.2
- * @author Muchen Li & Defrim Binakaj
+ * @author Muchen Li & Defrim Binakaj & Qingya Ye
  * @date Oct 30, 2022
  */
 package com.example.projectsdjqm.ingredient_storage;
@@ -56,7 +56,7 @@ public class IngredientActivity extends AppCompatActivity implements
     Spinner spinner;
     public ListView ingredientlistview;
     public IngredientList ingredientAdapter;
-    ArrayList<Ingredient> ingredientlist;
+    public ArrayList<Ingredient> ingredientlist;
     Ingredient selectedIngredient;
 
     @Override
@@ -167,7 +167,8 @@ public class IngredientActivity extends AppCompatActivity implements
                     Log.d(TAG, String.valueOf(doc.getData().get("Category")));
                     String description = doc.getId();
                     int amount = Integer.valueOf(doc.getData().get("Amount").toString());
-//                    String bbd = (String) doc.getData().get("Best Before Date");
+                    Timestamp bbd = (Timestamp) doc.getData().get("Best Before Date");
+                    Date bestbeforedate = bbd.toDate();
                     String category = (String) doc.getData().get("Category");
                     String location_str = String.valueOf(doc.getData().get("Location"));
                     Ingredient.Location location;
@@ -181,24 +182,15 @@ public class IngredientActivity extends AppCompatActivity implements
                         default:
                             location = Ingredient.Location.Pantry;
                     }
-//                    if (location_str == "Pantry") {
-//                        location = Ingredient.Location.Pantry;
-//                    } else if (location_str == "Freezer") {
-//                        location = Ingredient.Location.Freezer;
-//                    } else {
-//                        location = Ingredient.Location.Fridge;
-//                    }
-//                    Ingredient.Location location = (Ingredient.Location) doc.getData().get("Location");
                     int unit = Integer.valueOf(doc.getData().get("Unit").toString());
 
                     ingredientlist.add(new Ingredient(
                             description,
-                            new Date(),
+                            bestbeforedate,
                             location,
                             amount,
                             unit,
                             category));
-
                 }
                 ingredientAdapter.notifyDataSetChanged();
             }

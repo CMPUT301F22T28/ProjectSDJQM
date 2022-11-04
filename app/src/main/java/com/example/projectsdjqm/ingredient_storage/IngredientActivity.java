@@ -227,6 +227,8 @@ public class IngredientActivity extends AppCompatActivity implements
         ingredient.setIngredientAmount(amount);
         ingredient.setIngredientUnit(unit);
         ingredient.setIngredientCategory(category);
+        ingredientAdapter.notifyDataSetChanged();
+
     }
 
     /*

@@ -57,7 +57,7 @@ public class IngredientActivity extends AppCompatActivity implements
     final String TAG = "Ingredient Activity";
     Spinner spinner;
     public ListView ingredientlistview;
-    IngredientList ingredientAdapter;
+    public IngredientList ingredientAdapter;
     ArrayList<Ingredient> ingredientlist;
     Ingredient selectedIngredient;
 
@@ -156,6 +156,36 @@ public class IngredientActivity extends AppCompatActivity implements
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
+
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                    FirebaseFirestoreException error) {
+                ingredientlist.clear();
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+                {
+                    Log.d(TAG, String.valueOf(doc.getData().get("Category")));
+                    String description = doc.getId();
+                    int amount = (Integer) doc.getData().get("Amount");
+//                    String bbd = (String) doc.getData().get("Best Before Date");
+                    String category = (String) doc.getData().get("Category");
+//                    String province = (String) doc.getData().get("Province Name");
+//                    Ingredient.Location location = (Ingredient.Location) doc.getData().get("Location");
+//                    int unit = (Integer) doc.getData().get("Unit");
+                    ingredientlist.add(new Ingredient(
+                            description,
+                            new Date(),
+                            Ingredient.Location.Pantry,
+                            3,
+                            3,
+                            category));
+
+//                    ingredientlist.add(new (city, province)); // Adding the cities and provinces from FireStore
+                }
+                ingredientAdapter.notifyDataSetChanged();
+//                cityAdapter.notifyDataSetChanged();
             }
         });
 

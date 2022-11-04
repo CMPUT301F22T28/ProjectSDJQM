@@ -5,7 +5,10 @@ import com.example.projectsdjqm.recipe_list.Recipe;
 
 import java.util.ArrayList;
 
-// mealplan class
+/**
+ * Mealplan:
+ * mealplan class
+ */
 public class Mealplan {
     /*
      *  Each Mealplan entry has the following fields:
@@ -14,30 +17,32 @@ public class Mealplan {
      */
 
 
+    // attr init
     private ArrayList<Recipe> recipeList;
     private ArrayList<Ingredient> ingredientList;
 
 
+    // mealplan constructor
     public Mealplan (ArrayList<Recipe> recipeList,
                      ArrayList<Ingredient> ingredientList) {
         this.recipeList = recipeList;
         this.ingredientList = ingredientList;
     }
 
-    // recipe getter
+    // getter (recipe)
     public ArrayList<Recipe> getRecipeList() {
         return recipeList;
     }
-    // recipe setter
+    // setter (recipe)
     public void setRecipeList(ArrayList<Recipe> recipeList) {
         this.recipeList = recipeList;
     }
 
-    // ingredient getter
+    // getter (ingredient)
     public ArrayList<Ingredient> getIngredientList() {
         return ingredientList;
     }
-    // ingredient setter
+    // setter (ingredient)
     public void setIngredientList(ArrayList<Ingredient> ingredientList) {
         this.ingredientList = ingredientList;
     }

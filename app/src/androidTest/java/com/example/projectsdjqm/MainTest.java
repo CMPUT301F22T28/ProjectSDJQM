@@ -1,6 +1,9 @@
 package com.example.projectsdjqm;
 
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -47,6 +50,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -58,6 +62,7 @@ import static androidx.test.espresso.contrib.PickerActions.setTime;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import android.widget.DatePicker;
@@ -326,6 +331,52 @@ public class MainTest {
         solo.waitForText("Pantry", 1, 2000);
         solo.waitForText("7", 1, 2000);
         solo.waitForText("3", 1, 2000);
+
+        // start to apply sorting techniques by click on the spinner on the top right corner
+        onView(withId(R.id.spinner)).perform(click());
+        // perform sorting by description
+        onData(allOf(is(instanceOf(String.class)), is("description"))).perform(click());
+        // check whether such type is selected
+        onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("description"))));
+        int index_first, index_second, index_third;
+        index_first = list_ingre.indexOf(first_ingre);
+        index_second = list_ingre.indexOf(second_ingre);
+        index_third = list_ingre.indexOf(third_ingre);
+        solo.waitForText("apple", 1, 2000);
+        assertTrue(index_third < index_second);
+        assertTrue(index_second < index_first);
+        // perform sorting by category
+        onView(withId(R.id.spinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("category"))).perform(click());
+        // check whether such type is selected
+        onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("category"))));
+        index_first = list_ingre.indexOf(first_ingre);
+        index_second = list_ingre.indexOf(second_ingre);
+        index_third = list_ingre.indexOf(third_ingre);
+        solo.waitForText("apple", 1, 2000);
+        assertTrue(index_first < index_third);
+        assertTrue(index_third < index_second);
+        // perform sorting by location
+        onView(withId(R.id.spinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("location"))).perform(click());
+        // check whether such type is selected
+        onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("location"))));
+        index_first = list_ingre.indexOf(first_ingre);
+        index_second = list_ingre.indexOf(second_ingre);
+        index_third = list_ingre.indexOf(third_ingre);
+        solo.waitForText("apple", 1, 2000);
+        assertTrue(index_first < index_third);
+        // perform sorting by bbd
+        onView(withId(R.id.spinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("bbd"))).perform(click());
+        // check whether such type is selected
+        onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("bbd"))));
+        index_first = list_ingre.indexOf(first_ingre);
+        index_second = list_ingre.indexOf(second_ingre);
+        index_third = list_ingre.indexOf(third_ingre);
+        solo.waitForText("apple", 1, 2000);
+        assertTrue(index_third < index_first);
+        assertTrue(index_first < index_second);
 
 
     }

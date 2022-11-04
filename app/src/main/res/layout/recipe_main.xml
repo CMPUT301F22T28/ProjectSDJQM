@@ -19,13 +19,12 @@
         app:menu="@menu/bottom_nav_menu" />
 
     <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp">
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="20dp">
 
 
         <ListView
@@ -33,24 +32,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_weight="1.9">
-        </ListView>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_recipe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight=".2"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_gravity="right"
-            android:contentDescription="Add Ingredient"
-            android:minWidth="30dp"
-            android:minHeight="30dp"
-            app:srcCompat="@android:drawable/ic_input_add" />
+            android:layout_weight="1.9"></ListView>
 
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_recipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_weight=".2"
+        android:clickable="true"
+        android:contentDescription="Add Ingredient"
+        android:focusable="true"
+        android:minWidth="30dp"
+        android:minHeight="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/nav_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_input_add" />
 </androidx.constraintlayout.widget.ConstraintLayout>

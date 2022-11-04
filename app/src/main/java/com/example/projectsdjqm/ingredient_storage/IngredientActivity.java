@@ -51,9 +51,7 @@ public class IngredientActivity extends AppCompatActivity implements
         IngredientList.IngredientButtonListener {
 
     BottomNavigationView bottomNavigationView;
-
     FirebaseFirestore db;
-
     final String TAG = "Ingredient Activity";
     Spinner spinner;
     public ListView ingredientlistview;

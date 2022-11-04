@@ -23,13 +23,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.navigation.NavigationBarView;
 
+
 /**
- * nav bar help:
- * // non-deprecated https://stackoverflow.com/questions/68021770/setonnavigationitemselectedlistener-deprecated
- * // vid https://www.youtube.com/watch?v=lOTIedfP1OA
+ * MainActivity
+ * Home screen of the entire application
  */
-
-
 public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
@@ -40,6 +38,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_main);
 
+        
+        
+        /**
+        * the following nav bar switch statement used to transition btw activities
+        * // non-deprecated https://stackoverflow.com/questions/68021770/setonnavigationitemselectedlistener-deprecated
+        * // vid https://www.youtube.com/watch?v=lOTIedfP1OA
+        */
         bottomNavigationView = findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
 

@@ -25,10 +25,13 @@ import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.meal_plan.MealPlanActivity;
 import com.example.projectsdjqm.recipe_list.RecipeListActivity;
 import com.example.projectsdjqm.shopping_list.ShoppingListActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -115,6 +118,21 @@ public class IngredientActivity extends AppCompatActivity implements
         ingredientAdapter.setIngredientButtonListener(this);
         ingredientlistview.setAdapter(ingredientAdapter);
 
+        db.collection("Ingredients")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
         // floating button for add Ingredient
         FloatingActionButton addIngredientButton = findViewById(R.id.add_ingredient);
         addIngredientButton.setOnClickListener(new View.OnClickListener() {
@@ -123,25 +141,6 @@ public class IngredientActivity extends AppCompatActivity implements
                 IngredientFragment addIngredientFragment = new IngredientFragment();
                 addIngredientFragment.show(getSupportFragmentManager(), "ADD_INGREDIENT");
             }
-        });
-
-
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                //ingredientlist.clear();
-                for (QueryDocumentSnapshot doc : value) {
-                    String desc = doc.getId();
-                    String BBD = (String) doc.getData().get("Best Before Date");
-                    String Amt = (String) doc.getData().get("Amount");
-                    String Location = (String) doc.getData().get("Location");
-                    String Unit = (String) doc.getData().get("Unit");
-                    String Category = (String) doc.getData().get("Category");
-                    //ingredientlist.add(new Ingredient(desc, BBD,Location,Amt,Unit,Category));
-                }
-                ingredientAdapter.notifyDataSetChanged(); 
-            }
-
         });
 
         // sort the ingredient list when a sorting method is selected
@@ -160,35 +159,6 @@ public class IngredientActivity extends AppCompatActivity implements
             }
         });
 
-    }
-
-    protected void onStart(){
-        super.onStart();
-        Log.d(TAG, "onStart");
-    }
-    protected void onRestart(){
-        super.onRestart();
-        Log.d(TAG, "onRestart");
-    }
-
-    protected void onPause(){
-        super.onPause();
-        Log.d(TAG, "onPause");
-    }
-
-    protected void onResume(){
-        super.onResume();
-        Log.d(TAG, "onResume");
-    }
-
-    protected void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop");
-    }
-
-    protected void onDestory() {
-        super.onDestroy();
-        Log.d(TAG,"onDestory");
     }
 
     // Edit button triggered
@@ -214,18 +184,18 @@ public class IngredientActivity extends AppCompatActivity implements
     public void onOkPressedAdd(Ingredient newIngredient) {
 
         final CollectionReference collectionReference = db.collection("Ingredients");
-        final String ingredientDesc = newIngredient.getIngredientDescription().toString();
-        final String ingredientCate = newIngredient.getIngredientCategory().toString();
-        final String ingredientBestBeforeDate = String.valueOf(newIngredient.getIngredientBestBeforeDate());
-        final String ingredientAmt = String.valueOf(newIngredient.getIngredientAmount());
-        final String ingredientUni = String.valueOf(newIngredient.getIngredientUnit());
-        final String ingredientLoc = newIngredient.getIngredientLocation().toString();
+        final String ingredientDesc = newIngredient.getIngredientDescription();
+        final String ingredientCate = newIngredient.getIngredientCategory();
+        final Date ingredientBestBeforeDate = newIngredient.getIngredientBestBeforeDate();
+        final int ingredientAmt = newIngredient.getIngredientAmount();
+        final int ingredientUni = newIngredient.getIngredientUnit();
+        final Ingredient.Location ingredientLoc = newIngredient.getIngredientLocation();
 
-        HashMap<String, String> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>();
 
-        data.put("Best Before Date", String.valueOf(ingredientBestBeforeDate));
-        data.put("Amount", String.valueOf(ingredientAmt));
-        data.put("Unit", String.valueOf(ingredientUni));
+        data.put("Best Before Date", ingredientBestBeforeDate);
+        data.put("Amount", ingredientAmt);
+        data.put("Unit", ingredientUni);
         data.put("Category", ingredientCate);
         data.put("Location", ingredientLoc);
 

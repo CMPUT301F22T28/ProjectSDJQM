@@ -40,7 +40,9 @@ public class RecipeList extends ArrayAdapter<Recipe> {
     }
     @NonNull
     @Override
-    public View getView(int position, @Nullable android.view.View view, @Nullable ViewGroup parent) {
+    public View getView(int position,
+                        @Nullable android.view.View view,
+                        @Nullable ViewGroup parent) {
 
         ViewHolder viewHolder;
 
@@ -70,8 +72,10 @@ public class RecipeList extends ArrayAdapter<Recipe> {
         TextView listOfIngredientsTextView = view.findViewById(R.id.recipe_ingredient_list);
 
         titleTextView.setText(recipe.getTitle());
-        preparationTimeTextView.setText(String.format("Preparation Time: %s",recipe.getPreparationTime()));
-        servingNumberTextView.setText(String.format("Serving Number: %s", recipe.getNumberofServings()));
+        preparationTimeTextView.setText(
+                String.format("Preparation Time(in mins): %s",recipe.getPreparationTime()));
+        servingNumberTextView.setText(
+                String.format("Serving Number: %s", recipe.getNumberofServings()));
         categoryTextView.setText(String.format("Category: %s", recipe.getRecipeCategory()));
         commentsTextView.setText(String.format("Comments:\n%s", recipe.getComments()));
         photographImageView.setImageDrawable(recipe.getPhotograph());

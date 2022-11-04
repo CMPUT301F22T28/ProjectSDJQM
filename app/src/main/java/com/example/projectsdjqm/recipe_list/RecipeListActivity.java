@@ -28,6 +28,7 @@ import com.example.projectsdjqm.ingredient_storage.IngredientList;
 import com.example.projectsdjqm.meal_plan.MealPlanActivity;
 import com.example.projectsdjqm.shopping_list.ShoppingListActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
 
 import org.checkerframework.checker.units.qual.A;
@@ -37,7 +38,8 @@ import java.util.Date;
 
 
 public class RecipeListActivity extends AppCompatActivity
-        implements RecipeList.RecipeButtonListener{
+        implements RecipeList.RecipeButtonListener,
+        RecipeFragment.OnFragmentInteractionListener{
 
     BottomNavigationView bottomNavigationView;
 
@@ -49,7 +51,7 @@ public class RecipeListActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recipe_main);
-        View view1 = LayoutInflater.from(this).inflate(R.layout.recipe_content, null);
+//        View view1 = LayoutInflater.from(this).inflate(R.layout.recipe_content, null);
 
         bottomNavigationView = findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_recipe_list);
@@ -102,16 +104,23 @@ public class RecipeListActivity extends AppCompatActivity
                 ingredientlist);
         recipeList.add(testa);
         recipeAdapter = new RecipeList(this, recipeList);
-//        recipeAdapter.setRecipeButtonListener(this);
+        recipeAdapter.setRecipeButtonListener(this);
         recipeListView.setAdapter(recipeAdapter);
 
+        final FloatingActionButton addButton = findViewById(R.id.add_recipe);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RecipeFragment addRecipeFragment = new RecipeFragment();
+                addRecipeFragment.show(getSupportFragmentManager(),"Add Recipe");
+            }
+        });
     }
 
     public void onEditRecipeClickListener(int position) {
         Recipe currentRecipe = recipeList.get(position);
-
-//        IngredientFragment addIngredientFragment = new IngredientFragment(currentIngredient);
-//        addIngredientFragment.show(getSupportFragmentManager(), "EDIT_INGREDIENT");
+        RecipeFragment addRecipeFragment = new RecipeFragment(currentRecipe);
+        addRecipeFragment.show(getSupportFragmentManager(), "Edit Ingredient");
     }
 
     // Delete button triggered
@@ -120,5 +129,25 @@ public class RecipeListActivity extends AppCompatActivity
         recipeAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onOkPressedAdd(Recipe recipe) {
+        recipeAdapter.add(recipe);
+    };
+    public void onOkPressedEdit(Recipe recipe,
+                         String title,
+                         String preparationTime,
+                         int servingNumber,
+                         String category,
+                         String comments,
+                         Drawable photo,
+                         ArrayList<Ingredient> list) {
+        recipe.setTitle(title);
+        recipe.setPreparationTime(preparationTime);
+        recipe.setRecipeCategory(category);
+        recipe.setComments(comments);
+        recipe.setNumberofServings(servingNumber);
+        recipe.setListofIngredients(list);
+        recipeAdapter.notifyDataSetChanged();
+    };
 
 }

@@ -55,8 +55,8 @@ public class IngredientActivity extends AppCompatActivity implements
     final String TAG = "Ingredient Activity";
     Spinner spinner;
     public ListView ingredientlistview;
-    IngredientList ingredientAdapter;
-    public ArrayList<Ingredient> ingredientlist;
+    public IngredientList ingredientAdapter;
+    ArrayList<Ingredient> ingredientlist;
     Ingredient selectedIngredient;
 
     @Override
@@ -154,6 +154,53 @@ public class IngredientActivity extends AppCompatActivity implements
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
+
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                    FirebaseFirestoreException error) {
+                ingredientlist.clear();
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+                {
+                    Log.d(TAG, String.valueOf(doc.getData().get("Category")));
+                    String description = doc.getId();
+                    int amount = Integer.valueOf(doc.getData().get("Amount").toString());
+//                    String bbd = (String) doc.getData().get("Best Before Date");
+                    String category = (String) doc.getData().get("Category");
+                    String location_str = String.valueOf(doc.getData().get("Location"));
+                    Ingredient.Location location;
+                    switch (location_str) {
+                        case "Fridge":
+                            location = Ingredient.Location.Fridge;
+                            break;
+                        case "Freezer":
+                            location = Ingredient.Location.Freezer;
+                            break;
+                        default:
+                            location = Ingredient.Location.Pantry;
+                    }
+//                    if (location_str == "Pantry") {
+//                        location = Ingredient.Location.Pantry;
+//                    } else if (location_str == "Freezer") {
+//                        location = Ingredient.Location.Freezer;
+//                    } else {
+//                        location = Ingredient.Location.Fridge;
+//                    }
+//                    Ingredient.Location location = (Ingredient.Location) doc.getData().get("Location");
+                    int unit = Integer.valueOf(doc.getData().get("Unit").toString());
+
+                    ingredientlist.add(new Ingredient(
+                            description,
+                            new Date(),
+                            location,
+                            amount,
+                            unit,
+                            category));
+
+                }
+                ingredientAdapter.notifyDataSetChanged();
             }
         });
 

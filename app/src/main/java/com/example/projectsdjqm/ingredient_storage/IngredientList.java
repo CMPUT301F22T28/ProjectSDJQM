@@ -31,11 +31,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-/* Create custom array adapter for Ingredient */
+// Create custom array adapter for Ingredient
 public class IngredientList extends ArrayAdapter<Ingredient> {
     private IngredientButtonListener ingredientButtonListener;
 
-    /* Interface for ingredient button lister*/
+    // Interface for ingredient button lister
     public interface IngredientButtonListener {
         void onEditIngredientClickListener(int position);
         void onDeleteIngredientClickListener(int position);
@@ -44,18 +44,19 @@ public class IngredientList extends ArrayAdapter<Ingredient> {
     private final ArrayList<Ingredient> ingredientList;
     private final Context context;
 
-    /* Constructor for IngredientList */
+    // Constructor for IngredientList
     public IngredientList(Context context, ArrayList<Ingredient> ingredientList) {
         super(context,0, ingredientList);
         this.context = context;
         this.ingredientList = ingredientList;
     }
 
-    /* Ingredient button listener */
+    // Ingredient button listener
     public void setIngredientButtonListener(IngredientButtonListener ingredientButtonListener) {
         this.ingredientButtonListener = ingredientButtonListener;
     }
 
+    // view manip
     @NonNull
     @Override
     public View getView(int position, @Nullable View view, @Nullable ViewGroup parent) {
@@ -75,38 +76,44 @@ public class IngredientList extends ArrayAdapter<Ingredient> {
             viewHolder = (ViewHolder) view.getTag();
         }
 
+        
         // Get ingredient at this position
         Ingredient ingredient = ingredientList.get(position);
 
+        
         // Get ingredient description
         TextView IngredientDescTextView = view.findViewById(R.id.ingredient_description);
         IngredientDescTextView.setText(ingredient.getIngredientDescription());
 
+        
         // Get ingredient best before date
         TextView IngredientBestBeforeTextView = view.findViewById(R.id.ingredient_bestbeforedate);
         IngredientBestBeforeTextView.setText(getBestBeforeDate(ingredient));
 
+        
         // Get ingredient location
         TextView IngredientLocationTextView = view.findViewById(R.id.ingredient_location);
         IngredientLocationTextView.setText(getLocation(ingredient));
 
+        
         // Get ingredient amount
         TextView IngredientAmountTextView = view.findViewById(R.id.ingredient_amount);
         IngredientAmountTextView.setText(getAmount(ingredient));
 
+        
         // Get ingredient unit
         TextView IngredientUnitTextView = view.findViewById(R.id.ingredient_unit);
         IngredientUnitTextView.setText(getUnit(ingredient));
 
+        
         // Get ingredient category
-
         TextView IngredientCategoryTextView = view.findViewById(R.id.ingredient_category);
         IngredientCategoryTextView.setText(getCategory(ingredient));
 
 
         // Edit and Delete buttons
         viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
-
+            
             @Override
             public void onClick(View view) {
                 if (ingredientButtonListener != null) {
@@ -126,9 +133,7 @@ public class IngredientList extends ArrayAdapter<Ingredient> {
         return view;
     }
 
-    /**
-     * Some cosmetics for the display
-     * */
+    // Some cosmetics for the display:
     private String getBestBeforeDate(Ingredient ingredient) {
         Date date = ingredient.getIngredientBestBeforeDate();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

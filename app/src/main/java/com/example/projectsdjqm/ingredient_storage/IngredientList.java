@@ -31,7 +31,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-// Create custom array adapter for Ingredient
+/**
+ * IngredientList:
+ * Custom array adapter for ingredient
+ */
 public class IngredientList extends ArrayAdapter<Ingredient> {
     private IngredientButtonListener ingredientButtonListener;
 

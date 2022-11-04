@@ -10,6 +10,10 @@ package com.example.projectsdjqm.ingredient_storage;
 
 import java.util.Date;
 
+/**
+ * Ingredient:
+ * ingredient class
+ */
 public class Ingredient {
     // Maximum Food Description is 30 characters
     public static final int MAX_LENGTH_NAME = 30;
@@ -72,6 +76,7 @@ public class Ingredient {
     public String getIngredientCategory() {return IngredientCategory;}
     
 
+    
     // setters
     public void setIngredientDescription(String ingredientDescription) {
         this.IngredientDescription = ingredientDescription;

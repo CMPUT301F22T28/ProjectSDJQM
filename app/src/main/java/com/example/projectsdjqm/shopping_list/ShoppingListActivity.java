@@ -28,8 +28,14 @@ import android.widget.ListView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 
-public class ShoppingListActivity extends AppCompatActivity {
 
+/**
+ * ShoppingListActivity:
+ * main page for shoppinglist
+ */
+public class ShoppingListActivity extends AppCompatActivity {
+    
+    // attr init
     BottomNavigationView bottomNavigationView;
 
 //    ArrayList<Ingredient> checkedIngredientList;
@@ -43,6 +49,7 @@ public class ShoppingListActivity extends AppCompatActivity {
         setContentView(R.layout.shoppinglist_main);
 
 
+        // bottom nav
         bottomNavigationView = findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_shopping_list);
 
@@ -80,7 +87,9 @@ public class ShoppingListActivity extends AppCompatActivity {
                 return false;
             }
         });
-/*
+
+        // possible future code
+        /*
         shoppingListView = findViewById(R.id.shopping_list);
 
         shoppingCartList = new ArrayList<>();

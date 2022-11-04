@@ -42,6 +42,7 @@ import org.junit.runner.RunWith;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -49,6 +50,7 @@ import java.util.Locale;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.PickerActions.setDate;
@@ -119,12 +121,13 @@ public class MainTest {
                 .perform(click());
         solo.assertCurrentActivity("Wrong Activity", ShoppingListActivity.class);
     }
+
     /**
      * Check for adding,viewing,editing and deleting an ingredient
      */
 
     @Test
-    public void check_add_ingredient(){
+    public void check_modify_ingredient(){
         // Asserts that the current activity is the MainActivity. Otherwise, show “Wrong Activity”
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
         // navigate to ingredient page and check whether intent is swapping correctly
@@ -137,6 +140,7 @@ public class MainTest {
         solo.enterText((EditText) solo.getView(R.id.edit_ingredient_category), "food");
         onView(withId(R.id.edit_bestbeforedate_picker)).perform(click());
         onView(isAssignableFrom(DatePicker.class)).perform(setDate(2022, 12, 3));
+        onView(withId(R.id.Freezer)).perform(scrollTo(),click());
         solo.enterText((EditText) solo.getView(R.id.edit_amount), "10");
         solo.enterText((EditText) solo.getView(R.id.edit_unit), "5");
         solo.clickOnButton("OK");
@@ -154,7 +158,7 @@ public class MainTest {
         LocalDateTime localDate = LocalDateTime.parse(date, formatter);
         long timeInMilliseconds = localDate.atOffset(ZoneOffset.UTC).toInstant().toEpochMilli();
         assertEquals(new Date(timeInMilliseconds), newingre.getIngredientBestBeforeDate());
-        assertEquals(Ingredient.Location.Pantry, newingre.getIngredientLocation());
+        assertEquals(Ingredient.Location.Freezer, newingre.getIngredientLocation());
         assertEquals(10, newingre.getIngredientAmount());
         assertEquals(5, newingre.getIngredientUnit());
 
@@ -162,20 +166,21 @@ public class MainTest {
         solo.waitForText("frozenbroccoli", 1, 2000);
         solo.waitForText("food", 1, 2000);
         solo.waitForText("2022-12-3", 1, 2000);
-        solo.waitForText("Pantry", 1, 2000);
+        solo.waitForText("Freezer", 1, 2000);
         solo.waitForText("10", 1, 2000);
         solo.waitForText("5", 1, 2000);
 
-        // check whether an ingredient can be edit by a user and do the following editing to
+        // check whether an ingredient can be edit by a user and do the following changes to
         // certain ingredient
         solo.clickOnButton("Edit");
         solo.waitForText("frozenbroccoli", 1, 2000);
         onView(withId(R.id.edit_ingredient_desc)).perform(clearText(), typeText("broccoli"));
         onView(withId(R.id.edit_ingredient_category)).perform(clearText(), typeText("veggie"));
-        onView(withId(R.id.edit_bestbeforedate_picker)).perform(click());
+        onView(withId(R.id.edit_bestbeforedate_picker)).perform(scrollTo(),click());
         onView(isAssignableFrom(DatePicker.class)).perform(setDate(2022, 11, 8));
-        onView(withId(R.id.edit_amount)).perform(clearText(), typeText("12"));
-        onView(withId(R.id.edit_unit)).perform(clearText(), typeText("8"));
+        onView(withId(R.id.Pantry)).perform(scrollTo(),click());
+        onView(withId(R.id.edit_amount)).perform(scrollTo(),clearText(), typeText("12"));
+        onView(withId(R.id.edit_unit)).perform(scrollTo(),clearText(), typeText("8"));
         solo.clickOnButton("OK");
         solo.waitForText("broccoli", 1, 2000);
         Ingredient editedingre = (Ingredient) ingredientlist.getItemAtPosition(0); // Get item from first position
@@ -184,10 +189,10 @@ public class MainTest {
         // attributes of the ingredient and verify
         assertEquals("broccoli", editedingre.getIngredientDescription());
         assertEquals("veggie", editedingre.getIngredientCategory());
-//        String edit_date = "Tues Nov 08 00:00:00 GMT 2022";
-//        LocalDateTime edit_localDate = LocalDateTime.parse(edit_date, formatter);
-//        long edit_timeInMilliseconds = edit_localDate.atOffset(ZoneOffset.UTC).toInstant().toEpochMilli();
-//        assertEquals(new Date(timeInMilliseconds), editedingre.getIngredientBestBeforeDate());
+        String edit_date = "Tue Nov 08 00:00:00 GMT 2022";
+        LocalDateTime edit_localDate = LocalDateTime.parse(edit_date, formatter);
+        long edit_timeInMilliseconds = edit_localDate.atOffset(ZoneOffset.UTC).toInstant().toEpochMilli();
+        assertEquals(new Date(edit_timeInMilliseconds), editedingre.getIngredientBestBeforeDate());
         assertEquals(Ingredient.Location.Pantry, editedingre.getIngredientLocation());
         assertEquals(12, editedingre.getIngredientAmount());
         assertEquals(8, editedingre.getIngredientUnit());
@@ -195,12 +200,140 @@ public class MainTest {
         // check whether attributes of a ingredient can be viewed by user
         solo.waitForText("broccoli", 1, 2000);
         solo.waitForText("food", 1, 2000);
-//        solo.waitForText("2022-11-8", 1, 2000);
+        solo.waitForText("2022-11-8", 1, 2000);
         solo.waitForText("Pantry", 1, 2000);
         solo.waitForText("12", 1, 2000);
         solo.waitForText("8", 1, 2000);
+
+        // delete this ingredient and check for validity
+        onView(withId(R.id.delete_button)).perform(click());
+        assertFalse(solo.searchText("broccoli"));
+        assertFalse(solo.searchText("food"));
+        assertFalse(solo.searchText("2022-11-8"));
+        assertFalse(solo.searchText("Pantry"));
+        assertFalse(solo.searchText("12"));
+        assertFalse(solo.searchText("8"));
+        solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class );
     }
 
+    /**
+     * Check for adding a list of ingredients and sort them based
+     * on different sorting technique
+     */
+
+    @Test
+    public void check_lists_and_sorting(){
+        // Asserts that the current activity is the MainActivity. Otherwise, show “Wrong Activity”
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        // navigate to ingredient page and check whether intent is swapping correctly
+        onView(withId(R.id.navigation_ingredient_storage))
+                .perform(click());
+        solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class );
+
+        // try to add the first ingredient with description, category, bbd, location, amount and unit
+        solo.clickOnView(solo.getView(R.id.add_ingredient));
+        solo.enterText((EditText) solo.getView(R.id.edit_ingredient_desc), "frozenbroccoli");
+        solo.enterText((EditText) solo.getView(R.id.edit_ingredient_category), "food");
+        onView(withId(R.id.edit_bestbeforedate_picker)).perform(click());
+        onView(isAssignableFrom(DatePicker.class)).perform(setDate(2022, 12, 3));
+        onView(withId(R.id.Freezer)).perform(scrollTo(),click());
+        solo.enterText((EditText) solo.getView(R.id.edit_amount), "10");
+        solo.enterText((EditText) solo.getView(R.id.edit_unit), "5");
+        solo.clickOnButton("OK");
+        // Details of the second ingredient
+        solo.clickOnView(solo.getView(R.id.add_ingredient));
+        solo.enterText((EditText) solo.getView(R.id.edit_ingredient_desc), "chickenthigh");
+        solo.enterText((EditText) solo.getView(R.id.edit_ingredient_category), "meat");
+        onView(withId(R.id.edit_bestbeforedate_picker)).perform(click());
+        onView(isAssignableFrom(DatePicker.class)).perform(setDate(2022, 12, 15));
+        onView(withId(R.id.Freezer)).perform(scrollTo(),click());
+        solo.enterText((EditText) solo.getView(R.id.edit_amount), "20");
+        solo.enterText((EditText) solo.getView(R.id.edit_unit), "7");
+        solo.clickOnButton("OK");
+        // Details of the third ingredient
+        solo.clickOnView(solo.getView(R.id.add_ingredient));
+        solo.enterText((EditText) solo.getView(R.id.edit_ingredient_desc), "apple");
+        solo.enterText((EditText) solo.getView(R.id.edit_ingredient_category), "fruits");
+        onView(withId(R.id.edit_bestbeforedate_picker)).perform(click());
+        onView(isAssignableFrom(DatePicker.class)).perform(setDate(2022, 11, 15));
+        onView(withId(R.id.Pantry)).perform(scrollTo(),click());
+        solo.enterText((EditText) solo.getView(R.id.edit_amount), "7");
+        solo.enterText((EditText) solo.getView(R.id.edit_unit), "3");
+        solo.clickOnButton("OK");
+        solo.waitForText("apple", 1, 2000);
+
+        // check whether this ingredient is being added into the foodbook, retrieve
+        // attribute of each added ingredient and verify
+        // first ingredient
+        IngredientActivity activity = (IngredientActivity)solo.getCurrentActivity();
+        final ListView ingredientlist = activity.ingredientlistview; // Get the listview
+        Ingredient first_ingre = (Ingredient) ingredientlist.getItemAtPosition(0); // Get item from first position
+        assertEquals("frozenbroccoli", first_ingre.getIngredientDescription());
+        assertEquals("food", first_ingre.getIngredientCategory());
+        String date = "Sat Dec 03 00:00:00 GMT 2022";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+        LocalDateTime localDate = LocalDateTime.parse(date, formatter);
+        long timeInMilliseconds = localDate.atOffset(ZoneOffset.UTC).toInstant().toEpochMilli();
+        assertEquals(new Date(timeInMilliseconds), first_ingre.getIngredientBestBeforeDate());
+        assertEquals(Ingredient.Location.Freezer, first_ingre.getIngredientLocation());
+        assertEquals(10, first_ingre.getIngredientAmount());
+        assertEquals(5, first_ingre.getIngredientUnit());
+        // Second ingredient
+        Ingredient second_ingre = (Ingredient) ingredientlist.getItemAtPosition(1); // Get item from Second position
+        assertEquals("chickenthigh", second_ingre.getIngredientDescription());
+        assertEquals("meat", second_ingre.getIngredientCategory());
+        String sec_date = "Thu Dec 15 00:00:00 GMT 2022";
+        DateTimeFormatter sec_formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+        LocalDateTime sec_localDate = LocalDateTime.parse(sec_date, sec_formatter);
+        long sec_timeInMilliseconds = sec_localDate.atOffset(ZoneOffset.UTC).toInstant().toEpochMilli();
+        assertEquals(new Date(sec_timeInMilliseconds), second_ingre.getIngredientBestBeforeDate());
+        assertEquals(Ingredient.Location.Freezer, second_ingre.getIngredientLocation());
+        assertEquals(20, second_ingre.getIngredientAmount());
+        assertEquals(7, second_ingre.getIngredientUnit());
+        // Third ingredient
+        final ArrayList<Ingredient> list_ingre = activity.ingredientlist; // Get the ingredient list
+        Ingredient third_ingre = list_ingre.get(2); // Get item from Third position
+        assertEquals("apple", third_ingre.getIngredientDescription());
+        assertEquals("fruits", third_ingre.getIngredientCategory());
+        String third_date = "Tue Nov 15 00:00:00 GMT 2022";
+        DateTimeFormatter third_formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+        LocalDateTime third_localDate = LocalDateTime.parse(third_date, third_formatter);
+        long third_timeInMilliseconds = third_localDate.atOffset(ZoneOffset.UTC).toInstant().toEpochMilli();
+        assertEquals(new Date(third_timeInMilliseconds), third_ingre.getIngredientBestBeforeDate());
+        assertEquals(Ingredient.Location.Pantry, third_ingre.getIngredientLocation());
+        assertEquals(7, third_ingre.getIngredientAmount());
+        assertEquals(3, third_ingre.getIngredientUnit());
+
+        // check whether this list of ingredients can be seen by the meal-planer
+        // First ingredient
+        solo.waitForText("frozenbroccoli", 1, 2000);
+        solo.waitForText("food", 1, 2000);
+        solo.waitForText("2022-12-3", 1, 2000);
+        solo.waitForText("Freezer", 1, 2000);
+        solo.waitForText("10", 1, 2000);
+        solo.waitForText("5", 1, 2000);
+        // Second ingredient
+        solo.waitForText("chickenthigh", 1, 2000);
+        solo.waitForText("meat", 1, 2000);
+        solo.waitForText("2022-12-15", 1, 2000);
+        solo.waitForText("Freezer", 1, 2000);
+        solo.waitForText("12", 1, 2000);
+        solo.waitForText("8", 1, 2000);
+        // Third ingredient
+        solo.waitForText("apple", 1, 2000);
+        solo.waitForText("fruits", 1, 2000);
+        solo.waitForText("2022-11-15", 1, 2000);
+        solo.waitForText("Pantry", 1, 2000);
+        solo.waitForText("7", 1, 2000);
+        solo.waitForText("3", 1, 2000);
+
+
+    }
+
+    /**
+     * This test aims to check and resolve conflict between firestore and espresso
+     * if this test is passed, that means there is no conflict between them
+     */
     @Test
     public void useless_test() {
         // Asserts that the current activity is the MainActivity. Otherwise, show “Wrong Activity”

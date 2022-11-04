@@ -151,12 +151,12 @@ public class RecipeListActivity extends AppCompatActivity
     public void onEditRecipeClickListener(int position) {
         Recipe currentRecipe = recipeList.get(position);
         RecipeFragment addRecipeFragment = new RecipeFragment(currentRecipe);
-        addRecipeFragment.show(getSupportFragmentManager(), "Edit Ingredient");
+        addRecipeFragment.show(getSupportFragmentManager(), "Edit Recipe");
     }
 
     // Delete button triggered
     public void onDeleteRecipeClickListener(int position) {
-        final CollectionReference collectionReference = db.collection("Ingredients");
+        final CollectionReference collectionReference = db.collection("Recipes");
 
         selectedRecipe = recipeList.get(position);
         recipeList.remove(position);

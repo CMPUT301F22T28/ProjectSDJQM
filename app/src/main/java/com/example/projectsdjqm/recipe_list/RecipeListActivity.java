@@ -50,7 +50,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-
+/**
+ * RecipeListActivity:
+ * Main page for Recipe
+ */
 public class RecipeListActivity extends AppCompatActivity
         implements RecipeList.RecipeButtonListener,
         RecipeFragment.OnFragmentInteractionListener{
@@ -69,10 +72,12 @@ public class RecipeListActivity extends AppCompatActivity
         setContentView(R.layout.recipe_main);
 //        View view1 = LayoutInflater.from(this).inflate(R.layout.recipe_content, null);
 
+        // firestore stuff
         Log.d(TAG, "onCreate");
         db = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = db.collection("Recipes");
 
+        // bottom nav
         bottomNavigationView = findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_recipe_list);
 
@@ -111,6 +116,7 @@ public class RecipeListActivity extends AppCompatActivity
             }
         });
 
+        // recipe list view init
         recipeListView = findViewById(R.id.recipe_list);
         recipeList = new ArrayList<>();
         ArrayList<Ingredient> ingredientlist = new ArrayList<>();

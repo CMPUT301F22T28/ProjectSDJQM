@@ -23,23 +23,30 @@ import com.example.projectsdjqm.ingredient_storage.IngredientList;
 
 import java.util.ArrayList;
 
+/**
+ * RecipeList:
+ * Custom array adapter for the recipe list
+ */
 public class RecipeList extends ArrayAdapter<Recipe> {
     private RecipeButtonListener recipeButtonListener;
 
+    // make interface for edit / delete listeners
     public interface RecipeButtonListener {
         void onEditRecipeClickListener(int position);
         void onDeleteRecipeClickListener(int position);
     }
 
+    // final attr
     private final ArrayList<Recipe> recipeList;
     private final Context context;
 
+    // constructor
     public RecipeList(@NonNull Context context, ArrayList<Recipe> recipeList) {
         super(context, 0, recipeList);
         this.context = context;
         this.recipeList = recipeList;
     }
-    /* Ingredient button listener */
+    // Ingredient button listener
     public void setRecipeButtonListener(RecipeButtonListener recipeButtonListener) {
         this.recipeButtonListener = recipeButtonListener;
     }

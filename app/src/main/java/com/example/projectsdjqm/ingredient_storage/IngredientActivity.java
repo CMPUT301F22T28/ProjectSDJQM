@@ -258,12 +258,42 @@ public class IngredientActivity extends AppCompatActivity implements
                                 int amount,
                                 int unit,
                                 String category) {
+
+        String oldDescription = ingredient.getIngredientDescription();
         ingredient.setIngredientDescription(description);
         ingredient.setIngredientBestBeforeDate(bestbeforedate);
         ingredient.setIngredientLocation(location);
         ingredient.setIngredientAmount(amount);
         ingredient.setIngredientUnit(unit);
         ingredient.setIngredientCategory(category);
+        final CollectionReference collectionReference = db.collection("Ingredients");
+        final String ingredientDesc = ingredient.getIngredientDescription();
+        final String ingredientCate = ingredient.getIngredientCategory();
+        final Date ingredientBestBeforeDate = ingredient.getIngredientBestBeforeDate();
+        final int ingredientAmt = ingredient.getIngredientAmount();
+        final int ingredientUni = ingredient.getIngredientUnit();
+        final Ingredient.Location ingredientLoc = ingredient.getIngredientLocation();
+
+        HashMap<String, Object> data = new HashMap<>();
+
+        data.put("Best Before Date", ingredientBestBeforeDate);
+        data.put("Amount", ingredientAmt);
+        data.put("Unit", ingredientUni);
+        data.put("Category", ingredientCate);
+        data.put("Location", ingredientLoc);
+
+        if (description == oldDescription) {
+            collectionReference
+                    .document(description)
+                    .update(data);
+        } else {
+            collectionReference
+                    .document(oldDescription)
+                    .delete();
+            collectionReference
+                    .document(description)
+                    .set(data);
+        }
         ingredientAdapter.notifyDataSetChanged();
 
     }

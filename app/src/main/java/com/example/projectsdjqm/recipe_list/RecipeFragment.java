@@ -36,6 +36,10 @@ import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * RecipeFragment:
+ * fragment for the recipe list
+ */
 public class RecipeFragment extends DialogFragment {
     public interface OnFragmentInteractionListener {
         void onOkPressedAdd(Recipe recipe);
@@ -49,6 +53,7 @@ public class RecipeFragment extends DialogFragment {
                              ArrayList<Ingredient> list);
     }
 
+    // attr init
     private EditText recipeTitle;
     // preparation time should change to a time selector? can discuss and decide in project part 4
     private EditText recipePreparationTime;
@@ -61,9 +66,9 @@ public class RecipeFragment extends DialogFragment {
     private TextView ingredientText;
     private Recipe recipe;
     private boolean isEdit = false;
-
     private OnFragmentInteractionListener listener;
 
+    // super call (constructor)
     public RecipeFragment(Recipe recipe) {
         super();
         this.recipe = recipe;
@@ -74,6 +79,7 @@ public class RecipeFragment extends DialogFragment {
 
     }
 
+    // fragment interaction listener
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -84,6 +90,7 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
+    // layout inflater to update fields
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -98,7 +105,7 @@ public class RecipeFragment extends DialogFragment {
         ingredientSelectButton = view.findViewById(R.id.ingredient_select_button);
         photo = view.findViewById(R.id.recipe_image);
         ingredientText = view.findViewById(R.id.recipe_ingredient);
-// click edit, current recipe details show in fragment
+        // click edit, current recipe details show in fragment
         if (isEdit) {
             recipeTitle.setText(recipe.getTitle());
             recipePreparationTime.setText(recipe.getPreparationTime());
@@ -160,6 +167,7 @@ public class RecipeFragment extends DialogFragment {
         return alertDialog;
     }
 
+    // view click listener
     class CustomListener implements View.OnClickListener {
         private final Dialog dialog;
 

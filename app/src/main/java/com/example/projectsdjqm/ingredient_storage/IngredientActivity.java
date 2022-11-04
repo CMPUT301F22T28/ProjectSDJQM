@@ -2,7 +2,7 @@
  * IngredientActivity
  * @version 1.2
  * @author Muchen Li & Defrim Binakaj & Qingya Ye
- * @date Oct 30, 2022
+ * @date Nov 3, 2022
  */
 package com.example.projectsdjqm.ingredient_storage;
 
@@ -267,7 +267,6 @@ public class IngredientActivity extends AppCompatActivity implements
         ingredient.setIngredientUnit(unit);
         ingredient.setIngredientCategory(category);
         final CollectionReference collectionReference = db.collection("Ingredients");
-        final String ingredientDesc = ingredient.getIngredientDescription();
         final String ingredientCate = ingredient.getIngredientCategory();
         final Date ingredientBestBeforeDate = ingredient.getIngredientBestBeforeDate();
         final int ingredientAmt = ingredient.getIngredientAmount();

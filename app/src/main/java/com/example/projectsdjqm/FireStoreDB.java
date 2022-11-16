@@ -9,9 +9,11 @@
 package com.example.projectsdjqm;
 
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class FireStoreDB {
   
-  FirebaseFirestore db;
-  // db = FirebaseFirestore.getInstance();
+    FirebaseFirestore db;
+    // db = FirebaseFirestore.getInstance();
   
 }

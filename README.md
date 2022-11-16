@@ -55,6 +55,8 @@ Object-Oriented Design
 •    Neatly laid out and labeled diagrams
 •    Helpful explanations or commentary
 •    Consistent with requirements, code, tests, and documentation
+
+
 Sprint Planning and Reviews
 • Comprehensive
 • Displays understanding of Scrum

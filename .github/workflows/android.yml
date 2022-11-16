@@ -24,9 +24,9 @@ jobs:
       run: |
         echo "" > local.properties
         chmod +x gradlew
-      working-directory: ./android
+      working-directory: ./app
     - name: Build with Gradle
       run: ./gradlew build
-      working-directory: ./android
+      working-directory: ./app
       
       

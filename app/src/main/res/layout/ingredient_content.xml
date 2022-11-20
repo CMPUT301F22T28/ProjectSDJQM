@@ -58,8 +58,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_weight=".5"
                 android:text="Delete"
-                android:textSize="10sp"
-                android:onClick="deleteIngredient"/>
+                android:textSize="10sp" />
 
         </LinearLayout>
 

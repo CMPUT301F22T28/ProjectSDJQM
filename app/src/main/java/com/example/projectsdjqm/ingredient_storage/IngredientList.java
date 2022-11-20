@@ -167,4 +167,38 @@ public class IngredientList extends ArrayAdapter<Ingredient> {
         Button editButton;
         Button deleteButton;
     }
+
+    /**
+     * this gets size of the list
+     * @return
+     */
+    public int getCount(){
+        return ingredientList.size();
+    }
+
+    /**
+     * this adds a city object to the list
+     *for the first phase it will be empty
+     * @param ingredient
+     */
+    public void addIngredient(Ingredient ingredient){
+        ingredientList.add(ingredient);
+    }
+
+    /**
+     * this checks if list contains city object
+     * @param ingredient
+     * @return
+     */
+    public boolean hasIngredient(Ingredient ingredient) {
+        return ingredientList.contains(ingredient);
+    }
+
+    /**
+     * this gets size of the list
+     * @return
+     */
+    public int countIngredients() {
+        return ingredientList.size();
+    }
 }

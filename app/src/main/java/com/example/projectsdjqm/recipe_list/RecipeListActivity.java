@@ -249,6 +249,7 @@ public class RecipeListActivity extends AppCompatActivity
         recipe.setPreparationTime(preparationTime);
         recipe.setRecipeCategory(category);
         recipe.setComments(comments);
+        recipe.setPhotograph(photo);
         recipe.setNumberofServings(servingNumber);
         recipe.setListofIngredients(list);
         final CollectionReference collectionReference = db.collection("Recipes");

@@ -5,14 +5,21 @@
  */
 package com.example.projectsdjqm.recipe_list;
 
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -22,12 +29,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.projectsdjqm.R;
@@ -60,7 +70,8 @@ public class RecipeFragment extends DialogFragment {
     private EditText recipeServingNumber;
     private EditText recipeCategory;
     private EditText recipeComments;
-    private Button photoSelectButton;
+    private Button takePhotoButton;
+    private Button choosePhotoButton;
     private Button ingredientSelectButton;
     private ImageView photo;
     private TextView ingredientText;
@@ -101,7 +112,8 @@ public class RecipeFragment extends DialogFragment {
         recipeServingNumber = view.findViewById(R.id.edit_recipe_servings);
         recipeCategory = view.findViewById(R.id.edit_recipe_category);
         recipeComments = view.findViewById(R.id.edit_recipe_comments);
-        photoSelectButton = view.findViewById(R.id.photo_select_button);
+        takePhotoButton = view.findViewById(R.id.take_photo);
+        choosePhotoButton = view.findViewById(R.id.choose_from_album);
         ingredientSelectButton = view.findViewById(R.id.ingredient_select_button);
         photo = view.findViewById(R.id.recipe_image);
         ingredientText = view.findViewById(R.id.recipe_ingredient);
@@ -120,29 +132,55 @@ public class RecipeFragment extends DialogFragment {
                 listText += ",\n";
             }
         }
-        photoSelectButton.setOnClickListener(new View.OnClickListener() {
+        takePhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AlertDialog.Builder(getContext())
-                        .setMessage("Test")
-                        .setPositiveButton("Ok", null)
-                        .show();
-                Intent intent = new Intent(Intent.ACTION_PICK, null);
-                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
-                registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                        new ActivityResultCallback<ActivityResult>() {
-                            @Override
-                            public void onActivityResult(ActivityResult result) {
-                                if (result.getResultCode() == 2) {
-                                    if (result.getData().getClipData() != null) {
-                                        Uri uri = result.getData().getClipData().getItemAt(1).getUri();
-                                        photo.setImageURI(uri);
-                                    }
-                                }
-                            }
-                });
+                // have permission and start taking photo
+                if (ContextCompat.checkSelfPermission(
+                        getContext(),
+                        Manifest.permission.CAMERA) == PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(
+                                getContext(),
+                                Manifest.permission.READ_EXTERNAL_STORAGE) == PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(
+                                getContext(),
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED){
+                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(cameraIntent,1);
+                }
+                // request for permissions if do not have
+                else {
+                    ActivityCompat.requestPermissions(
+                            getActivity(),
+                            new String[]{
+                                    Manifest.permission.CAMERA,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            1);
+                }
             }
         });
+
+        choosePhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // request for permissions if do not have
+                if (ContextCompat.checkSelfPermission(
+                                getContext(),
+                                Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                            getActivity(),
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                } else {
+                    // have permission and open album to choose a photo
+                    Intent intent = new Intent("android.intent.action.GET_CONTENT");
+                    intent.setType("image/*");
+                    startActivityForResult(intent, 2);
+                }
+            }
+        });
+
         ingredientSelectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -270,4 +308,42 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // take photo
+        if (requestCode == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent,1);
+            }
+        }
+        // choose a photo
+        else if (requestCode == 2) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent("android.intent.action.GET_CONTENT");
+                intent.setType("image/*");
+                startActivityForResult(intent, 2);
+            }
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == 1 && resultCode == Activity.RESULT_OK) {
+            Bitmap b =(Bitmap) data.getExtras().get("data");
+//            Drawable drawable = new BitmapDrawable(getResources (), b);
+//            photo.setImageDrawable(drawable);
+            photo.setImageBitmap(b);
+
+        }else if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
+            Uri uri = data.getData();
+            photo.setImageURI(uri);
+        }
+        else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 }

@@ -58,6 +58,7 @@ public class IngredientActivity extends AppCompatActivity implements
     public IngredientList ingredientAdapter;
     public ArrayList<Ingredient> ingredientlist;
     Ingredient selectedIngredient;
+    String currentSortingType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +148,7 @@ public class IngredientActivity extends AppCompatActivity implements
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
                 String result = parent.getItemAtPosition(i).toString();
+                currentSortingType = result;
 //                Toast.makeText(IngredientActivity.this, result,Toast.LENGTH_SHORT).show();
                 sortIngredientList(ingredientlist, result);
             }
@@ -294,6 +296,7 @@ public class IngredientActivity extends AppCompatActivity implements
                     .document(description)
                     .set(data);
         }
+        spinner.setSelection(0);
         ingredientAdapter.notifyDataSetChanged();
 
     }
@@ -313,8 +316,8 @@ public class IngredientActivity extends AppCompatActivity implements
                                 .compareTo(ingredient1.getIngredientDescription());
                     }
                 });
-                adapter = new IngredientList(this, list);
-                ingredientlistview.setAdapter(adapter);
+                ingredientlist = list;
+                ingredientAdapter.notifyDataSetChanged();
                 break;
             case "category":
                 Collections.sort(list, new Comparator<Ingredient>() {
@@ -324,8 +327,8 @@ public class IngredientActivity extends AppCompatActivity implements
                                 .compareTo(ingredient1.getIngredientCategory());
                     }
                 });
-                adapter = new IngredientList(this, list);
-                ingredientlistview.setAdapter(adapter);
+                ingredientlist = list;
+                ingredientAdapter.notifyDataSetChanged();
                 break;
             case "location":
                 Collections.sort(list, new Comparator<Ingredient>() {
@@ -335,8 +338,8 @@ public class IngredientActivity extends AppCompatActivity implements
                                 .compareTo(ingredient1.getIngredientLocation().toString());
                     }
                 });
-                adapter = new IngredientList(this, list);
-                ingredientlistview.setAdapter(adapter);
+                ingredientlist = list;
+                ingredientAdapter.notifyDataSetChanged();
                 break;
             case "bbd":
                 Collections.sort(list, new Comparator<Ingredient>() {
@@ -353,8 +356,8 @@ public class IngredientActivity extends AppCompatActivity implements
                         }
                     }
                 });
-                adapter = new IngredientList(this, list);
-                ingredientlistview.setAdapter(adapter);
+                ingredientlist = list;
+                ingredientAdapter.notifyDataSetChanged();
                 break;
             default:
                 break;

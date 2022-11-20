@@ -15,10 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,8 +47,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -66,7 +62,6 @@ public class RecipeListActivity extends AppCompatActivity
     RecipeList recipeAdapter;
     public ArrayList<Recipe> recipeList;
     Recipe selectedRecipe;
-    Spinner spinnerForRecipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,20 +177,6 @@ public class RecipeListActivity extends AppCompatActivity
                 recipeAdapter.notifyDataSetChanged();
             }
         });
-
-        spinnerForRecipe = findViewById(R.id.spinner_for_recipe);
-        spinnerForRecipe.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
-                String result = parent.getItemAtPosition(i).toString();
-                sortRecipeList(recipeList, result);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
     }
 
     public void onEditRecipeClickListener(int position) {
@@ -266,70 +247,5 @@ public class RecipeListActivity extends AppCompatActivity
         recipe.setListofIngredients(list);
         recipeAdapter.notifyDataSetChanged();
     };
-    private void sortRecipeList(ArrayList<Recipe> list, String sorting_type) {
-        RecipeList adapter;
-        switch (sorting_type) {
-            case "title":
-                Collections.sort(list, new Comparator<Recipe>() {
-                    @Override
-                    public int compare(Recipe recipe, Recipe recipe1) {
-                        return recipe.getTitle()
-                                .compareTo(recipe1.getTitle());
-                    }
-                });
-                adapter = new RecipeList(this, list);
-                recipeListView.setAdapter(adapter);
-                break;
-            case "category":
-                Collections.sort(list, new Comparator<Recipe>() {
-                    @Override
-                    public int compare(Recipe recipe, Recipe recipe1) {
-                        return recipe.getRecipeCategory()
-                                .compareTo(recipe1.getRecipeCategory());
-                    }
-                });
-                adapter = new RecipeList(this, list);
-                recipeListView.setAdapter(adapter);
-                break;
-            case "preparation time":
-                Collections.sort(list, new Comparator<Recipe>() {
-                    @Override
-                    public int compare(Recipe recipe, Recipe recipe1) {
-                        int time = Integer.parseInt(recipe.getPreparationTime());
-                        int time1 = Integer.parseInt(recipe1.getPreparationTime());
-                        if (time < time1) {
-                            return -1;
-                        } else if (time == time1) {
-                            return 0;
-                        } else {
-                            return 1;
-                        }
-                    }
-                });
-                adapter = new RecipeList(this, list);
-                recipeListView.setAdapter(adapter);
-                break;
-            case "serving number":
-                Collections.sort(list, new Comparator<Recipe>() {
-                    @Override
-                    public int compare(Recipe recipe, Recipe recipe1) {
-                        int servingNumber = recipe.getNumberofServings();
-                        int servingNumber1 = recipe1.getNumberofServings();
-                        if (servingNumber < servingNumber1) {
-                            return -1;
-                        } else if (servingNumber == servingNumber1) {
-                            return 0;
-                        } else {
-                            return 1;
-                        }
-                    }
-                });
-                adapter = new RecipeList(this, list);
-                recipeListView.setAdapter(adapter);
-                break;
-            default:
-                break;
-        }
-    }
 
 }

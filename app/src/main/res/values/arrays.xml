@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="sorting_type">
-<!--        <item>Sort</item>-->
+        <item>Sort</item>
         <item>description</item>
         <item>bbd</item>
         <item>location</item>
-        <item>category</item>
-    </string-array>
-    <string-array name="sorting_type2">
-        <item>title</item>
-        <item>serving number</item>
-        <item>preparation time</item>
         <item>category</item>
     </string-array>
 </resources>

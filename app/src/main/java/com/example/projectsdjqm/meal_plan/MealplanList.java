@@ -45,5 +45,6 @@ public class MealplanList extends ArrayAdapter<Mealplan> {
 
         return view;
     }
+
     
 }

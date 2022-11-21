@@ -16,10 +16,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -29,11 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -44,7 +38,6 @@ import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * RecipeFragment:
@@ -74,6 +67,7 @@ public class RecipeFragment extends DialogFragment {
     private Button choosePhotoButton;
     private Button ingredientSelectButton;
     private ImageView photo;
+    private ImageView recipePhoto;
     private TextView ingredientText;
     private Recipe recipe;
     private boolean isEdit = false;
@@ -116,7 +110,9 @@ public class RecipeFragment extends DialogFragment {
         choosePhotoButton = view.findViewById(R.id.choose_from_album);
         ingredientSelectButton = view.findViewById(R.id.ingredient_select_button);
         photo = view.findViewById(R.id.recipe_image);
+        recipePhoto = view.findViewById(R.id.recipe_image);
         ingredientText = view.findViewById(R.id.recipe_ingredient);
+
         // click edit, current recipe details show in fragment
         if (isEdit) {
             recipeTitle.setText(recipe.getTitle());
@@ -124,7 +120,7 @@ public class RecipeFragment extends DialogFragment {
             recipeServingNumber.setText(String.valueOf(recipe.getNumberofServings()));
             recipeCategory.setText(recipe.getRecipeCategory());
             recipeComments.setText(recipe.getComments());
-            photo.setImageDrawable(recipe.getPhotograph());
+            //photo.setImageDrawable(recipe.getPhotograph());
             ArrayList<Ingredient> list = recipe.getListofIngredients();
             String listText = "";
             for (int i=0; i<list.size(); i++) {
@@ -224,9 +220,9 @@ public class RecipeFragment extends DialogFragment {
             String comments = recipeComments.getText().toString();
             Drawable photograph = photo.getDrawable();
             // need to change --------------------------
-            Ingredient i = new Ingredient("a",new Date(),Ingredient.Location.Pantry,2,1,"category");
+            //Ingredient i = new Ingredient("a",new Date(),Ingredient.Location.Pantry,2,1,"category");
             ArrayList<Ingredient> list = new ArrayList<>();
-            list.add(i);
+            //list.add(i);
             // need to change --------------------------
 
             // check title
@@ -310,7 +306,6 @@ public class RecipeFragment extends DialogFragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -334,8 +329,6 @@ public class RecipeFragment extends DialogFragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == 1 && resultCode == Activity.RESULT_OK) {
             Bitmap b =(Bitmap) data.getExtras().get("data");
-//            Drawable drawable = new BitmapDrawable(getResources (), b);
-//            photo.setImageDrawable(drawable);
             photo.setImageBitmap(b);
 
         }else if (requestCode == 2 && resultCode == Activity.RESULT_OK) {

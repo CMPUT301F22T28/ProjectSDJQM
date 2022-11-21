@@ -43,6 +43,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.checkerframework.checker.units.qual.A;
 
@@ -60,6 +62,7 @@ public class RecipeListActivity extends AppCompatActivity
 
     BottomNavigationView bottomNavigationView;
     FirebaseFirestore db;
+    FirebaseStorage storage;
     final String TAG = "Recipes Activity";
     ListView recipeListView;
     RecipeList recipeAdapter;
@@ -76,6 +79,10 @@ public class RecipeListActivity extends AppCompatActivity
         Log.d(TAG, "onCreate");
         db = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = db.collection("Recipes");
+
+        storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageReference imageRef = storageRef.child("Recipes");
 
         // bottom nav
         bottomNavigationView = findViewById(R.id.nav_view);
@@ -121,10 +128,11 @@ public class RecipeListActivity extends AppCompatActivity
         recipeList = new ArrayList<>();
         ArrayList<Ingredient> ingredientlist = new ArrayList<>();
         //ingredientlist.add(new Ingredient("egg",new Date(),Ingredient.Location.Pantry,3,2,"back"));
-        ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
+        //ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
         //ingredientlist.add(new Ingredient("ccc",new Date(2023,5,3),Ingredient.Location.Freezer,5,4,"ccc"));
 
         Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_notifications_black_24dp);
+
         //Recipe testa = new Recipe("Orange Chicken", "30", 3,
         //        "category", "comments",icon,
         //        ingredientlist);
@@ -170,7 +178,9 @@ public class RecipeListActivity extends AppCompatActivity
                     String category = (String) doc.getData().get("Category");
                     String comm = (String) doc.getData().get("Comments");
                     // drawable photo;
+                    //Drawable icon = ()
                     // arrayList
+
                     recipeList.add(new Recipe(
                             title,
                             preptime,
@@ -207,6 +217,7 @@ public class RecipeListActivity extends AppCompatActivity
     public void onOkPressedAdd(Recipe recipe) {
 
         final CollectionReference collectionReference = db.collection("Recipes");
+
         final String recipeTitle = recipe.getTitle();
         final String recipePreparationTime = recipe.getPreparationTime();
         final int recipeServingNumber = recipe.getNumberofServings();
@@ -252,11 +263,13 @@ public class RecipeListActivity extends AppCompatActivity
         recipe.setPhotograph(photo);
         recipe.setNumberofServings(servingNumber);
         recipe.setListofIngredients(list);
+
         final CollectionReference collectionReference = db.collection("Recipes");
         final String recipePrepTime = recipe.getPreparationTime();
         final int recipeSerNum = recipe.getNumberofServings();
         final String recipeCate = recipe.getRecipeCategory();
         final String recipeComm = recipe.getComments();
+        final Drawable recipePhoto = recipe.getPhotograph();
         final ArrayList<Ingredient> recipeIng = recipe.getListofIngredients();
 
         HashMap<String, Object> data = new HashMap<>();

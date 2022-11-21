@@ -195,6 +195,14 @@ public class IngredientList extends ArrayAdapter<Ingredient> {
     }
 
     /**
+     * this method remove city from cities
+     * @param ingredient
+     */
+    public void delete(Ingredient ingredient) {
+        ingredientList.remove(ingredient);
+    }
+
+    /**
      * this gets size of the list
      * @return
      */

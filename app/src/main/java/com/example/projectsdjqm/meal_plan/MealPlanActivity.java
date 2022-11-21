@@ -104,16 +104,16 @@ public class MealPlanActivity extends AppCompatActivity
         mealplanListView = findViewById(R.id.meal_plan_list);
         mealplanList = new ArrayList<>();
 
-        ArrayList<Ingredient> ingredientlist = new ArrayList<>();
+        ArrayList<Ingredient> ingredientList = new ArrayList<>();
         Ingredient testc = new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here");
-        ingredientlist.add(testc);
+        ingredientList.add(testc);
         ArrayList<Recipe> recipeList = new ArrayList<>();
         Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_notifications_black_24dp);
         Recipe testa = new Recipe("Orange Chicken", "30", 3,
                 "category", "comments",icon,
-                ingredientlist);
+                ingredientList);
         recipeList.add(testa);
-        Mealplan testb = new Mealplan(recipeList, ingredientlist);
+        Mealplan testb = new Mealplan(recipeList, ingredientList, new Date(2022,11,30));
         mealplanList.add(testb);
 
         mealplanAdapter = new MealplanList(this, mealplanList);

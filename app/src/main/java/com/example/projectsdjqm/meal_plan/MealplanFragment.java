@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,8 +23,12 @@ import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import com.example.projectsdjqm.recipe_list.Recipe;
 import com.example.projectsdjqm.recipe_list.RecipeFragment;
+import com.example.projectsdjqm.recipe_list.RecipeList;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class MealplanFragment extends DialogFragment {
     public interface OnFragmentInteractionListener {
@@ -30,24 +36,16 @@ public class MealplanFragment extends DialogFragment {
     }
 
     // attr init
-    private EditText recipeTitle;
-    // preparation time should change to a time selector? can discuss and decide in project part 4
-    private EditText recipePreparationTime;
-    private EditText recipeServingNumber;
-    private EditText recipeCategory;
-    private EditText recipeComments;
-    private Button photoSelectButton;
-    private Button ingredientSelectButton;
-    private ImageView photo;
-    private TextView ingredientText;
     private Mealplan mealplan;
-    private boolean isEdit = false;
     private MealplanFragment.OnFragmentInteractionListener listener;
+    private DatePicker mealplan_date_view;
+    private ListView recipeListview;
+    private ListView ingredientListview;
+
 
     public MealplanFragment(Mealplan mealplan) {
         super();
         this.mealplan = mealplan;
-        this.isEdit = true;
     }
     public MealplanFragment() {
         super();
@@ -73,6 +71,10 @@ public class MealplanFragment extends DialogFragment {
                 .inflate(R.layout.mealplan_add_fragment, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
+        mealplan_date_view = view.findViewById(R.id.mealplan_date_picker);
+        recipeListview = view.findViewById(R.id.mealplan_r_add_list);
+        ingredientListview = view.findViewById(R.id.mealplan_in_add_list);
+
         return builder
                 .setView(view)
                 .setTitle("Adding Meal Plan")
@@ -80,6 +82,16 @@ public class MealplanFragment extends DialogFragment {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        Calendar calendar = new GregorianCalendar(
+                                mealplan_date_view.getYear(),
+                                mealplan_date_view.getMonth(),
+                                mealplan_date_view.getDayOfMonth());
+                        Date mealplan_date = new Date(calendar.getTimeInMillis());
+                        ArrayList<Ingredient> ingredientList = new ArrayList<>();
+                        ArrayList<Recipe> recipeList = new ArrayList<>();
+
+
+                        listener.onOkPressedAdd(new Mealplan(recipeList,ingredientList,mealplan_date));
                     }
                 }).create();
 

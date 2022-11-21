@@ -4,6 +4,7 @@ import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import com.example.projectsdjqm.recipe_list.Recipe;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Mealplan:
@@ -18,15 +19,18 @@ public class Mealplan {
 
 
     // attr init
+    private Date mealplan_date;
     private ArrayList<Recipe> recipeList;
     private ArrayList<Ingredient> ingredientList;
 
 
     // mealplan constructor
     public Mealplan (ArrayList<Recipe> recipeList,
-                     ArrayList<Ingredient> ingredientList) {
+                     ArrayList<Ingredient> ingredientList,
+                     Date mealplan_date) {
         this.recipeList = recipeList;
         this.ingredientList = ingredientList;
+        this.mealplan_date = mealplan_date;
     }
 
     // getter (recipe)
@@ -45,6 +49,15 @@ public class Mealplan {
     // setter (ingredient)
     public void setIngredientList(ArrayList<Ingredient> ingredientList) {
         this.ingredientList = ingredientList;
+    }
+
+    // getter (date)
+    public Date getMealplan_date() {
+        return mealplan_date;
+    }
+    // setter (date)
+    public void setMealplan_date(Date mealplan_date) {
+        this.mealplan_date = mealplan_date;
     }
 
 

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.DrawableContainer;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ import com.example.projectsdjqm.ingredient_storage.IngredientList;
 import com.example.projectsdjqm.meal_plan.MealPlanActivity;
 import com.example.projectsdjqm.shopping_list.ShoppingListActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -48,9 +50,12 @@ import com.google.firebase.storage.StorageReference;
 
 import org.checkerframework.checker.units.qual.A;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * RecipeListActivity:
@@ -62,7 +67,8 @@ public class RecipeListActivity extends AppCompatActivity
 
     BottomNavigationView bottomNavigationView;
     FirebaseFirestore db;
-    FirebaseStorage storage;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
     final String TAG = "Recipes Activity";
     ListView recipeListView;
     RecipeList recipeAdapter;
@@ -73,16 +79,13 @@ public class RecipeListActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recipe_main);
-//        View view1 = LayoutInflater.from(this).inflate(R.layout.recipe_content, null);
 
         // firestore stuff
         Log.d(TAG, "onCreate");
         db = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = db.collection("Recipes");
-
         storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-        StorageReference imageRef = storageRef.child("Recipes");
+        storageReference = storage.getReference();
 
         // bottom nav
         bottomNavigationView = findViewById(R.id.nav_view);
@@ -127,16 +130,9 @@ public class RecipeListActivity extends AppCompatActivity
         recipeListView = findViewById(R.id.recipe_list);
         recipeList = new ArrayList<>();
         ArrayList<Ingredient> ingredientlist = new ArrayList<>();
-        //ingredientlist.add(new Ingredient("egg",new Date(),Ingredient.Location.Pantry,3,2,"back"));
-        //ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
-        //ingredientlist.add(new Ingredient("ccc",new Date(2023,5,3),Ingredient.Location.Freezer,5,4,"ccc"));
-
+        // default icon if no image
         Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_notifications_black_24dp);
 
-        //Recipe testa = new Recipe("Orange Chicken", "30", 3,
-        //        "category", "comments",icon,
-        //        ingredientlist);
-        //recipeList.add(testa);
         recipeAdapter = new RecipeList(this, recipeList);
         recipeAdapter.setRecipeButtonListener(this);
         recipeListView.setAdapter(recipeAdapter);
@@ -149,6 +145,7 @@ public class RecipeListActivity extends AppCompatActivity
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
+                                //Log.d(TAG, String.valueOf(storageReference.child("images/"+document.getId()).getDownloadUrl()));
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
@@ -177,9 +174,6 @@ public class RecipeListActivity extends AppCompatActivity
                     int numser = Integer.valueOf(doc.getData().get("Serving Number").toString());
                     String category = (String) doc.getData().get("Category");
                     String comm = (String) doc.getData().get("Comments");
-                    // drawable photo;
-                    //Drawable icon = ()
-                    // arrayList
 
                     recipeList.add(new Recipe(
                             title,

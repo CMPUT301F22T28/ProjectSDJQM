@@ -36,8 +36,15 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * RecipeFragment:
@@ -68,6 +75,10 @@ public class RecipeFragment extends DialogFragment {
     private Button ingredientSelectButton;
     private ImageView photo;
     private ImageView recipePhoto;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
+    final String TAG = "Recipe Fragment";
+
     private TextView ingredientText;
     private Recipe recipe;
     private boolean isEdit = false;
@@ -109,8 +120,12 @@ public class RecipeFragment extends DialogFragment {
         takePhotoButton = view.findViewById(R.id.take_photo);
         choosePhotoButton = view.findViewById(R.id.choose_from_album);
         ingredientSelectButton = view.findViewById(R.id.ingredient_select_button);
+
         photo = view.findViewById(R.id.recipe_image);
         recipePhoto = view.findViewById(R.id.recipe_image);
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+
         ingredientText = view.findViewById(R.id.recipe_ingredient);
 
         // click edit, current recipe details show in fragment
@@ -334,6 +349,23 @@ public class RecipeFragment extends DialogFragment {
         }else if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             photo.setImageURI(uri);
+
+            final String photokey = recipeTitle.getText().toString();
+            StorageReference imageRef = storageReference.child("images/" + photokey);
+            imageRef.putFile(uri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Log.d(TAG,"image upload successfully");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG,"image not upload");
+                        }
+                    });
+
         }
         else {
             super.onActivityResult(requestCode, resultCode, data);

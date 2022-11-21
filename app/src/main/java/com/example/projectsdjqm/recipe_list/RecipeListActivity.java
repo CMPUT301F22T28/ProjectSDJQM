@@ -8,20 +8,15 @@ package com.example.projectsdjqm.recipe_list;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableContainer;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -29,31 +24,20 @@ import com.example.projectsdjqm.MainActivity;
 import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import com.example.projectsdjqm.ingredient_storage.IngredientActivity;
-import com.example.projectsdjqm.ingredient_storage.IngredientFragment;
-import com.example.projectsdjqm.ingredient_storage.IngredientList;
 import com.example.projectsdjqm.meal_plan.MealPlanActivity;
 import com.example.projectsdjqm.shopping_list.ShoppingListActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import org.checkerframework.checker.units.qual.A;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
-
+import java.util.Objects;
 
 public class RecipeListActivity extends AppCompatActivity
         implements RecipeList.RecipeButtonListener,
@@ -67,6 +51,7 @@ public class RecipeListActivity extends AppCompatActivity
     public ArrayList<Recipe> recipeList;
     Recipe selectedRecipe;
     Spinner spinnerForRecipe;
+    String currentSortingType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +105,7 @@ public class RecipeListActivity extends AppCompatActivity
         recipeList = new ArrayList<>();
         ArrayList<Ingredient> ingredientlist = new ArrayList<>();
         //ingredientlist.add(new Ingredient("egg",new Date(),Ingredient.Location.Pantry,3,2,"back"));
-        ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
+//        ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
         //ingredientlist.add(new Ingredient("ccc",new Date(2023,5,3),Ingredient.Location.Freezer,5,4,"ccc"));
 
         Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_notifications_black_24dp);
@@ -134,26 +119,20 @@ public class RecipeListActivity extends AppCompatActivity
 
         db.collection("Recipes")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Log.d(TAG, document.getId() + " => " + document.getData());
                         }
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
                     }
                 });
 
         final FloatingActionButton addButton = findViewById(R.id.add_recipe);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RecipeFragment addRecipeFragment = new RecipeFragment();
-                addRecipeFragment.show(getSupportFragmentManager(),"Add Recipe");
-            }
+        addButton.setOnClickListener(view -> {
+            RecipeFragment addRecipeFragment = new RecipeFragment();
+            addRecipeFragment.show(getSupportFragmentManager(),"Add Recipe");
         });
 
         spinnerForRecipe = findViewById(R.id.spinner_for_recipe);
@@ -161,6 +140,7 @@ public class RecipeListActivity extends AppCompatActivity
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
                 String result = parent.getItemAtPosition(i).toString();
+                currentSortingType = result;
                 sortRecipeList(recipeList, result);
             }
 
@@ -170,29 +150,33 @@ public class RecipeListActivity extends AppCompatActivity
             }
         });
 
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
-                    FirebaseFirestoreException error) {
-                recipeList.clear();
-                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
-                {
-                    String title = doc.getId();
-                    String preptime = (String) doc.getData().get("Preparation Time");
-                    int numser = Integer.valueOf(doc.getData().get("Serving Number").toString());
-                    String category = (String) doc.getData().get("Category");
-                    String comm = (String) doc.getData().get("Comments");
-                    // drawable photo;
-                    // arrayList
-                    recipeList.add(new Recipe(
-                            title,
-                            preptime,
-                            numser,
-                            category,
-                            comm,
-                            icon,
-                            ingredientlist));
+        collectionReference.addSnapshotListener((queryDocumentSnapshots, error) -> {
+            recipeList.clear();
+            for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+            {
+                String title = doc.getId();
+                int preptime = Integer.parseInt(Objects.requireNonNull(doc.getData().get("Preparation Time")).toString());
+                int number = Integer.parseInt(Objects.requireNonNull(doc.getData().get("Serving Number")).toString());
+                String category = (String) doc.getData().get("Category");
+                String comm = (String) doc.getData().get("Comments");
+                // drawable photo;
+                // arrayList
+                recipeList.add(new Recipe(
+                        title,
+                        preptime,
+                        number,
+                        category,
+                        comm,
+                        icon,
+                        ingredientlist));
+            }
+            if (currentSortingType != null) {
+                if (!currentSortingType.equals("Sort")) {
+                    sortRecipeList(recipeList,currentSortingType);
+                } else {
+                    recipeAdapter.notifyDataSetChanged();
                 }
+            } else {
                 recipeAdapter.notifyDataSetChanged();
             }
         });
@@ -221,7 +205,7 @@ public class RecipeListActivity extends AppCompatActivity
 
         final CollectionReference collectionReference = db.collection("Recipes");
         final String recipeTitle = recipe.getTitle();
-        final String recipePreparationTime = recipe.getPreparationTime();
+        final int recipePreparationTime = recipe.getPreparationTime();
         final int recipeServingNumber = recipe.getNumberofServings();
         final String recipeCategory = recipe.getRecipeCategory();
         final String recipeComments = recipe.getComments();
@@ -240,18 +224,13 @@ public class RecipeListActivity extends AppCompatActivity
         collectionReference
                 .document(recipeTitle)
                 .set(data)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, recipeTitle + " data has been added successfully!");
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d(TAG, recipeTitle + " data has been added successfully!"));
 
         recipeAdapter.add(recipe);
-    };
+    }
     public void onOkPressedEdit(Recipe recipe,
                          String title,
-                         String preparationTime,
+                         int preparationTime,
                          int servingNumber,
                          String category,
                          String comments,
@@ -266,7 +245,7 @@ public class RecipeListActivity extends AppCompatActivity
         recipe.setListofIngredients(list);
         spinnerForRecipe.setSelection(0);
         recipeAdapter.notifyDataSetChanged();
-    };
+    }
 
     private void sortRecipeList(ArrayList<Recipe> list, String sorting_type) {
         switch (sorting_type) {
@@ -296,8 +275,8 @@ public class RecipeListActivity extends AppCompatActivity
                 Collections.sort(list, new Comparator<Recipe>() {
                     @Override
                     public int compare(Recipe recipe, Recipe recipe1) {
-                        int time = Integer.parseInt(recipe.getPreparationTime());
-                        int time1 = Integer.parseInt(recipe1.getPreparationTime());
+                        int time = recipe.getPreparationTime();
+                        int time1 = recipe1.getPreparationTime();
                         if (time < time1) {
                             return -1;
                         } else if (time == time1) {
@@ -310,7 +289,7 @@ public class RecipeListActivity extends AppCompatActivity
                 recipeList = list;
                 recipeAdapter.notifyDataSetChanged();
                 break;
-            case "serving number":
+            case "serving size":
                 Collections.sort(list, new Comparator<Recipe>() {
                     @Override
                     public int compare(Recipe recipe, Recipe recipe1) {

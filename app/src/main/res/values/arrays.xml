@@ -11,7 +11,7 @@
         <item>(select one)</item>
         <item>title</item>
         <item>preparation time</item>
-        <item>serving number</item>
+        <item>serving size</item>
         <item>category</item>
     </string-array>
 </resources>

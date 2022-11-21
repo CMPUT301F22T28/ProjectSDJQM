@@ -194,7 +194,15 @@ public class IngredientActivity extends AppCompatActivity implements
                             unit,
                             category));
                 }
-                ingredientAdapter.notifyDataSetChanged();
+                if (currentSortingType != null) {
+                    if (!currentSortingType.equals("Sort")) {
+                        sortIngredientList(ingredientlist,currentSortingType);
+                    } else {
+                        ingredientAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    ingredientAdapter.notifyDataSetChanged();
+                }
             }
         });
 
@@ -296,7 +304,6 @@ public class IngredientActivity extends AppCompatActivity implements
                     .document(description)
                     .set(data);
         }
-        spinner.setSelection(0);
         ingredientAdapter.notifyDataSetChanged();
 
     }

@@ -9,7 +9,6 @@
 package com.example.projectsdjqm.recipe_list;
 
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
 
@@ -27,7 +26,7 @@ public class Recipe {
      *      List of ingredients
      */
     private String Title;
-    private String PreparationTime;
+    private int PreparationTime;
     private int NumberofServings;
     private String RecipeCategory;
     private String Comments;
@@ -36,7 +35,7 @@ public class Recipe {
     private ArrayList<Ingredient> listofIngredients;
 
     /* Constructor for Food */
-    public Recipe(String Title, String PreparationTime, int NumberofServings, String RecipeCategory,
+    public Recipe(String Title, int PreparationTime, int NumberofServings, String RecipeCategory,
                   String Comments, /*Image*/Drawable Photograph, ArrayList<Ingredient> listofIngredients) {
         this.Title = Title;
         this.PreparationTime = PreparationTime;
@@ -53,7 +52,7 @@ public class Recipe {
         return Title;
     }
 
-    public String getPreparationTime() {
+    public int getPreparationTime() {
         return PreparationTime;
     }
 
@@ -65,9 +64,6 @@ public class Recipe {
         return RecipeCategory;
     }
 
-//    public Image getPhotograph() {
-//        return Photograph;
-//    }
     public Drawable getPhotograph() {
         return Photograph;
     }
@@ -85,7 +81,7 @@ public class Recipe {
         this.Title = title;
     }
 
-    public void setPreparationTime(String preparationTime) {
+    public void setPreparationTime(int preparationTime) {
         this.PreparationTime = preparationTime;
     }
 
@@ -102,9 +98,6 @@ public class Recipe {
         this.RecipeCategory = recipeCategory;
     }
 
-//    public void setPhotograph(Image photograph) {
-//        this.Photograph = photograph;
-//    }
     public void setPhotograph(Drawable photograph) {
         this.Photograph = photograph;
     }

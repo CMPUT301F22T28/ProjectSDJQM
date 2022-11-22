@@ -15,18 +15,25 @@ import com.example.projectsdjqm.recipe_list.Recipe;
 
 import java.util.ArrayList;
 
+/**
+ * MealplanList:
+ * Custom array adapter for mealplan
+ */
 public class MealplanList extends ArrayAdapter<Mealplan> {
 
+    // attr init
     private ArrayList<Mealplan> mealplanList;
     private Context context;
 
 
+    // constructor
     public MealplanList(Context context, ArrayList<Mealplan> mealplanList) {
         super(context, 0, mealplanList);
         this.mealplanList = mealplanList;
         this.context = context;
     }
 
+    // view inflater
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -38,4 +45,5 @@ public class MealplanList extends ArrayAdapter<Mealplan> {
 
         return view;
     }
+    
 }

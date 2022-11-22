@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -35,9 +36,17 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
-
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
-import java.util.Date;
+
+/**
+ * RecipeFragment:
+ * fragment for the recipe list
+ */
 
 public class RecipeFragment extends DialogFragment {
     public interface OnFragmentInteractionListener {
@@ -52,6 +61,7 @@ public class RecipeFragment extends DialogFragment {
                              ArrayList<Ingredient> list);
     }
 
+    // attr init
     private EditText recipeTitle;
     // preparation time should change to a time selector? can discuss and decide in project part 4
     private EditText recipePreparationTime;
@@ -59,14 +69,19 @@ public class RecipeFragment extends DialogFragment {
     private EditText recipeCategory;
     private EditText recipeComments;
     private ImageView photo;
+    private ImageView recipePhoto;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
+    final String TAG = "Recipe Fragment";
+
     private TextView ingredientText;
     private Recipe recipe;
     private boolean isEdit = false;
     private final int requestCodeForTakePhoto = 1;
     private final int requestCodeForChoosePhoto = 2;
-
     private OnFragmentInteractionListener listener;
 
+    // super call (constructor)
     public RecipeFragment(Recipe recipe) {
         super();
         this.recipe = recipe;
@@ -77,6 +92,7 @@ public class RecipeFragment extends DialogFragment {
 
     }
 
+    // fragment interaction listener
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -87,30 +103,35 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
+    // layout inflater to update fields
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = getLayoutInflater()
                 .inflate(R.layout.recipe_add_fragment, null);
         recipeTitle = view.findViewById(R.id.edit_recipe_title);
-        recipePreparationTime = view.findViewById(R.id.edit_recipe_time);
+        recipePreparationTime = view.findViewById(R.id.edit_recipe_preparation_time);
         recipeServingNumber = view.findViewById(R.id.edit_recipe_servings);
         recipeCategory = view.findViewById(R.id.edit_recipe_category);
         recipeComments = view.findViewById(R.id.edit_recipe_comments);
+
         Button takePhotoButton = view.findViewById(R.id.take_photo);
         Button choosePhotoButton = view.findViewById(R.id.choose_from_album);
         Button ingredientSelectButton = view.findViewById(R.id.ingredient_select_button);
+
         photo = view.findViewById(R.id.recipe_image);
+        recipePhoto = view.findViewById(R.id.recipe_image);
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+
         ingredientText = view.findViewById(R.id.recipe_ingredient);
-// click edit, current recipe details show in fragment
         if (isEdit) {
             recipeTitle.setText(recipe.getTitle());
             recipeServingNumber.setText(String.valueOf(recipe.getNumberofServings()));
             recipeCategory.setText(recipe.getRecipeCategory());
             recipeComments.setText(recipe.getComments());
-            photo.setImageDrawable(recipe.getPhotograph());
-            ArrayList<Ingredient> list = recipe.getListofIngredients();
             recipePreparationTime.setText(String.valueOf(recipe.getPreparationTime()));
+            ArrayList<Ingredient> list = recipe.getListofIngredients();
 
             StringBuilder listText = new StringBuilder();
             for (int i=0; i<list.size(); i++) {
@@ -186,6 +207,7 @@ public class RecipeFragment extends DialogFragment {
         return alertDialog;
     }
 
+    // view click listener
     class CustomListener implements View.OnClickListener {
         private final Dialog dialog;
 
@@ -203,11 +225,13 @@ public class RecipeFragment extends DialogFragment {
             String category = recipeCategory.getText().toString();
             String comments = recipeComments.getText().toString();
             Drawable photograph = photo.getDrawable();
+
             // need to change --------------------------
-            Ingredient i = new Ingredient("a",new Date(),Ingredient.Location.Pantry,2,1,"category");
+//            Ingredient i = new Ingredient("a",new Date(),Ingredient.Location.Pantry,2,1,"category");
             ArrayList<Ingredient> list = new ArrayList<>();
-            list.add(i);
+//            list.add(i);
             // need to change --------------------------
+
             // check title
             if (title.length() < 1) {
                 isValid = false;
@@ -239,10 +263,9 @@ public class RecipeFragment extends DialogFragment {
                 ex.printStackTrace();
             }
 
-            //
             int preparationT = 0;
             try {
-                if (!servingNumber.isEmpty()) {
+                if (!preparationTime.isEmpty()) {
                     preparationT = Integer.parseInt(preparationTime);
                     if (preparationT < 1) {
                         isValid = false;
@@ -289,7 +312,6 @@ public class RecipeFragment extends DialogFragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -314,8 +336,6 @@ public class RecipeFragment extends DialogFragment {
         if(requestCode == requestCodeForTakePhoto && resultCode == Activity.RESULT_OK) {
             assert data != null;
             Bitmap b =(Bitmap) data.getExtras().get("data");
-//            Drawable drawable = new BitmapDrawable(getResources (), b);
-//            photo.setImageDrawable(drawable);
             photo.setImageBitmap(b);
 
 
@@ -323,6 +343,23 @@ public class RecipeFragment extends DialogFragment {
             assert data != null;
             Uri uri = data.getData();
             photo.setImageURI(uri);
+
+            // set photokey for image upload
+            final String photokey = recipeTitle.getText().toString().replace(" ","");
+            StorageReference imageRef = storageReference.child("images/" + photokey);
+            imageRef.putFile(uri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Log.d(TAG,"image upload successfully");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG,"image not upload");
+                        }
+                    });
         }
         else {
             super.onActivityResult(requestCode, resultCode, data);

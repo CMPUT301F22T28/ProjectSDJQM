@@ -2,7 +2,7 @@
  * Classname: ShoppingList
  *
  * Version information: Version 1
- *
+ * 
  * Date: 2022/09/29
  */
 
@@ -11,6 +11,10 @@ package com.example.projectsdjqm.shopping_list;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import java.util.ArrayList;
 
+/**
+ * ShoppingList:
+ * shoppinglist class
+ */
 public class ShoppingList {
     /*
      * Each ShoppingList class has the following:
@@ -25,19 +29,26 @@ public class ShoppingList {
 //        this.listOfIngredients = listOfIngredients;
 
 
+    
+    
+    
+    
+    // attr init
     private Ingredient ingredient;
     private boolean pickedUp;
+    
+    // constructor
     public ShoppingList(Ingredient ingredient, boolean pickedUp) {
         this.ingredient = ingredient;
         this.pickedUp = pickedUp;
     }
 
-    /* Getters */
+    // getters
 //    public ArrayList<Ingredient> getListOfIngredients() {return listOfIngredients;}
     public Ingredient getIngredient() {return ingredient;}
     public boolean getPickedUp() {return pickedUp;}
 
-    /* Setters */
+    // setters
 //    public void setListOfIngredients(ArrayList<Ingredient> listOfIngredients) {
 //        this.listOfIngredients = listOfIngredients;
     public void setIngredient(Ingredient ingredient) {

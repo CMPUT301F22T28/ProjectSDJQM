@@ -14,6 +14,11 @@ import com.example.projectsdjqm.ingredient_storage.Ingredient;
 
 import java.util.ArrayList;
 
+
+/**
+ * Recipe:
+ * recipe class
+ */
 public class Recipe {
     /*
      *  Each Recipe entry has the following fields:
@@ -30,13 +35,13 @@ public class Recipe {
     private int NumberofServings;
     private String RecipeCategory;
     private String Comments;
-//    private Image Photograph;
     private Drawable Photograph;
     private ArrayList<Ingredient> listofIngredients;
 
+
     /* Constructor for Food */
     public Recipe(String Title, int PreparationTime, int NumberofServings, String RecipeCategory,
-                  String Comments, /*Image*/Drawable Photograph, ArrayList<Ingredient> listofIngredients) {
+                  String Comments, Drawable Photograph, ArrayList<Ingredient> listofIngredients) {
         this.Title = Title;
         this.PreparationTime = PreparationTime;
         this.NumberofServings = NumberofServings;
@@ -47,7 +52,7 @@ public class Recipe {
 
     }
 
-    /* Getters */
+    // getters
     public String getTitle() {
         return Title;
     }
@@ -76,7 +81,10 @@ public class Recipe {
         return listofIngredients;
     }
 
-    /* Setters */
+    
+    
+    
+    // setters
     public void setTitle(String title) {
         this.Title = title;
     }

@@ -21,16 +21,23 @@ import com.example.projectsdjqm.ingredient_storage.IngredientList;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * ShoppingListAdapter:
+ * Custom array adapter for shoppinglist
+ */
 public class ShoppingListAdapter extends ArrayAdapter<ShoppingList> {
 
+    // attr init
     private ArrayList<ShoppingList> shoppingList;
     private Context context;
 
+    // constructor
     public ShoppingListAdapter(Context context, ArrayList<ShoppingList> shoppingList) {
         super(context,0, shoppingList);
         this.context = context;
     }
 
+    // view inflater for updating fields
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @Nullable ViewGroup parent) {
@@ -76,4 +83,5 @@ public class ShoppingListAdapter extends ArrayAdapter<ShoppingList> {
 
         return view;
     }
+    
 }

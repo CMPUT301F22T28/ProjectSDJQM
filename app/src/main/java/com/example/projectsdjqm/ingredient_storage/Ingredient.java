@@ -10,13 +10,15 @@ package com.example.projectsdjqm.ingredient_storage;
 
 import java.util.Date;
 
+/**
+ * Ingredient:
+ * ingredient class
+ */
 public class Ingredient {
-    /* Maximum Food Description is 30 characters,
-    * might need to update this */
+    // Maximum Food Description is 30 characters
     public static final int MAX_LENGTH_NAME = 30;
 
-    /* Choice of Location: pantry, freezer, fridge
-    * might need to update this */
+    // Choice of Location: pantry, freezer, fridge
     public enum Location {
         Pantry,
         Freezer,
@@ -35,12 +37,11 @@ public class Ingredient {
     private String IngredientDescription;
     private Date IngredientBestBeforeDate;
     private Location IngredientLocation;
-    //private boolean IngredientPickedUp;
     private int IngredientAmount;
     private int IngredientUnit;
     private String IngredientCategory;
 
-    /* Constructor for Ingredient */
+    // Ingredient Constructor
     public Ingredient(String Description, Date BestBeforeDate, Location Location,
                       int Count, int Unit, String IngredientCategory) {
         this.IngredientDescription = Description;
@@ -49,10 +50,9 @@ public class Ingredient {
         this.IngredientAmount = Count;
         this.IngredientUnit = Unit;
         this.IngredientCategory = IngredientCategory;
-        //this.IngredientPickedUp = IngredientPickedUp;
     }
 
-    /* Getters */
+    // getters
     public String getIngredientDescription() {
         return IngredientDescription;
     }
@@ -74,10 +74,10 @@ public class Ingredient {
     }
 
     public String getIngredientCategory() {return IngredientCategory;}
+    
 
-    //public boolean getIngredientPickedUp() {return IngredientPickedUp;}
-
-    /* Setters */
+    
+    // setters
     public void setIngredientDescription(String ingredientDescription) {
         this.IngredientDescription = ingredientDescription;
     }

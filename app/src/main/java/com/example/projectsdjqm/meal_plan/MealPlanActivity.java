@@ -21,12 +21,16 @@ import com.example.projectsdjqm.shopping_list.ShoppingListActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-
+/**
+ * MealPlanActivity:
+ * Main page of the meal plan
+ */
 public class MealPlanActivity extends AppCompatActivity {
 
+    
+    // bottom nav
     BottomNavigationView bottomNavigationView;
-
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

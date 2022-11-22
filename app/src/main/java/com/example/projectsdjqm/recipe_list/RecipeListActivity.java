@@ -331,7 +331,6 @@ public class RecipeListActivity extends AppCompatActivity
         recipeAdapter.notifyDataSetChanged();
     };
 
-
     private void sortRecipeList(ArrayList<Recipe> list, String sorting_type) {
         switch (sorting_type) {
             case "title":
@@ -342,8 +341,6 @@ public class RecipeListActivity extends AppCompatActivity
                                 .compareTo(recipe1.getTitle());
                     }
                 });
-                recipeList = list;
-                recipeAdapter.notifyDataSetChanged();
                 break;
             case "category":
                 Collections.sort(list, new Comparator<Recipe>() {
@@ -353,8 +350,6 @@ public class RecipeListActivity extends AppCompatActivity
                                 .compareTo(recipe1.getRecipeCategory());
                     }
                 });
-                recipeList = list;
-                recipeAdapter.notifyDataSetChanged();
                 break;
             case "preparation time":
                 Collections.sort(list, new Comparator<Recipe>() {
@@ -371,8 +366,6 @@ public class RecipeListActivity extends AppCompatActivity
                         }
                     }
                 });
-                recipeList = list;
-                recipeAdapter.notifyDataSetChanged();
                 break;
             case "serving size":
                 Collections.sort(list, new Comparator<Recipe>() {
@@ -389,11 +382,11 @@ public class RecipeListActivity extends AppCompatActivity
                         }
                     }
                 });
-                recipeList = list;
-                recipeAdapter.notifyDataSetChanged();
                 break;
             default:
                 break;
         }
+        recipeList = list;
+        recipeAdapter.notifyDataSetChanged();
     }
 }

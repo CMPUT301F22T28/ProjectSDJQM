@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -46,8 +47,8 @@ public class MealPlanActivity extends AppCompatActivity
     FirebaseFirestore db;
     final String TAG = "Recipes Activity";
     ListView mealplanListView;
-    MealplanList mealplanAdapter;
-    public ArrayList<Mealplan> mealplanList;
+    ArrayAdapter<Mealplan> mealplanAdapter;
+    ArrayList<Mealplan> mealplanList;
     Recipe selectedMealplan;
 
 
@@ -98,7 +99,7 @@ public class MealPlanActivity extends AppCompatActivity
         });
 
         mealplanListView = findViewById(R.id.meal_plan_list);
-        mealplanList = new ArrayList<>();
+        mealplanList = new ArrayList<Mealplan>();
 
         ArrayList<Ingredient> ingredientList = new ArrayList<>();
         Ingredient testc = new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here");
@@ -113,7 +114,6 @@ public class MealPlanActivity extends AppCompatActivity
         mealplanList.add(testb);
 
         mealplanAdapter = new MealplanList(this, mealplanList);
-//        mealplanAdapter.setMealplanButtonListener(this);
         mealplanListView.setAdapter(mealplanAdapter);
 
         final FloatingActionButton addButton = findViewById(R.id.add_meal_plan);

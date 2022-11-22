@@ -1,5 +1,7 @@
 package com.example.projectsdjqm.meal_plan;
 
+import static android.content.Intent.getIntent;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -50,7 +52,7 @@ public class MealplanFragment extends DialogFragment {
     private DatePicker mealplan_date_view;
     private ListView recipeListview;
     private ListView ingredientListview;
-    private FragmentAListener listenerA;
+    private String selectedItem;
 
 
     public MealplanFragment(Mealplan mealplan) {
@@ -73,6 +75,13 @@ public class MealplanFragment extends DialogFragment {
         }
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        String strtext = getArguments().getString("edttext");
+        return inflater.inflate(R.layout.mealplan_add_fragment , container, false);
+    }
+
     // layout inflater to update fields
     @NonNull
     @Override
@@ -84,6 +93,10 @@ public class MealplanFragment extends DialogFragment {
         mealplan_date_view = view.findViewById(R.id.mealplan_date_picker);
         recipeListview = view.findViewById(R.id.mealplan_r_add_list);
         ingredientListview = view.findViewById(R.id.mealplan_in_add_list);
+
+
+
+//        selectedItem = getArguments().getString("edttext");
 
         Button recipe_add_button = (Button) view.findViewById(R.id.mealplan_r_add_button);
         recipe_add_button.setOnClickListener(new View.OnClickListener()

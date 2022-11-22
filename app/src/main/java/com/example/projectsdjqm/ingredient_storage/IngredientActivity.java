@@ -117,9 +117,6 @@ public class IngredientActivity extends AppCompatActivity implements
         ingredientlistview = findViewById(R.id.ingredient_list);
 
         ingredientlist = new ArrayList<>();
-        //ingredientlist.add(new Ingredient("egg",new Date(),Ingredient.Location.Pantry,3,2,"back"));
-        //ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
-        //ingredientlist.add(new Ingredient("ccc",new Date(2023,5,3),Ingredient.Location.Freezer,5,4,"ccc"));
         ingredientAdapter = new IngredientList(this, ingredientlist);
         ingredientAdapter.setIngredientButtonListener(this);
         ingredientlistview.setAdapter(ingredientAdapter);
@@ -318,7 +315,6 @@ public class IngredientActivity extends AppCompatActivity implements
 
     // sort list by a certain type: description, category, best before date, location
     public void sortIngredientList(ArrayList<Ingredient> list, String sorting_type) {
-        IngredientList adapter;
         switch (sorting_type) {
             case "description":
                 Collections.sort(list, new Comparator<Ingredient>() {
@@ -328,8 +324,6 @@ public class IngredientActivity extends AppCompatActivity implements
                                 .compareTo(ingredient1.getIngredientDescription());
                     }
                 });
-                ingredientlist = list;
-                ingredientAdapter.notifyDataSetChanged();
                 break;
             case "category":
                 Collections.sort(list, new Comparator<Ingredient>() {
@@ -339,8 +333,6 @@ public class IngredientActivity extends AppCompatActivity implements
                                 .compareTo(ingredient1.getIngredientCategory());
                     }
                 });
-                ingredientlist = list;
-                ingredientAdapter.notifyDataSetChanged();
                 break;
             case "location":
                 Collections.sort(list, new Comparator<Ingredient>() {
@@ -350,8 +342,6 @@ public class IngredientActivity extends AppCompatActivity implements
                                 .compareTo(ingredient1.getIngredientLocation().toString());
                     }
                 });
-                ingredientlist = list;
-                ingredientAdapter.notifyDataSetChanged();
                 break;
             case "bbd":
                 Collections.sort(list, new Comparator<Ingredient>() {
@@ -368,12 +358,12 @@ public class IngredientActivity extends AppCompatActivity implements
                         }
                     }
                 });
-                ingredientlist = list;
-                ingredientAdapter.notifyDataSetChanged();
                 break;
             default:
                 break;
         }
+        ingredientlist = list;
+        ingredientAdapter.notifyDataSetChanged();
     }
 
 }

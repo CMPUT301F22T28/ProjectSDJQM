@@ -171,7 +171,7 @@ public class RecipeListActivity extends AppCompatActivity
                         ingredientlist));
             }
             if (currentSortingType != null) {
-                if (!currentSortingType.equals("Sort")) {
+                if (!currentSortingType.equals("(select one)")) {
                     sortRecipeList(recipeList,currentSortingType);
                 } else {
                     recipeAdapter.notifyDataSetChanged();

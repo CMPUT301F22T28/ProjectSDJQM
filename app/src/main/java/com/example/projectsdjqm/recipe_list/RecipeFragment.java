@@ -68,7 +68,7 @@ public class RecipeFragment extends DialogFragment {
     private EditText recipeServingNumber;
     private EditText recipeCategory;
     private EditText recipeComments;
-    private TimePicker timePicker;
+    private EditText recipePreparationTime;
     private ImageView photo;
     private ImageView recipePhoto;
     private FirebaseStorage storage;
@@ -111,7 +111,7 @@ public class RecipeFragment extends DialogFragment {
         View view = getLayoutInflater()
                 .inflate(R.layout.recipe_add_fragment, null);
         recipeTitle = view.findViewById(R.id.edit_recipe_title);
-//        recipePreparationTime = view.findViewById(R.id.edit_recipe_preparation_time);
+        recipePreparationTime = view.findViewById(R.id.edit_recipe_preparation_time);
         recipeServingNumber = view.findViewById(R.id.edit_recipe_servings);
         recipeCategory = view.findViewById(R.id.edit_recipe_category);
         recipeComments = view.findViewById(R.id.edit_recipe_comments);
@@ -126,21 +126,14 @@ public class RecipeFragment extends DialogFragment {
         storageReference = storage.getReference();
 
         ingredientText = view.findViewById(R.id.recipe_ingredient);
-        timePicker = view.findViewById(R.id.time_picker);
-        timePicker.setIs24HourView(true);
 
         if (isEdit) {
             recipeTitle.setText(recipe.getTitle());
             recipeServingNumber.setText(String.valueOf(recipe.getNumberofServings()));
             recipeCategory.setText(recipe.getRecipeCategory());
             recipeComments.setText(recipe.getComments());
+            recipePreparationTime.setText(String.valueOf(recipe.getPreparationTime()));
             ArrayList<Ingredient> list = recipe.getListofIngredients();
-
-            int totalTime = recipe.getPreparationTime();
-            int hours = totalTime / 60;
-            int minutes = totalTime % 60;
-            timePicker.setHour(hours);
-            timePicker.setMinute(minutes);
 
             StringBuilder listText = new StringBuilder();
             for (int i=0; i<list.size(); i++) {
@@ -229,14 +222,12 @@ public class RecipeFragment extends DialogFragment {
             boolean isValid = true;
 
             String title = recipeTitle.getText().toString();
-//            String preparationTime = recipePreparationTime.getText().toString();
-            int preparationTime_h = timePicker.getHour();
-            int preparationTime_m = timePicker.getMinute();
-            int preparationTime = preparationTime_h * 60 + preparationTime_m;
+            String preparationTime = recipePreparationTime.getText().toString();
             String servingNumber = recipeServingNumber.getText().toString();
             String category = recipeCategory.getText().toString();
             String comments = recipeComments.getText().toString();
             Drawable photograph = photo.getDrawable();
+
             // need to change --------------------------
 //            Ingredient i = new Ingredient("a",new Date(),Ingredient.Location.Pantry,2,1,"category");
             ArrayList<Ingredient> list = new ArrayList<>();
@@ -274,11 +265,30 @@ public class RecipeFragment extends DialogFragment {
                 ex.printStackTrace();
             }
 
+            int preparationT = 0;
+            try {
+                if (!preparationTime.isEmpty()) {
+                    preparationT = Integer.parseInt(preparationTime);
+                    if (preparationT < 1) {
+                        isValid = false;
+                        recipePreparationTime.setError("Enter a positive number");
+                    }
+                } else {
+                    isValid = false;
+                    recipePreparationTime.setError("Enter a positive number");
+                }
+            } catch (NumberFormatException ex) {
+                isValid = false;
+                recipePreparationTime.setError("Enter a positive number");
+                Log.d("NumberFormatLog", "error on numberformat is " + ex.getMessage());
+                ex.printStackTrace();
+            }
+
             if (isValid) {
                 if (!isEdit) {
                     listener.onOkPressedAdd(new Recipe(
                             title,
-                            preparationTime,
+                            preparationT,
                             serving,
                             category,
                             comments,
@@ -289,7 +299,7 @@ public class RecipeFragment extends DialogFragment {
                     listener.onOkPressedEdit(
                             recipe,
                             title,
-                            preparationTime,
+                            preparationT,
                             serving,
                             category,
                             comments,

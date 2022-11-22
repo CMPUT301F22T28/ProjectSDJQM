@@ -53,12 +53,13 @@
                 android:text="Preparation Time:"
                 android:textSize="16sp" />
 
+            <EditText
+                android:id="@+id/edit_recipe_preparation_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
         </LinearLayout>
-        <TimePicker
-            android:id="@+id/time_picker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:timePickerMode="spinner"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"

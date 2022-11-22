@@ -38,7 +38,15 @@ import com.example.projectsdjqm.ingredient_storage.Ingredient;
 
 import java.util.ArrayList;
 import java.util.Date;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.UUID;
 public class RecipeFragment extends DialogFragment {
     public interface OnFragmentInteractionListener {
         void onOkPressedAdd(Recipe recipe);
@@ -60,6 +68,10 @@ public class RecipeFragment extends DialogFragment {
     private EditText recipeComments;
     private TimePicker timePicker;
     private ImageView photo;
+    private ImageView recipePhoto;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
+    final String TAG = "Recipe Fragment";
     private TextView ingredientText;
     private Recipe recipe;
     private boolean isEdit = false;
@@ -102,6 +114,9 @@ public class RecipeFragment extends DialogFragment {
         Button choosePhotoButton = view.findViewById(R.id.choose_from_album);
         Button ingredientSelectButton = view.findViewById(R.id.ingredient_select_button);
         photo = view.findViewById(R.id.recipe_image);
+        recipePhoto = view.findViewById(R.id.recipe_image);
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
         ingredientText = view.findViewById(R.id.recipe_ingredient);
         timePicker = view.findViewById(R.id.time_picker);
         timePicker.setIs24HourView(true);
@@ -215,9 +230,9 @@ public class RecipeFragment extends DialogFragment {
             String comments = recipeComments.getText().toString();
             Drawable photograph = photo.getDrawable();
             // need to change --------------------------
-            Ingredient i = new Ingredient("a",new Date(),Ingredient.Location.Pantry,2,1,"category");
+//            Ingredient i = new Ingredient("a",new Date(),Ingredient.Location.Pantry,2,1,"category");
             ArrayList<Ingredient> list = new ArrayList<>();
-            list.add(i);
+//            list.add(i);
             // need to change --------------------------
             // check title
             if (title.length() < 1) {
@@ -313,6 +328,21 @@ public class RecipeFragment extends DialogFragment {
             assert data != null;
             Uri uri = data.getData();
             photo.setImageURI(uri);
+            final String photokey = recipeTitle.getText().toString().replace(" ","");
+            StorageReference imageRef = storageReference.child("images/" + photokey);
+            imageRef.putFile(uri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Log.d(TAG,"image upload successfully");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG,"image not upload");
+                        }
+                    });
         }
         else {
             super.onActivityResult(requestCode, resultCode, data);

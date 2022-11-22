@@ -21,12 +21,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,21 +41,19 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * RecipeFragment:
  * fragment for the recipe list
  */
+
 public class RecipeFragment extends DialogFragment {
     public interface OnFragmentInteractionListener {
         void onOkPressedAdd(Recipe recipe);
         void onOkPressedEdit(Recipe recipe,
                              String title,
-                             String preparationTime,
+                             int preparationTime,
                              int servingNumber,
                              String comments,
                              String category,
@@ -66,13 +64,11 @@ public class RecipeFragment extends DialogFragment {
     // attr init
     private EditText recipeTitle;
     // preparation time should change to a time selector? can discuss and decide in project part 4
-    private EditText recipePreparationTime;
+//    private EditText recipePreparationTime;
     private EditText recipeServingNumber;
     private EditText recipeCategory;
     private EditText recipeComments;
-    private Button takePhotoButton;
-    private Button choosePhotoButton;
-    private Button ingredientSelectButton;
+    private TimePicker timePicker;
     private ImageView photo;
     private ImageView recipePhoto;
     private FirebaseStorage storage;
@@ -82,6 +78,8 @@ public class RecipeFragment extends DialogFragment {
     private TextView ingredientText;
     private Recipe recipe;
     private boolean isEdit = false;
+    private final int requestCodeForTakePhoto = 1;
+    private final int requestCodeForChoosePhoto = 2;
     private OnFragmentInteractionListener listener;
 
     // super call (constructor)
@@ -102,7 +100,7 @@ public class RecipeFragment extends DialogFragment {
         if (context instanceof OnFragmentInteractionListener) {
             listener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString() + "This is not the correct fragment!");
+            throw new RuntimeException(context + "This is not the correct fragment!");
         }
     }
 
@@ -110,16 +108,17 @@ public class RecipeFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity())
+        View view = getLayoutInflater()
                 .inflate(R.layout.recipe_add_fragment, null);
         recipeTitle = view.findViewById(R.id.edit_recipe_title);
-        recipePreparationTime = view.findViewById(R.id.edit_recipe_preparation_time);
+//        recipePreparationTime = view.findViewById(R.id.edit_recipe_preparation_time);
         recipeServingNumber = view.findViewById(R.id.edit_recipe_servings);
         recipeCategory = view.findViewById(R.id.edit_recipe_category);
         recipeComments = view.findViewById(R.id.edit_recipe_comments);
-        takePhotoButton = view.findViewById(R.id.take_photo);
-        choosePhotoButton = view.findViewById(R.id.choose_from_album);
-        ingredientSelectButton = view.findViewById(R.id.ingredient_select_button);
+
+        Button takePhotoButton = view.findViewById(R.id.take_photo);
+        Button choosePhotoButton = view.findViewById(R.id.choose_from_album);
+        Button ingredientSelectButton = view.findViewById(R.id.ingredient_select_button);
 
         photo = view.findViewById(R.id.recipe_image);
         recipePhoto = view.findViewById(R.id.recipe_image);
@@ -127,68 +126,69 @@ public class RecipeFragment extends DialogFragment {
         storageReference = storage.getReference();
 
         ingredientText = view.findViewById(R.id.recipe_ingredient);
+        timePicker = view.findViewById(R.id.time_picker);
+        timePicker.setIs24HourView(true);
 
-        // click edit, current recipe details show in fragment
         if (isEdit) {
             recipeTitle.setText(recipe.getTitle());
-            recipePreparationTime.setText(recipe.getPreparationTime());
             recipeServingNumber.setText(String.valueOf(recipe.getNumberofServings()));
             recipeCategory.setText(recipe.getRecipeCategory());
             recipeComments.setText(recipe.getComments());
-            //photo.setImageDrawable(recipe.getPhotograph());
             ArrayList<Ingredient> list = recipe.getListofIngredients();
-            String listText = "";
+
+            int totalTime = recipe.getPreparationTime();
+            int hours = totalTime / 60;
+            int minutes = totalTime % 60;
+            timePicker.setHour(hours);
+            timePicker.setMinute(minutes);
+
+            StringBuilder listText = new StringBuilder();
             for (int i=0; i<list.size(); i++) {
-                listText += list.get(i).getIngredientDescription();
-                listText += ",\n";
+                listText.append(list.get(i).getIngredientDescription());
+                listText.append(",\n");
             }
         }
-        takePhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // have permission and start taking photo
-                if (ContextCompat.checkSelfPermission(
-                        getContext(),
-                        Manifest.permission.CAMERA) == PERMISSION_GRANTED &&
-                        ContextCompat.checkSelfPermission(
-                                getContext(),
-                                Manifest.permission.READ_EXTERNAL_STORAGE) == PERMISSION_GRANTED &&
-                        ContextCompat.checkSelfPermission(
-                                getContext(),
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED){
-                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent,1);
-                }
-                // request for permissions if do not have
-                else {
-                    ActivityCompat.requestPermissions(
-                            getActivity(),
-                            new String[]{
-                                    Manifest.permission.CAMERA,
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            1);
-                }
+        takePhotoButton.setOnClickListener(view12 -> {
+            // have permission and start taking photo
+            if (ContextCompat.checkSelfPermission(
+                    getContext(),
+                    Manifest.permission.CAMERA) == PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(
+                            getContext(),
+                            Manifest.permission.READ_EXTERNAL_STORAGE) == PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(
+                            getContext(),
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED){
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent,requestCodeForTakePhoto);
+            }
+            // request for permissions if do not have
+            else {
+                ActivityCompat.requestPermissions(
+                        getActivity(),
+                        new String[]{
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        requestCodeForTakePhoto);
             }
         });
 
-        choosePhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // request for permissions if do not have
-                if (ContextCompat.checkSelfPermission(
-                                getContext(),
-                                Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(
-                            getActivity(),
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                } else {
-                    // have permission and open album to choose a photo
-                    Intent intent = new Intent("android.intent.action.GET_CONTENT");
-                    intent.setType("image/*");
-                    startActivityForResult(intent, 2);
-                }
+        choosePhotoButton.setOnClickListener(view1 -> {
+            // request for permissions if do not have
+            if (ContextCompat.checkSelfPermission(
+                            getContext(),
+                            Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                        getActivity(),
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        requestCodeForChoosePhoto);
+            } else {
+                // have permission and open album to choose a photo
+                Intent intent = new Intent("android.intent.action.GET_CONTENT");
+                intent.setType("image/*");
+                startActivityForResult(intent, requestCodeForChoosePhoto);
             }
         });
 
@@ -229,15 +229,18 @@ public class RecipeFragment extends DialogFragment {
             boolean isValid = true;
 
             String title = recipeTitle.getText().toString();
-            String preparationTime = recipePreparationTime.getText().toString();
+//            String preparationTime = recipePreparationTime.getText().toString();
+            int preparationTime_h = timePicker.getHour();
+            int preparationTime_m = timePicker.getMinute();
+            int preparationTime = preparationTime_h * 60 + preparationTime_m;
             String servingNumber = recipeServingNumber.getText().toString();
             String category = recipeCategory.getText().toString();
             String comments = recipeComments.getText().toString();
             Drawable photograph = photo.getDrawable();
             // need to change --------------------------
-            //Ingredient i = new Ingredient("a",new Date(),Ingredient.Location.Pantry,2,1,"category");
+//            Ingredient i = new Ingredient("a",new Date(),Ingredient.Location.Pantry,2,1,"category");
             ArrayList<Ingredient> list = new ArrayList<>();
-            //list.add(i);
+//            list.add(i);
             // need to change --------------------------
 
             // check title
@@ -252,26 +255,6 @@ public class RecipeFragment extends DialogFragment {
                 recipeCategory.setError("Enter a category");
             }
 
-            //check preparation time
-            int time = 0;
-            try {
-                if (!preparationTime.isEmpty()) {
-                    time = Integer.parseInt(preparationTime);
-
-                    if (time < 1) {
-                        isValid = false;
-                        recipePreparationTime.setError("Enter a positive number");
-                    }
-                } else {
-                    isValid = false;
-                    recipePreparationTime.setError("Enter a positive number");
-                }
-            } catch (NumberFormatException ex) {
-                isValid = false;
-                recipePreparationTime.setError("Enter a positive number");
-                Log.d("NumberFormatLog", "error on numberformat is " + ex.getMessage());
-                ex.printStackTrace();
-            }
             int serving = 0;
             try {
                 if (!servingNumber.isEmpty()) {
@@ -325,32 +308,35 @@ public class RecipeFragment extends DialogFragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         // take photo
-        if (requestCode == 1) {
+        if (requestCode == requestCodeForTakePhoto) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent,1);
+                startActivityForResult(cameraIntent,requestCodeForTakePhoto);
             }
         }
         // choose a photo
-        else if (requestCode == 2) {
+        else if (requestCode == requestCodeForChoosePhoto) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = new Intent("android.intent.action.GET_CONTENT");
                 intent.setType("image/*");
-                startActivityForResult(intent, 2);
+                startActivityForResult(intent, requestCodeForChoosePhoto);
             }
         }
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == 1 && resultCode == Activity.RESULT_OK) {
+        if(requestCode == requestCodeForTakePhoto && resultCode == Activity.RESULT_OK) {
+            assert data != null;
             Bitmap b =(Bitmap) data.getExtras().get("data");
             photo.setImageBitmap(b);
 
-        }else if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
+        }else if (requestCode == requestCodeForChoosePhoto && resultCode == Activity.RESULT_OK) {
+            assert data != null;
             Uri uri = data.getData();
             photo.setImageURI(uri);
 
-            final String photokey = recipeTitle.getText().toString();
+            // set photokey for image upload
+            final String photokey = recipeTitle.getText().toString().replace(" ","");
             StorageReference imageRef = storageReference.child("images/" + photokey);
             imageRef.putFile(uri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -365,7 +351,6 @@ public class RecipeFragment extends DialogFragment {
                             Log.d(TAG,"image not upload");
                         }
                     });
-
         }
         else {
             super.onActivityResult(requestCode, resultCode, data);

@@ -38,8 +38,7 @@ import java.util.Date;
  * Main page of the meal plan
  */
 public class MealPlanActivity extends AppCompatActivity
-        implements MealplanFragment.OnFragmentInteractionListener,
-        MealplanStorageFragment.OnFragmentInteractionListener{
+        implements MealplanFragment.OnFragmentInteractionListener{
 
     
     // bottom nav
@@ -51,7 +50,7 @@ public class MealPlanActivity extends AppCompatActivity
     public ArrayList<Mealplan> mealplanList;
     Recipe selectedMealplan;
 
-    @Override public void onFragmentInteraction(Uri uri) {}
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

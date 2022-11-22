@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:animationCache="true">
+
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,11 +32,11 @@
                 android:id="@+id/mealplan_date_picker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:calendarViewShown="false"
-                android:datePickerMode="spinner"
-                android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
-                android:layout_weight="1"/>
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:calendarViewShown="false"
+                android:datePickerMode="spinner" />
 
 
         </LinearLayout>
@@ -41,28 +44,29 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp">
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
+                    android:layout_weight="1"
                     android:text="Recipes: "
-                    android:textSize="20dp"
-                    android:layout_weight="1"/>
+                    android:textSize="20dp" />
 
                 <Button
                     android:id="@+id/mealplan_r_add_button"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:text="add"/>
+                    android:text="add" />
 
                 <Button
                     android:id="@+id/mealplan_r_delete_button"
@@ -71,40 +75,43 @@
                     android:layout_marginLeft="20dp"
                     android:text="delete" />
             </LinearLayout>
+
             <ListView
+                android:id="@+id/mealplan_r_add_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/mealplan_r_add_list">
+                android:layout_height="wrap_content">
 
             </ListView>
 
 
-
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp">
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
+                    android:layout_weight="1"
                     android:text="List of Ingredients: "
-                    android:textSize="18dp"
-                    android:layout_weight="1"/>
+                    android:textSize="18dp" />
+
                 <Button
                     android:id="@+id/mealplan_in_add_button"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:text="add"/>
+                    android:text="add" />
 
                 <Button
                     android:id="@+id/mealplan_in_delete_button"
@@ -113,10 +120,11 @@
                     android:layout_marginLeft="20dp"
                     android:text="delete" />
             </LinearLayout>
+
             <ListView
+                android:id="@+id/mealplan_in_add_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/mealplan_in_add_list">
+                android:layout_height="wrap_content">
 
             </ListView>
 

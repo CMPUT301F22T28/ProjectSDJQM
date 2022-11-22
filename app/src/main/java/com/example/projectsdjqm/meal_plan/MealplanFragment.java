@@ -4,10 +4,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -34,6 +36,9 @@ public class MealplanFragment extends DialogFragment {
     public interface OnFragmentInteractionListener {
         void onOkPressedAdd(Mealplan mealplan);
     }
+    public interface FragmentAListener{
+        void onInputASent(CharSequence input);
+    }
 
     // attr init
     private Mealplan mealplan;
@@ -41,6 +46,7 @@ public class MealplanFragment extends DialogFragment {
     private DatePicker mealplan_date_view;
     private ListView recipeListview;
     private ListView ingredientListview;
+    private FragmentAListener listenerA;
 
 
     public MealplanFragment(Mealplan mealplan) {
@@ -75,6 +81,22 @@ public class MealplanFragment extends DialogFragment {
         recipeListview = view.findViewById(R.id.mealplan_r_add_list);
         ingredientListview = view.findViewById(R.id.mealplan_in_add_list);
 
+        Button recipe_add_button = (Button) view.findViewById(R.id.mealplan_r_add_button);
+        recipe_add_button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent i = new Intent(getActivity(), mealplan_extend.class);
+                startActivity(i);
+                MealplanStorageFragment nextFrag= new MealplanStorageFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(((ViewGroup)getView().getParent()).getId(), nextFrag, "findThisFragment")
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
         return builder
                 .setView(view)
                 .setTitle("Adding Meal Plan")
@@ -95,5 +117,7 @@ public class MealplanFragment extends DialogFragment {
                     }
                 }).create();
 
+
     }
+
 }

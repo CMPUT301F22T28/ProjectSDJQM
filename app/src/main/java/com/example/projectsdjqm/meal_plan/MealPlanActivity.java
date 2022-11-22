@@ -8,8 +8,8 @@ package com.example.projectsdjqm.meal_plan;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -23,28 +23,23 @@ import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import com.example.projectsdjqm.ingredient_storage.IngredientActivity;
 import com.example.projectsdjqm.recipe_list.Recipe;
-import com.example.projectsdjqm.recipe_list.RecipeFragment;
-import com.example.projectsdjqm.recipe_list.RecipeList;
 import com.example.projectsdjqm.recipe_list.RecipeListActivity;
 import com.example.projectsdjqm.shopping_list.ShoppingListActivity;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 /**
  * MealPlanActivity:
  * Main page of the meal plan
  */
 public class MealPlanActivity extends AppCompatActivity
-        implements
-        MealplanFragment.OnFragmentInteractionListener{
+        implements MealplanFragment.OnFragmentInteractionListener,
+        MealplanStorageFragment.OnFragmentInteractionListener{
 
     
     // bottom nav
@@ -55,7 +50,9 @@ public class MealPlanActivity extends AppCompatActivity
     MealplanList mealplanAdapter;
     public ArrayList<Mealplan> mealplanList;
     Recipe selectedMealplan;
-    
+
+    @Override public void onFragmentInteraction(Uri uri) {}
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

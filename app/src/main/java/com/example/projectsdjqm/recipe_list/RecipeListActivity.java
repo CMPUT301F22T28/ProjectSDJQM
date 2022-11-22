@@ -117,7 +117,7 @@ public class RecipeListActivity extends AppCompatActivity
         recipeListView = findViewById(R.id.recipe_list);
         recipeList = new ArrayList<>();
         ArrayList<Ingredient> ingredientlist = new ArrayList<>();
-
+        // default icon if no picture uploaded
         Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_notifications_black_24dp);
         recipeAdapter = new RecipeList(this, recipeList);
         recipeAdapter.setRecipeButtonListener(this);
@@ -230,8 +230,23 @@ public class RecipeListActivity extends AppCompatActivity
         collectionReference
                 .document(selectedRecipe.getTitle())
                 .delete();
-        // need to delete pic from storage
-        // implement needed here
+        
+        // Create a storage reference from our app
+        final String photokey = selectedRecipe.getTitle().replace(" ","");
+        StorageReference imageRef = storageReference.child("images/" + photokey);
+        // Delete the file
+        imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG,selectedRecipe.getTitle() + " has been deleted from storage");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Uh-oh, an error occurred!
+                Log.d(TAG, "Image not found from storage");
+            }
+        });
     }
 
     @Override
@@ -268,6 +283,7 @@ public class RecipeListActivity extends AppCompatActivity
                          String comments,
                          Drawable photo,
                          ArrayList<Ingredient> list) {
+        String oldTitle = recipe.getTitle();
         recipe.setTitle(title);
         recipe.setPreparationTime(preparationTime);
         recipe.setRecipeCategory(category);
@@ -275,6 +291,35 @@ public class RecipeListActivity extends AppCompatActivity
         recipe.setPhotograph(photo);
         recipe.setNumberofServings(servingNumber);
         recipe.setListofIngredients(list);
+
+        final CollectionReference collectionReference = db.collection("Recipes");
+        final int recipePrepTime = recipe.getPreparationTime();
+        final int recipeSerNum = recipe.getNumberofServings();
+        final String recipeCate = recipe.getRecipeCategory();
+        final String recipeComm = recipe.getComments();
+        final ArrayList<Ingredient> recipeIng = recipe.getListofIngredients();
+
+        HashMap<String, Object> data = new HashMap<>();
+
+        data.put("Preparation Time", recipePrepTime);
+        data.put("Serving Number", recipeSerNum);
+        data.put("Category", recipeCate);
+        data.put("Comments", recipeComm);
+        data.put("Ingredient List",recipeIng);
+
+        if (title == oldTitle) {
+            collectionReference
+                    .document(title)
+                    .update(data);
+        } else {
+            collectionReference
+                    .document(oldTitle)
+                    .delete();
+            collectionReference
+                    .document(title)
+                    .set(data);
+        }
+        recipeAdapter.notifyDataSetChanged();
         recipeAdapter.notifyDataSetChanged();
     }
 

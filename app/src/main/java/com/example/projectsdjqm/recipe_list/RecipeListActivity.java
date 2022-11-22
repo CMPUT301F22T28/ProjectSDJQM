@@ -56,7 +56,8 @@ import java.util.Objects;
  */
 public class RecipeListActivity extends AppCompatActivity
         implements RecipeList.RecipeButtonListener,
-        RecipeFragment.OnFragmentInteractionListener{
+        RecipeFragment.OnFragmentInteractionListener,
+AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
 
     BottomNavigationView bottomNavigationView;
     FirebaseFirestore db;
@@ -257,6 +258,11 @@ public class RecipeListActivity extends AppCompatActivity
         });
     }
 
+//    private ArrayList<Ingredient> l;
+    @Override
+    public void onAddIngredientOkPressed(Ingredient ingredient) {
+//        l.add(ingredient);
+    }
     @Override
     public void onOkPressedAdd(Recipe recipe) {
 

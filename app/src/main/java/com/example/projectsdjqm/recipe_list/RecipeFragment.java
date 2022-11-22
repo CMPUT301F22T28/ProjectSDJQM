@@ -51,6 +51,7 @@ import java.util.ArrayList;
  */
 
 public class RecipeFragment extends DialogFragment {
+    public static ArrayList<Ingredient> l;
     public interface OnFragmentInteractionListener {
         void onOkPressedAdd(Recipe recipe);
         void onOkPressedEdit(Recipe recipe,
@@ -188,10 +189,7 @@ public class RecipeFragment extends DialogFragment {
         ingredientSelectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AlertDialog.Builder(getContext())
-                        .setMessage("Test")
-                        .setPositiveButton("Ok", null)
-                        .show();
+                new AddIngredientFragment().show(getChildFragmentManager(),null);
             }
         });
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

@@ -41,6 +41,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -337,6 +339,27 @@ public class RecipeFragment extends DialogFragment {
             assert data != null;
             Bitmap b =(Bitmap) data.getExtras().get("data");
             photo.setImageBitmap(b);
+            // Get the data from an ImageView as bytes
+            final String photokey = recipeTitle.getText().toString().replace(" ","");
+            StorageReference imageRef = storageReference.child("images/" + photokey);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            b.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] pic_data = baos.toByteArray();
+
+            UploadTask uploadTask = imageRef.putBytes(pic_data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                    Log.d(TAG,"image upload successfully");
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                    Log.d(TAG,"image not upload");
+                }
+            });
 
 
         }else if (requestCode == requestCodeForChoosePhoto && resultCode == Activity.RESULT_OK) {

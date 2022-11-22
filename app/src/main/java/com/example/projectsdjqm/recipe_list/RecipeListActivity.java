@@ -56,8 +56,8 @@ public class RecipeListActivity extends AppCompatActivity
 
     BottomNavigationView bottomNavigationView;
     FirebaseFirestore db;
-//    FirebaseStorage storage;
-private FirebaseStorage storage;
+
+    private FirebaseStorage storage;
     private StorageReference storageReference;
     final String TAG = "Recipes Activity";
     ListView recipeListView;
@@ -67,15 +67,12 @@ private FirebaseStorage storage;
     Spinner spinnerForRecipe;
     String currentSortingType;
     Drawable d;
-    ImageView imageView1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recipe_main);
-//        View view1 = LayoutInflater.from(this).inflate(R.layout.recipe_content, null);
 
-        imageView1 = findViewById(R.id.testPhoto);
         Log.d(TAG, "onCreate");
         db = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = db.collection("Recipes");
@@ -84,7 +81,6 @@ private FirebaseStorage storage;
 
         bottomNavigationView = findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_recipe_list);
-
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -113,8 +109,6 @@ private FirebaseStorage storage;
                         startActivity(new Intent(getApplicationContext(), ShoppingListActivity.class));
                         overridePendingTransition(0,0);
                         return true;
-
-
                 }
                 return false;
             }
@@ -123,15 +117,8 @@ private FirebaseStorage storage;
         recipeListView = findViewById(R.id.recipe_list);
         recipeList = new ArrayList<>();
         ArrayList<Ingredient> ingredientlist = new ArrayList<>();
-        //ingredientlist.add(new Ingredient("egg",new Date(),Ingredient.Location.Pantry,3,2,"back"));
-//        ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
-        //ingredientlist.add(new Ingredient("ccc",new Date(2023,5,3),Ingredient.Location.Freezer,5,4,"ccc"));
 
         Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_notifications_black_24dp);
-        //Recipe testa = new Recipe("Orange Chicken", "30", 3,
-        //        "category", "comments",icon,
-        //        ingredientlist);
-        //recipeList.add(testa);
         recipeAdapter = new RecipeList(this, recipeList);
         recipeAdapter.setRecipeButtonListener(this);
         recipeListView.setAdapter(recipeAdapter);
@@ -188,10 +175,7 @@ private FirebaseStorage storage;
                 imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
                     public void onSuccess(byte[] bytes) {
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-//                        imageView.setImageBitmap(bitmap);
                         d = new BitmapDrawable(getResources(),BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                        imageView1.setImageDrawable(d);
 
                         recipeList.add(new Recipe(
                                 title,
@@ -206,9 +190,25 @@ private FirebaseStorage storage;
                     @Override
                     public void onFailure(@NonNull Exception exception) {
                         // Handle any errors
+                        recipeList.add(new Recipe(
+                                title,
+                                preptime,
+                                number,
+                                category,
+                                comm,
+                                icon,
+                                ingredientlist));
                     }
                 });
-
+                if (currentSortingType != null) {
+                    if (!currentSortingType.equals("Sort")) {
+                        sortRecipeList(recipeList,currentSortingType);
+                    } else {
+                        recipeAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    recipeAdapter.notifyDataSetChanged();
+                }
 
             }
         });
@@ -230,6 +230,8 @@ private FirebaseStorage storage;
         collectionReference
                 .document(selectedRecipe.getTitle())
                 .delete();
+        // need to delete pic from storage
+        // implement needed here
     }
 
     @Override
@@ -241,7 +243,6 @@ private FirebaseStorage storage;
         final int recipeServingNumber = recipe.getNumberofServings();
         final String recipeCategory = recipe.getRecipeCategory();
         final String recipeComments = recipe.getComments();
-        final Drawable recipePhoto = recipe.getPhotograph();
         final ArrayList<Ingredient> recipeIngredientList = recipe.getListofIngredients();
 
         HashMap<String, Object> data = new HashMap<>();
@@ -250,7 +251,6 @@ private FirebaseStorage storage;
         data.put("Serving Number", recipeServingNumber);
         data.put("Category", recipeCategory);
         data.put("Comments", recipeComments);
-        //data.put("Photo", recipePhoto);
         data.put("Ingredient List",recipeIngredientList);
 
         collectionReference

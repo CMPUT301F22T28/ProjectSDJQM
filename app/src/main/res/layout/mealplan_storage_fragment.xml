@@ -10,49 +10,86 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="20dp"
         android:orientation="vertical">
-
-        <LinearLayout
+        
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
+            android:layout_height="wrap_content"
+            android:text="Mealplan selection list"
+            android:textSize="20dp"
+            android:textColor="#4a4a4a"
+            android:layout_margin="10dp"></TextView>
+        <LinearLayout
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/border">
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:layout_weight="1"
-                android:text="Recipes: "
-                android:textSize="20dp" />
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:layout_weight="1"
+                    android:text="Recipes: "
+                    android:textSize="20dp" />
 
 
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/mealplan_r_storage_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </ListView>
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/mealplan_r_storage_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </ListView>
-
         <LinearLayout
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:padding="10dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/border">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:layout_weight="1"
+                    android:text="List of Ingredients: "
+                    android:textSize="20dp" />
+
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/mealplan_in_storage_list"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:layout_weight="1"
-                android:text="List of Ingredients: "
-                android:textSize="20dp" />
+                android:paddingBottom="5dp">
 
+            </ListView>
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/mealplan_in_storage_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </ListView>
+        <Button
+            android:layout_marginLeft="10dp"
+            android:id="@+id/add_storage_button"
+            android:layout_width="70dp"
+            android:layout_height="48dp"
+            android:text="ADD">
+        </Button>
     </LinearLayout>
 
 

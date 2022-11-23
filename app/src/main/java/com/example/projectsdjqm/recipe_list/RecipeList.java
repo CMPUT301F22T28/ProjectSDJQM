@@ -19,7 +19,6 @@ import androidx.annotation.Nullable;
 
 import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
-import com.example.projectsdjqm.ingredient_storage.IngredientList;
 
 import java.util.ArrayList;
 
@@ -63,8 +62,8 @@ public class RecipeList extends ArrayAdapter<Recipe> {
             view = inflater.inflate(R.layout.recipe_content, parent, false);
 
             viewHolder = new ViewHolder();
-            viewHolder.editButton = (Button) view.findViewById(R.id.recipe_edit);
-            viewHolder.deleteButton = (Button) view.findViewById(R.id.recipe_delete);
+            viewHolder.editButton = view.findViewById(R.id.recipe_edit);
+            viewHolder.deleteButton = view.findViewById(R.id.recipe_delete);
 
             view.setTag(viewHolder);
         }
@@ -85,39 +84,31 @@ public class RecipeList extends ArrayAdapter<Recipe> {
 
         titleTextView.setText(recipe.getTitle());
         preparationTimeTextView.setText(
-                String.format("Preparation Time(in mins): %s",recipe.getPreparationTime()));
+                String.format("Preparation Time: %s minutes",recipe.getPreparationTime()));
         servingNumberTextView.setText(
-                String.format("Serving Number: %s", recipe.getNumberofServings()));
+                String.format("Serving Size: %s", recipe.getNumberofServings()));
         categoryTextView.setText(String.format("Category: %s", recipe.getRecipeCategory()));
         commentsTextView.setText(String.format("Comments:\n%s", recipe.getComments()));
         photographImageView.setImageDrawable(recipe.getPhotograph());
         ArrayList<Ingredient> list = recipe.getListofIngredients();
-        String text = "\n";
-        String amount = "";
+        StringBuilder text = new StringBuilder("\n");
         for (int i=0; i<list.size(); i++) {
-            String temp = list.get(i).getIngredientDescription().toString();
+            String temp = list.get(i).getIngredientDescription();
 //            String temp_amount = list.get(i).get
-            text += temp;
-            text += " ,\n";
+            text.append(temp);
+            text.append(" ,\n");
         }
-        listOfIngredientsTextView.setText(String.format("Needed Ingredients: %s", text));
+        listOfIngredientsTextView.setText(String.format("Ingredients: %s", text));
 
-        viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                if (recipeButtonListener != null) {
-                    recipeButtonListener.onEditRecipeClickListener(position);
-                }
+        viewHolder.editButton.setOnClickListener(view1 -> {
+            if (recipeButtonListener != null) {
+                recipeButtonListener.onEditRecipeClickListener(position);
             }
         });
 
-        viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (recipeButtonListener != null) {
-                    recipeButtonListener.onDeleteRecipeClickListener(position);
-                }
+        viewHolder.deleteButton.setOnClickListener(view12 -> {
+            if (recipeButtonListener != null) {
+                recipeButtonListener.onDeleteRecipeClickListener(position);
             }
         });
 

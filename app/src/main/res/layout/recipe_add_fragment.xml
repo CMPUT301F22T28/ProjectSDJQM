@@ -50,18 +50,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
-                android:text="Preparation Time (in mins):"
+                android:text="Preparation Time:"
                 android:textSize="16sp" />
 
             <EditText
                 android:id="@+id/edit_recipe_preparation_time"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:hint="minutes"
-                android:inputType="text"
-                android:textSize="16sp" />
+                android:layout_height="wrap_content"/>
+
         </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -76,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
-                android:text="Number Of Servings: "
+                android:text="Serving size: "
                 android:textSize="16sp" />
 
             <EditText
@@ -114,6 +112,9 @@
                 android:inputType="text"
                 android:textSize="16sp" />
         </LinearLayout>
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -161,17 +162,22 @@
                     android:textSize="16sp"
                     android:layout_weight="1"/>
                 <Button
-                    android:id="@+id/photo_select_button"
+                    android:id="@+id/take_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="take photo"/>
+                <Button
+                    android:id="@+id/choose_from_album"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:text="select"/>
+
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/recipe_image"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/ic_notifications_black_24dp"
                 />
                     </LinearLayout>
         <LinearLayout

@@ -214,15 +214,6 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                         sortRecipeList(recipeList,"title");
                     }
                 });
-//                if (currentSortingType != null) {
-//                    if (!currentSortingType.equals("(select one)")) {
-//                        sortRecipeList(recipeList,currentSortingType);
-//                    } else {
-//                        recipeAdapter.notifyDataSetChanged();
-//                    }
-//                } else {
-//                    recipeAdapter.notifyDataSetChanged();
-//                }
             }
         });
     }

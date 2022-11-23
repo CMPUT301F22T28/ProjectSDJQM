@@ -197,6 +197,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                                 comm,
                                 d,
                                 ingredientlist));
+                        sortRecipeList(recipeList,"title");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -210,17 +211,18 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                                 comm,
                                 icon,
                                 ingredientlist));
+                        sortRecipeList(recipeList,"title");
                     }
                 });
-                if (currentSortingType != null) {
-                    if (!currentSortingType.equals("(select one)")) {
-                        sortRecipeList(recipeList,currentSortingType);
-                    } else {
-                        recipeAdapter.notifyDataSetChanged();
-                    }
-                } else {
-                    recipeAdapter.notifyDataSetChanged();
-                }
+//                if (currentSortingType != null) {
+//                    if (!currentSortingType.equals("(select one)")) {
+//                        sortRecipeList(recipeList,currentSortingType);
+//                    } else {
+//                        recipeAdapter.notifyDataSetChanged();
+//                    }
+//                } else {
+//                    recipeAdapter.notifyDataSetChanged();
+//                }
             }
         });
     }

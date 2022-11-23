@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         TextView recipeTextView = (TextView) findViewById(R.id.recipesText);
         TextView shoppinglistTextView = (TextView) findViewById(R.id.shoppinglistText);
         TextView mealplanTextView = (TextView) findViewById(R.id.mealplanText);
+
+        TextView tomorrowMealPlan = (TextView) findViewById(R.id.nextdayMealPlan);
         
         /**
         * the following nav bar switch statement used to transition btw activities
@@ -120,6 +122,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         // ingredient count
+
+        /**
+         * source for dividers:
+         * // https://stackoverflow.com/questions/5049852/android-drawing-separator-divider-line-in-layout
+         */
+
         db.collection("Ingredients")
                 // .whereEqualTo("capital", true)
                 .get()
@@ -220,6 +228,12 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+
+
+
+
+        // tomorrow's mealplan -------------------------------------------------------------------------
+        tomorrowMealPlan.setText("something here");
 
 
 

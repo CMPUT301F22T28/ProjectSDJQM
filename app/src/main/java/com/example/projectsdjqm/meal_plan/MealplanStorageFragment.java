@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,6 +19,7 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
@@ -85,14 +87,12 @@ public class MealplanStorageFragment extends AppCompatActivity {
                 selectedItem = (String) recipeAdapter.getItem(position);
 //                recipeList_str.add(selectedItem);
 //                recipeListview.setAdapter(recipeAdapter);
-
-
-
+                MealplanFragment dialogFragment = new MealplanFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("edttext", selectedItem);
-                // set Fragmentclass Arguments
-                MealplanFragment fragobj = new MealplanFragment();
-                fragobj.setArguments(bundle);
+                bundle.putString("TEXT",selectedItem);
+                dialogFragment.setArguments(bundle);
+//                dialogFragment.show((MealplanStorageFragment.this).getSupportFragmentManager(),"Image Dialog");
+
 
 
             }
@@ -104,12 +104,44 @@ public class MealplanStorageFragment extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent myIntent = new Intent(getApplicationContext(), MealplanFragment.class);
-//                startActivity(myIntent);
+
+
+
             }
         });
 
+
+        ActionBar actionBar = getSupportActionBar();
+
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+
+
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public String getMyData() {
+        return selectedItem;
+    }
+
+
+//    @Override
+//    public void onOkPressedAdd(Mealplan mealplan) {
+//        Intent intent = new Intent();
+//        intent.setClass(this, MealPlanActivity.class);
+//        startActivity(intent);
+//
+//    }
 
 //    public interface OnFragmentInteractionListener {
 //        void onFragmentInteraction(Uri uri);

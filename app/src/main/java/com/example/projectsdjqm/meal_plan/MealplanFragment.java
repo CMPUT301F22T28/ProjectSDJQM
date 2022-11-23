@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -75,12 +76,6 @@ public class MealplanFragment extends DialogFragment {
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        String strtext = getArguments().getString("edttext");
-        return inflater.inflate(R.layout.mealplan_add_fragment , container, false);
-    }
 
     // layout inflater to update fields
     @NonNull
@@ -90,13 +85,43 @@ public class MealplanFragment extends DialogFragment {
                 .inflate(R.layout.mealplan_add_fragment, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
+        // retrieve the transferred data
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            selectedItem = bundle.getString("TEXT");
+        } else {
+            selectedItem = "EMPTY!";
+        }
+
+        // initialize listviews
         mealplan_date_view = view.findViewById(R.id.mealplan_date_picker);
         recipeListview = view.findViewById(R.id.mealplan_r_add_list);
         ingredientListview = view.findViewById(R.id.mealplan_in_add_list);
 
+        ArrayList<Recipe> recipeList = new ArrayList<>();
+        ArrayList<Ingredient> ingredientList = new ArrayList<>();
 
 
-//        selectedItem = getArguments().getString("edttext");
+        ArrayList<String> recipeList_str = new ArrayList<String>();
+//        for (Recipe rec : recipeList) {
+//            recipeList_str.add(rec.getTitle());
+//        }
+
+        recipeList_str.add(selectedItem);
+        ArrayAdapter<String> recipeAdapter =
+                new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, recipeList_str);
+        recipeListview.setAdapter(recipeAdapter);
+
+//        ArrayList<String> ingredientList_str = new ArrayList<String>();
+//        for (Ingredient ingre : ingredientList) {
+//            ingredientList_str.add(ingre.getIngredientDescription());
+//        }
+//        ArrayAdapter<String> ingredientAdapter =
+//                new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, ingredientList_str);
+//        ingredientListview.setAdapter(ingredientAdapter);
+
+
+
 
         Button recipe_add_button = (Button) view.findViewById(R.id.mealplan_r_add_button);
         recipe_add_button.setOnClickListener(new View.OnClickListener()
@@ -105,12 +130,6 @@ public class MealplanFragment extends DialogFragment {
             public void onClick(View v)
             {
 
-//                MealplanStorageFragment fragment = new MealplanStorageFragment();
-//                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.replace(R.id.fragmentContainerView, fragment);
-//                fragmentTransaction.addToBackStack(null);
-//                fragmentTransaction.commit();
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), MealplanStorageFragment.class);
                 getActivity().startActivity(intent);
@@ -129,8 +148,7 @@ public class MealplanFragment extends DialogFragment {
                                 mealplan_date_view.getMonth(),
                                 mealplan_date_view.getDayOfMonth());
                         Date mealplan_date = new Date(calendar.getTimeInMillis());
-                        ArrayList<Ingredient> ingredientList = new ArrayList<>();
-                        ArrayList<Recipe> recipeList = new ArrayList<>();
+
 
 
                         listener.onOkPressedAdd(new Mealplan(recipeList,ingredientList,mealplan_date));

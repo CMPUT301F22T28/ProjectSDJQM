@@ -6,6 +6,8 @@
  */
 package com.example.projectsdjqm.recipe_list;
 
+import static com.example.projectsdjqm.recipe_list.RecipeFragment.l;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -211,7 +213,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                     }
                 });
                 if (currentSortingType != null) {
-                    if (!currentSortingType.equals("Sort")) {
+                    if (!currentSortingType.equals("(select one)")) {
                         sortRecipeList(recipeList,currentSortingType);
                     } else {
                         recipeAdapter.notifyDataSetChanged();
@@ -258,10 +260,11 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         });
     }
 
-//    private ArrayList<Ingredient> l;
+//    private ArrayList<Ingredient> l = new ArrayList<>();
     @Override
     public void onAddIngredientOkPressed(Ingredient ingredient) {
-//        l.add(ingredient);
+//        l.clear();
+        l.add(ingredient);
     }
     @Override
     public void onOkPressedAdd(Recipe recipe) {
@@ -273,7 +276,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         final int recipeServingNumber = recipe.getNumberofServings();
         final String recipeCategory = recipe.getRecipeCategory();
         final String recipeComments = recipe.getComments();
-        final ArrayList<Ingredient> recipeIngredientList = recipe.getListofIngredients();
+        final ArrayList<Ingredient> recipeIngredientList = l;
 
         HashMap<String, Object> data = new HashMap<>();
 

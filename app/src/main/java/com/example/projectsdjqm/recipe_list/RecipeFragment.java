@@ -51,7 +51,7 @@ import java.util.ArrayList;
  */
 
 public class RecipeFragment extends DialogFragment {
-    public static ArrayList<Ingredient> l;
+    public static ArrayList<Ingredient> l = new ArrayList<>();
     public interface OnFragmentInteractionListener {
         void onOkPressedAdd(Recipe recipe);
         void onOkPressedEdit(Recipe recipe,
@@ -110,6 +110,7 @@ public class RecipeFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        l.clear();
         View view = getLayoutInflater()
                 .inflate(R.layout.recipe_add_fragment, null);
         recipeTitle = view.findViewById(R.id.edit_recipe_title);

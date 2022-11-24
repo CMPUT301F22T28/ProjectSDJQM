@@ -6,6 +6,9 @@
  */
 package com.example.projectsdjqm.meal_plan;
 
+import static android.system.Os.remove;
+
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -16,8 +19,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.projectsdjqm.MainActivity;
 import com.example.projectsdjqm.R;
@@ -43,7 +50,7 @@ public class MealPlanActivity extends AppCompatActivity
                     MealplanStorageFragment.DataPassListener{
 
     
-    // bottom nav
+    // initialization of variables
     BottomNavigationView bottomNavigationView;
     FirebaseFirestore db;
     final String TAG = "Recipes Activity";
@@ -52,7 +59,8 @@ public class MealPlanActivity extends AppCompatActivity
     ArrayList<Mealplan> mealplanList;
     Recipe selectedMealplan;
     MealplanFragment addMealplanFragment = new MealplanFragment();
-    MealplanStorageFragment mealplanStorageFragment = new MealplanStorageFragment();
+    MealplanStorageFragment mealplanStorageFragment = null;
+    MealplanFragment add1MealplanFragment = null;
 
 
 
@@ -60,11 +68,9 @@ public class MealPlanActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mealplan_main);
-
-
+        // bottom nav initialization
         bottomNavigationView = findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_meal_plan);
-
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -95,7 +101,6 @@ public class MealPlanActivity extends AppCompatActivity
                         overridePendingTransition(0,0);
                         return true;
 
-
                 }
                 return false;
             }
@@ -123,27 +128,51 @@ public class MealPlanActivity extends AppCompatActivity
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 addMealplanFragment.show(getSupportFragmentManager(),"Add Mealplan");
             }
         });
-
     }
 
 
     public void onOkPressedAdd(Mealplan mealplan) {
+        if (mealplanStorageFragment != null) {
+            mealplanStorageFragment.dismiss();
+        }
         mealplanAdapter.add(mealplan);
         mealplanListView.setAdapter(mealplanAdapter);
     }
 
     public void add_meal_plan_from_storage() {
+        if (mealplanStorageFragment != null) {
+            mealplanStorageFragment.dismiss();
+        }
+        mealplanStorageFragment = new MealplanStorageFragment();
         mealplanStorageFragment.show(getSupportFragmentManager(),"Mealplan Storage");
+
+
+    }
+    public void passData(String data) {
 
     }
 
+    public void On_storage_pressed(ArrayList<Integer> rec_sel_list,ArrayList<Integer> ingre_sel_list) {
+        Bundle bundle = new Bundle();
+        bundle.putIntegerArrayList("rec_sel_list", rec_sel_list);
+        bundle.putIntegerArrayList("ingre_sel_list", ingre_sel_list);
 
-    public void passData(String data) {
 
+        if (addMealplanFragment != null) {
+            addMealplanFragment.dismiss();
+        }
+        if (add1MealplanFragment != null) {
+            add1MealplanFragment.dismiss();
+        }
+
+        add1MealplanFragment = new MealplanFragment();
+
+        add1MealplanFragment.show(getSupportFragmentManager(),"Add1 Mealplan");
+        // Set Fragmentclass Arguments
+        add1MealplanFragment.setArguments(bundle);
     }
 
 

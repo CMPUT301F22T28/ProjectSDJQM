@@ -42,10 +42,9 @@ import java.util.GregorianCalendar;
 public class MealplanFragment extends DialogFragment {
     public interface OnFragmentInteractionListener {
         void onOkPressedAdd(Mealplan mealplan);
+        void add_meal_plan_from_storage();
     }
-    public interface FragmentAListener{
-        void onInputASent(CharSequence input);
-    }
+
 
     // attr init
     private Mealplan mealplan;
@@ -86,12 +85,12 @@ public class MealplanFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         // retrieve the transferred data
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            selectedItem = bundle.getString("TEXT");
-        } else {
-            selectedItem = "EMPTY!";
-        }
+//        Bundle bundle = getArguments();
+//        if (bundle != null) {
+//            selectedItem = bundle.getString("TEXT");
+//        } else {
+//            selectedItem = "EMPTY!";
+//        }
 
         // initialize listviews
         mealplan_date_view = view.findViewById(R.id.mealplan_date_picker);
@@ -107,7 +106,7 @@ public class MealplanFragment extends DialogFragment {
 //            recipeList_str.add(rec.getTitle());
 //        }
 
-        recipeList_str.add(selectedItem);
+//        recipeList_str.add(selectedItem);
         ArrayAdapter<String> recipeAdapter =
                 new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, recipeList_str);
         recipeListview.setAdapter(recipeAdapter);
@@ -129,10 +128,7 @@ public class MealplanFragment extends DialogFragment {
             @Override
             public void onClick(View v)
             {
-
-                Intent intent = new Intent();
-                intent.setClass(getActivity(), MealplanStorageFragment.class);
-                getActivity().startActivity(intent);
+                listener.add_meal_plan_from_storage();
             }
         });
 

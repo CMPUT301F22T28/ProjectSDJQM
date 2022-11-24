@@ -23,6 +23,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
@@ -33,32 +34,46 @@ import com.example.projectsdjqm.recipe_list.RecipeList;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MealplanStorageFragment extends AppCompatActivity {
+public class MealplanStorageFragment extends DialogFragment {
+    private DataPassListener mCallback;
     private ListView recipeListview;
     private ListView ingredientListview;
     RecipeList recipeAdapter;
     IngredientList ingredientAdapter;
     private String selectedItem;
+    View view;
 
-
+    public interface DataPassListener {
+        public void passData(String data);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.mealplan_storage_fragment);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof MealplanStorageFragment.DataPassListener) {
+            mCallback = (MealplanStorageFragment.DataPassListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + "This is not the correct fragment!");
+        }
+    }
 
-        recipeListview = findViewById(R.id.mealplan_r_storage_list);
-        ingredientListview = findViewById(R.id.mealplan_in_storage_list);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.mealplan_storage_fragment, container, false);
+
+        recipeListview = view.findViewById(R.id.mealplan_r_storage_list);
+        ingredientListview = view.findViewById(R.id.mealplan_in_storage_list);
         recipeListview.setAdapter(recipeAdapter);
         ingredientListview.setAdapter(ingredientAdapter);
 
         ArrayList<Ingredient> ingredientList = new ArrayList<>();
-        Ingredient testc = new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here");
+        Ingredient testc = new Ingredient("apple", new Date(2020, 2, 1), Ingredient.Location.Fridge, 1, 1, "here");
         ingredientList.add(testc);
         ArrayList<Recipe> recipeList = new ArrayList<>();
-        Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_notifications_black_24dp);
+        Drawable icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_notifications_black_24dp);
         Recipe testa = new Recipe("Orange Chicken", "30", 3,
-                "category", "comments",icon,
+                "category", "comments", icon,
                 ingredientList);
         recipeList.add(testa);
 
@@ -69,7 +84,7 @@ public class MealplanStorageFragment extends AppCompatActivity {
             recipeList_str.add(rec.getTitle());
         }
         ArrayAdapter<String> recipeAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, recipeList_str);
+                new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, recipeList_str);
         recipeListview.setAdapter(recipeAdapter);
 
         ArrayList<String> ingredientList_str = new ArrayList<String>();
@@ -77,7 +92,7 @@ public class MealplanStorageFragment extends AppCompatActivity {
             ingredientList_str.add(ingre.getIngredientDescription());
         }
         ArrayAdapter<String> ingredientAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, ingredientList_str);
+                new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, ingredientList_str);
         ingredientListview.setAdapter(ingredientAdapter);
 
 
@@ -87,12 +102,11 @@ public class MealplanStorageFragment extends AppCompatActivity {
                 selectedItem = (String) recipeAdapter.getItem(position);
 //                recipeList_str.add(selectedItem);
 //                recipeListview.setAdapter(recipeAdapter);
-                MealplanFragment dialogFragment = new MealplanFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("TEXT",selectedItem);
-                dialogFragment.setArguments(bundle);
+//                MealplanFragment dialogFragment = new MealplanFragment();
+//                Bundle bundle = new Bundle();
+//                bundle.putString("TEXT", selectedItem);
+//                dialogFragment.setArguments(bundle);
 //                dialogFragment.show((MealplanStorageFragment.this).getSupportFragmentManager(),"Image Dialog");
-
 
 
             }
@@ -100,77 +114,24 @@ public class MealplanStorageFragment extends AppCompatActivity {
         });
 
 
-        Button addButton = findViewById(R.id.add_storage_button);
+        Button addButton = view.findViewById(R.id.add_storage_button);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
 
-
             }
         });
 
 
-        ActionBar actionBar = getSupportActionBar();
+//        ActionBar actionBar = getSupportActionBar();
+//
+//        // showing the back button in action bar
+//        actionBar.setDisplayHomeAsUpEnabled(true);
+//
+//
+//
 
-        // showing the back button in action bar
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-
-
+        return view;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public String getMyData() {
-        return selectedItem;
-    }
-
-
-//    @Override
-//    public void onOkPressedAdd(Mealplan mealplan) {
-//        Intent intent = new Intent();
-//        intent.setClass(this, MealPlanActivity.class);
-//        startActivity(intent);
-//
-//    }
-
-//    public interface OnFragmentInteractionListener {
-//        void onFragmentInteraction(Uri uri);
-//    }
-//
-//    @Override
-//    public void onAttach(@NonNull Context context) {
-//        super.onAttach(context);
-//        if(context instanceof MealplanStorageFragment.OnFragmentInteractionListener) {
-//            listener = (MealplanStorageFragment.OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString() + "This is not the correct fragment!");
-//        }
-//    }
-//
-//    @NonNull
-//    @Override
-//    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-//        View view = LayoutInflater.from(getActivity()).inflate(R.layout.mealplan_storage_fragment,null);
-//
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//
-//        return builder
-//                .setView(view)
-//                .setTitle("Choosing recipes and ingredients")
-//                .setNegativeButton("Cancel", null)
-//                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {}
-//                }).create();
-//    }
 }

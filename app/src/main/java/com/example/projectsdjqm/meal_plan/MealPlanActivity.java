@@ -39,7 +39,8 @@ import java.util.Date;
  * Main page of the meal plan
  */
 public class MealPlanActivity extends AppCompatActivity
-        implements MealplanFragment.OnFragmentInteractionListener{
+        implements MealplanFragment.OnFragmentInteractionListener,
+                    MealplanStorageFragment.DataPassListener{
 
     
     // bottom nav
@@ -50,6 +51,8 @@ public class MealPlanActivity extends AppCompatActivity
     ArrayAdapter<Mealplan> mealplanAdapter;
     ArrayList<Mealplan> mealplanList;
     Recipe selectedMealplan;
+    MealplanFragment addMealplanFragment = new MealplanFragment();
+    MealplanStorageFragment mealplanStorageFragment = new MealplanStorageFragment();
 
 
 
@@ -120,7 +123,7 @@ public class MealPlanActivity extends AppCompatActivity
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MealplanFragment addMealplanFragment = new MealplanFragment();
+
                 addMealplanFragment.show(getSupportFragmentManager(),"Add Mealplan");
             }
         });
@@ -131,7 +134,17 @@ public class MealPlanActivity extends AppCompatActivity
     public void onOkPressedAdd(Mealplan mealplan) {
         mealplanAdapter.add(mealplan);
         mealplanListView.setAdapter(mealplanAdapter);
-    };
+    }
+
+    public void add_meal_plan_from_storage() {
+        mealplanStorageFragment.show(getSupportFragmentManager(),"Mealplan Storage");
+
+    }
+
+
+    public void passData(String data) {
+
+    }
 
 
 }

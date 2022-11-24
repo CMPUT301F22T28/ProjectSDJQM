@@ -86,6 +86,8 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         CollectionReference collectionReference = db.collection("Recipes");
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        View view2 = getLayoutInflater()
+                        .inflate(R.layout.ingredient_in_recipe_fragment, null);
 
         // bottom nav
         bottomNavigationView = findViewById(R.id.nav_view);
@@ -178,7 +180,11 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                 int number = Integer.parseInt(Objects.requireNonNull(doc.getData().get("Serving Number")).toString());
                 String category = (String) doc.getData().get("Category");
                 String comm = (String) doc.getData().get("Comments");
-
+//                City city = documentSnapshot.toObject(City.class);
+//                ArrayList<Ingredient> ingredientList = (ArrayList<Ingredient>) doc.getData().get("Ingredient List");
+                    ArrayList<Ingredient> ingredientList = new ArrayList<Ingredient>();
+                ingredientList.add(new Ingredient("test",null,null,2,2,"category"));
+                ingredientList.add(new Ingredient("test2",null,null,2,2,"category"));
                 // use photokey (title of recipe) from firebase storage to load image to APP
                 final String photokey = title.replace(" ","");
                 StorageReference imageRef = storageReference.child("images/" + photokey);
@@ -196,7 +202,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                                 category,
                                 comm,
                                 d,
-                                ingredientlist));
+                                ingredientList));
                         sortRecipeList(recipeList,"title");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -210,7 +216,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                                 category,
                                 comm,
                                 icon,
-                                ingredientlist));
+                                ingredientList));
                         sortRecipeList(recipeList,"title");
                     }
                 });
@@ -318,6 +324,9 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         final String recipeCate = recipe.getRecipeCategory();
         final String recipeComm = recipe.getComments();
         final ArrayList<Ingredient> recipeIng = recipe.getListofIngredients();
+        for (int i=0; i< l.size(); i++) {
+            recipeIng.add(l.get(i));
+        }
 
         HashMap<String, Object> data = new HashMap<>();
 

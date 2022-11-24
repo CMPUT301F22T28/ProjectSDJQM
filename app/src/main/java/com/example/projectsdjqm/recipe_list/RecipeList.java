@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -81,6 +82,12 @@ public class RecipeList extends ArrayAdapter<Recipe> {
         TextView commentsTextView = view.findViewById(R.id.recipe_comments);
         ImageView photographImageView = view.findViewById(R.id.recipe_photograph);
         TextView listOfIngredientsTextView = view.findViewById(R.id.recipe_ingredient_list);
+        ArrayList<Ingredient> ingredientList = recipe.getListofIngredients();
+//        ArrayList<Ingredient> ingredientList = new ArrayList<Ingredient>();
+//        ingredientList.add(new Ingredient("aaple",null,null,2,2,"category"));
+        ListView ingredientListview = view.findViewById(R.id.ingredient_listview);
+        IngredientInRecipeAdapter adapter = new IngredientInRecipeAdapter(getContext(),ingredientList);
+        ingredientListview.setAdapter(adapter);
 
         titleTextView.setText(recipe.getTitle());
         preparationTimeTextView.setText(
@@ -91,14 +98,14 @@ public class RecipeList extends ArrayAdapter<Recipe> {
         commentsTextView.setText(String.format("Comments:\n%s", recipe.getComments()));
         photographImageView.setImageDrawable(recipe.getPhotograph());
         ArrayList<Ingredient> list = recipe.getListofIngredients();
-        StringBuilder text = new StringBuilder("\n");
-        for (int i=0; i<list.size(); i++) {
-            String temp = list.get(i).getIngredientDescription();
-//            String temp_amount = list.get(i).get
-            text.append(temp);
-            text.append(" ,\n");
-        }
-        listOfIngredientsTextView.setText(String.format("Ingredients: %s", text));
+//        StringBuilder text = new StringBuilder("\n");
+//        for (int i=0; i<list.size(); i++) {
+//            String temp = list.get(i).getIngredientDescription();
+////            String temp_amount = list.get(i).get
+//            text.append(temp);
+//            text.append(" ,\n");
+//        }
+        listOfIngredientsTextView.setText(String.format("Ingredients: "));
 
         viewHolder.editButton.setOnClickListener(view1 -> {
             if (recipeButtonListener != null) {

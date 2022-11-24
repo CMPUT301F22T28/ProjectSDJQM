@@ -44,6 +44,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * RecipeFragment:
@@ -228,8 +229,11 @@ public class RecipeFragment extends DialogFragment {
             Drawable photograph = photo.getDrawable();
 
             // need to change --------------------------
-//            Ingredient i = new Ingredient("a",new Date(),Ingredient.Location.Pantry,2,1,"category");
+            Ingredient i = new Ingredient("test",new Date(),Ingredient.Location.Pantry,2,1,"category");
+            // 应该改成recipeListView.get()?
+            //获取listview里的所有，显示出来，
             ArrayList<Ingredient> list = new ArrayList<>();
+            list.add(i);
 //            list.add(i);
             // need to change --------------------------
 

@@ -316,7 +316,7 @@ public class IngredientActivity extends AppCompatActivity implements
     // sort list by a certain type: description, category, best before date, location
     public void sortIngredientList(ArrayList<Ingredient> list, String sorting_type) {
         switch (sorting_type) {
-            case "description":
+            case "Description":
                 Collections.sort(list, new Comparator<Ingredient>() {
                     @Override
                     public int compare(Ingredient ingredient, Ingredient ingredient1) {
@@ -325,7 +325,7 @@ public class IngredientActivity extends AppCompatActivity implements
                     }
                 });
                 break;
-            case "category":
+            case "Category":
                 Collections.sort(list, new Comparator<Ingredient>() {
                     @Override
                     public int compare(Ingredient ingredient, Ingredient ingredient1) {
@@ -334,7 +334,7 @@ public class IngredientActivity extends AppCompatActivity implements
                     }
                 });
                 break;
-            case "location":
+            case "Location":
                 Collections.sort(list, new Comparator<Ingredient>() {
                     @Override
                     public int compare(Ingredient ingredient, Ingredient ingredient1) {
@@ -343,7 +343,7 @@ public class IngredientActivity extends AppCompatActivity implements
                     }
                 });
                 break;
-            case "bbd":
+            case "Best Before Date":
                 Collections.sort(list, new Comparator<Ingredient>() {
                     @Override
                     public int compare(Ingredient ingredient, Ingredient ingredient1) {

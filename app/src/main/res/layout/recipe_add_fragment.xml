@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:layout_weight="1"
             android:orientation="horizontal">
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:layout_weight="1"
             android:orientation="horizontal">
@@ -56,7 +56,10 @@
             <EditText
                 android:id="@+id/edit_recipe_preparation_time"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:hint="Type a number"
+                android:inputType="number"
+                android:textSize="16sp"/>
 
         </LinearLayout>
 
@@ -65,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:layout_weight="1"
             android:orientation="horizontal">
@@ -91,7 +94,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:layout_weight="1"
             android:orientation="horizontal">
@@ -112,15 +115,13 @@
                 android:inputType="text"
                 android:textSize="16sp" />
         </LinearLayout>
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:layout_weight="1"
             android:orientation="horizontal">
@@ -152,8 +153,11 @@
             android:layout_marginEnd="20dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -165,21 +169,26 @@
                     android:id="@+id/take_photo"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:text="take photo"/>
+                    android:text="take photo"
+                    android:layout_marginEnd="10dp"
+                    android:textSize="10sp"
+                    android:layout_weight="1"/>
                 <Button
                     android:id="@+id/choose_from_album"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:text="select"/>
+                    android:text="Album"
+                    android:textSize="10sp"
+                    android:layout_weight="1"/>
 
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/recipe_image"
                 android:layout_width="80dp"
-                android:layout_height="80dp"
-                />
-                    </LinearLayout>
+                android:layout_height="80dp" />
+
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -190,27 +199,31 @@
             android:layout_marginEnd="20dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
                     android:text="List of Ingredients: "
                     android:textSize="16sp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1.5"/>
                 <Button
                     android:id="@+id/ingredient_select_button"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:text="select"/>
+                    android:text="select"
+                    android:layout_weight=".5"
+                    android:textSize="10sp"/>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/recipe_ingredient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""/>
+                android:text="Need to implement here"/>
 
         </LinearLayout>
 

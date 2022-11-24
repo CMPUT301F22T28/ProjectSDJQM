@@ -41,11 +41,13 @@ public class MealplanStorageFragment extends DialogFragment {
     RecipeList recipeAdapter;
     IngredientList ingredientAdapter;
     private String selectedItem;
+    private ArrayList<String> rec_sel_list = new ArrayList<>();
+    private ArrayList<String> ingre_sel_list = new ArrayList<>();
     View view;
 
     public interface DataPassListener {
         public void passData(String data);
-        public void On_storage_pressed(String selectedItem);
+        public void On_storage_pressed(ArrayList<String> rec_sel_list, ArrayList<String> ingre_sel_list);
     }
 
     @Override
@@ -101,15 +103,21 @@ public class MealplanStorageFragment extends DialogFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectedItem = (String) recipeAdapter.getItem(position);
+                rec_sel_list.add(selectedItem);
                 recipeList_str.add(selectedItem);
                 recipeListview.setAdapter(recipeAdapter);
 
-//                MealplanFragment dialogFragment = new MealplanFragment();
-//                Bundle bundle = new Bundle();
-//                bundle.putString("TEXT", selectedItem);
-//                dialogFragment.setArguments(bundle);
-//                dialogFragment.show((MealplanStorageFragment.this).getSupportFragmentManager(),"Image Dialog");
+            }
 
+        });
+
+        ingredientListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectedItem = (String) ingredientAdapter.getItem(position);
+                ingre_sel_list.add(selectedItem);
+                ingredientList_str.add(selectedItem);
+                ingredientListview.setAdapter(ingredientAdapter);
 
             }
 
@@ -120,7 +128,7 @@ public class MealplanStorageFragment extends DialogFragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCallback.On_storage_pressed(selectedItem);
+                mCallback.On_storage_pressed(rec_sel_list,ingre_sel_list);
             }
         });
 

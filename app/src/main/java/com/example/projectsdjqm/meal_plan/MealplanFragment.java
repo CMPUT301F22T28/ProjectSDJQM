@@ -55,6 +55,10 @@ public class MealplanFragment extends DialogFragment {
     private ListView recipeListview;
     private ListView ingredientListview;
     private String selectedItem;
+    private ArrayList<String> recipeList_str = new ArrayList<String>();
+    private ArrayList<String> ingredientList_str = new ArrayList<String>();
+    ArrayAdapter<String> recipeAdapter;
+    ArrayAdapter<String> ingredientAdapter;
 
 
     public MealplanFragment(Mealplan mealplan) {
@@ -103,33 +107,42 @@ public class MealplanFragment extends DialogFragment {
         ArrayList<Ingredient> ingredientList = new ArrayList<>();
 
 
-        ArrayList<String> recipeList_str = new ArrayList<String>();
+
 //        for (Recipe rec : recipeList) {
 //            recipeList_str.add(rec.getTitle());
 //        }
 
 
-        ArrayAdapter<String> recipeAdapter =
-                new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, recipeList_str);
+        recipeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, recipeList_str);
         recipeListview.setAdapter(recipeAdapter);
 
 //        ArrayList<String> ingredientList_str = new ArrayList<String>();
 //        for (Ingredient ingre : ingredientList) {
 //            ingredientList_str.add(ingre.getIngredientDescription());
 //        }
-//        ArrayAdapter<String> ingredientAdapter =
-//                new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, ingredientList_str);
-//        ingredientListview.setAdapter(ingredientAdapter);
+        ingredientAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, ingredientList_str);
+        ingredientListview.setAdapter(ingredientAdapter);
 
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            selectedItem = bundle.getString("message");
-        } else {
-            selectedItem = "EMPTY!";
-        }
+            if (bundle.getStringArrayList("rec_sel_list") != null) {
+                recipeList_str = bundle.getStringArrayList("rec_sel_list");
+                recipeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, recipeList_str);
+                recipeListview.setAdapter(recipeAdapter);
+            }
+            if (bundle.getStringArrayList("ingre_sel_list") != null) {
+                ingredientList_str = bundle.getStringArrayList("ingre_sel_list");
+                ingredientAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, ingredientList_str);
+                ingredientListview.setAdapter(ingredientAdapter);
+            }
 
-        recipeList_str.add(selectedItem);
+        } else {
+            recipeList_str.add("EMPTY!");
+
+        }
+//        recipeList_str.add(selectedItem);
+//        recipeList_str.add(Integer. toString(recipeList_str.size()));
 
         Button recipe_add_button = (Button) view.findViewById(R.id.mealplan_r_add_button);
         recipe_add_button.setOnClickListener(new View.OnClickListener()

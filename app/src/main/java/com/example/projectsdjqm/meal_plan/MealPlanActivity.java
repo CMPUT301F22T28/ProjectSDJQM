@@ -166,9 +166,10 @@ public class MealPlanActivity extends AppCompatActivity
     }
 
 
-    public void On_storage_pressed(String selectedItem) {
+    public void On_storage_pressed(ArrayList<String> rec_sel_list,ArrayList<String> ingre_sel_list) {
         Bundle bundle = new Bundle();
-        bundle.putString("message", selectedItem);
+        bundle.putStringArrayList("rec_sel_list", rec_sel_list);
+        bundle.putStringArrayList("ingre_sel_list", ingre_sel_list);
 
 
         if (addMealplanFragment != null) {
@@ -179,15 +180,6 @@ public class MealPlanActivity extends AppCompatActivity
         }
 
         add1MealplanFragment = new MealplanFragment();
-
-//        Fragment oldFragment = getSupportFragmentManager().findFragmentById(R.id.add_fragment);
-//        if (oldFragment != null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .remove(oldFragment).commit();
-//        }
-//        addMealplanFragment.setArguments(bundle);
-//        addMealplanFragment.show(getSupportFragmentManager(), "Add Mealplan");
-
 
         add1MealplanFragment.show(getSupportFragmentManager(),"Add1 Mealplan");
         // Set Fragmentclass Arguments

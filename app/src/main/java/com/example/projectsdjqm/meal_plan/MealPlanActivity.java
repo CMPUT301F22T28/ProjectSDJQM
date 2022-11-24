@@ -146,11 +146,6 @@ public class MealPlanActivity extends AppCompatActivity
     }
 
     public void add_meal_plan_from_storage() {
-//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//        transaction.replace(R.id.add_fragment, mealplanStorageFragment);
-//        transaction.addToBackStack(null);
-//
-//        transaction.commit();
         if (mealplanStorageFragment != null) {
             mealplanStorageFragment.dismiss();
         }
@@ -166,10 +161,10 @@ public class MealPlanActivity extends AppCompatActivity
     }
 
 
-    public void On_storage_pressed(ArrayList<String> rec_sel_list,ArrayList<String> ingre_sel_list) {
+    public void On_storage_pressed(ArrayList<String> rec_sel_list,ArrayList<Integer> ingre_sel_list) {
         Bundle bundle = new Bundle();
         bundle.putStringArrayList("rec_sel_list", rec_sel_list);
-        bundle.putStringArrayList("ingre_sel_list", ingre_sel_list);
+        bundle.putIntegerArrayList("ingre_sel_list", ingre_sel_list);
 
 
         if (addMealplanFragment != null) {

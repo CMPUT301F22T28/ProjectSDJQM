@@ -1,5 +1,6 @@
 package com.example.projectsdjqm.meal_plan;
 
+import static android.content.ContentValues.TAG;
 import static android.content.Intent.getIntent;
 
 import static androidx.fragment.app.FragmentKt.setFragmentResultListener;
@@ -11,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +37,15 @@ import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import com.example.projectsdjqm.recipe_list.Recipe;
 import com.example.projectsdjqm.recipe_list.RecipeFragment;
 import com.example.projectsdjqm.recipe_list.RecipeList;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,9 +67,12 @@ public class MealplanFragment extends DialogFragment {
     private ListView ingredientListview;
     private String selectedItem;
     private ArrayList<String> recipeList_str = new ArrayList<String>();
-    private ArrayList<String> ingredientList_str = new ArrayList<String>();
+    private ArrayList<String> ingredientList_str;
+    private ArrayList<Integer> ingredientList_int = new ArrayList<Integer>();
     ArrayAdapter<String> recipeAdapter;
     ArrayAdapter<String> ingredientAdapter;
+    FirebaseFirestore db;
+
 
 
     public MealplanFragment(Mealplan mealplan) {
@@ -103,8 +117,10 @@ public class MealplanFragment extends DialogFragment {
         recipeListview = view.findViewById(R.id.mealplan_r_add_list);
         ingredientListview = view.findViewById(R.id.mealplan_in_add_list);
 
-        ArrayList<Recipe> recipeList = new ArrayList<>();
-        ArrayList<Ingredient> ingredientList = new ArrayList<>();
+
+        Log.d(TAG, "onCreateView");
+        db = FirebaseFirestore.getInstance();
+        CollectionReference collectionReference = db.collection("Ingredients");
 
 
 
@@ -112,16 +128,36 @@ public class MealplanFragment extends DialogFragment {
 //            recipeList_str.add(rec.getTitle());
 //        }
 
-
-        recipeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, recipeList_str);
-        recipeListview.setAdapter(recipeAdapter);
-
+        // Initial adding fragment page
+//        recipeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, recipeList_str);
+//        recipeListview.setAdapter(recipeAdapter);
+//        ingredientAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, ingredientList_str);
+//        ingredientListview.setAdapter(ingredientAdapter);
 //        ArrayList<String> ingredientList_str = new ArrayList<String>();
 //        for (Ingredient ingre : ingredientList) {
 //            ingredientList_str.add(ingre.getIngredientDescription());
 //        }
-        ingredientAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, ingredientList_str);
-        ingredientListview.setAdapter(ingredientAdapter);
+
+        // retrieve data from firestore
+        db.collection("Ingredients")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+        ArrayList<Ingredient> ingredientList = new ArrayList<>();
+        ArrayList<Recipe> recipeList = new ArrayList<>();
+        ingredientList_str = new ArrayList<>();
+
 
 
         Bundle bundle = getArguments();
@@ -131,21 +167,76 @@ public class MealplanFragment extends DialogFragment {
                 recipeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, recipeList_str);
                 recipeListview.setAdapter(recipeAdapter);
             }
-            if (bundle.getStringArrayList("ingre_sel_list") != null) {
-                ingredientList_str = bundle.getStringArrayList("ingre_sel_list");
-                ingredientAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, ingredientList_str);
-                ingredientListview.setAdapter(ingredientAdapter);
-            }
+            if (bundle.getIntegerArrayList("ingre_sel_list") != null) {
+                ingredientList_int = bundle.getIntegerArrayList("ingre_sel_list");
+                collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                            FirebaseFirestoreException error) {
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            Log.d(TAG, String.valueOf(doc.getData().get("Category")));
+                            String description = doc.getId();
+                            int amount = Integer.valueOf(doc.getData().get("Amount").toString());
+                            Timestamp bbd = (Timestamp) doc.getData().get("Best Before Date");
+                            Date bestbeforedate = bbd.toDate();
+                            String category = (String) doc.getData().get("Category");
+                            String location_str = String.valueOf(doc.getData().get("Location"));
+                            Ingredient.Location location;
+                            switch (location_str) {
+                                case "Fridge":
+                                    location = Ingredient.Location.Fridge;
+                                    break;
+                                case "Freezer":
+                                    location = Ingredient.Location.Freezer;
+                                    break;
+                                default:
+                                    location = Ingredient.Location.Pantry;
+                            }
+                            int unit = Integer.valueOf(doc.getData().get("Unit").toString());
 
+                            ingredientList.add(new Ingredient(
+                                    description,
+                                    bestbeforedate,
+                                    location,
+                                    amount,
+                                    unit,
+                                    category));
+
+
+                        }
+
+                        for (Ingredient ingre : ingredientList) {
+                            ingredientList_str.add(ingre.getIngredientDescription());
+                        }
+                        ArrayList<String> ingredientList_str_container = new ArrayList<>();
+                        for (Integer num : ingredientList_int){
+                            ingredientList_str_container.add(ingredientList_str.get(num));
+                        }
+                        ingredientList_str = ingredientList_str_container;
+
+                        ingredientAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, ingredientList_str);
+                        ingredientListview.setAdapter(ingredientAdapter);
+                    }
+                });
+            }
         } else {
             recipeList_str.add("EMPTY!");
-
         }
-//        recipeList_str.add(selectedItem);
-//        recipeList_str.add(Integer. toString(recipeList_str.size()));
+
+
 
         Button recipe_add_button = (Button) view.findViewById(R.id.mealplan_r_add_button);
         recipe_add_button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                listener.add_meal_plan_from_storage();
+            }
+        });
+
+        Button ingredient_add_button = (Button) view.findViewById(R.id.mealplan_in_add_button);
+        ingredient_add_button.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)

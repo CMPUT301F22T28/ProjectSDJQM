@@ -109,7 +109,7 @@ public class MealPlanActivity extends AppCompatActivity
         ingredientList.add(testc);
         ArrayList<Recipe> recipeList = new ArrayList<>();
         Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_notifications_black_24dp);
-        Recipe testa = new Recipe("Orange Chicken", "30", 3,
+        Recipe testa = new Recipe("Orange Chicken", 30, 3,
                 "category", "comments",icon,
                 ingredientList);
         recipeList.add(testa);

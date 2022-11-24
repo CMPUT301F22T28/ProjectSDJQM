@@ -54,7 +54,7 @@ import java.util.HashMap;
 public class IngredientActivity extends AppCompatActivity implements
         IngredientFragment.OnFragmentInteractionListener,
         IngredientList.IngredientButtonListener {
-    
+
     // all init
     BottomNavigationView bottomNavigationView;
     FirebaseFirestore db;
@@ -66,7 +66,7 @@ public class IngredientActivity extends AppCompatActivity implements
     Ingredient selectedIngredient;
     String currentSortingType;
 
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -354,7 +354,7 @@ public class IngredientActivity extends AppCompatActivity implements
                         } else if (time == time1) {
                             return 0;
                         } else {
-                                return 1;
+                            return 1;
                         }
                     }
                 });

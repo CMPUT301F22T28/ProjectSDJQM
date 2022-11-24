@@ -35,7 +35,7 @@
         <activity android:name=".recipe_list.RecipeListActivity"></activity>
         <activity android:name=".meal_plan.MealPlanActivity"></activity>
         <activity android:name=".shopping_list.ShoppingListActivity"></activity>
-        
+
     </application>
 
 </manifest>

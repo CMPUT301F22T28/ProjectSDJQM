@@ -58,7 +58,8 @@ public class MealPlanActivity extends AppCompatActivity
     ArrayList<Mealplan> mealplanList;
     Recipe selectedMealplan;
     MealplanFragment addMealplanFragment = new MealplanFragment();
-    MealplanStorageFragment mealplanStorageFragment = new MealplanStorageFragment();
+    MealplanStorageFragment mealplanStorageFragment = null;
+    MealplanFragment add1MealplanFragment = null;
 
 
 
@@ -150,6 +151,10 @@ public class MealPlanActivity extends AppCompatActivity
 //        transaction.addToBackStack(null);
 //
 //        transaction.commit();
+        if (mealplanStorageFragment != null) {
+            mealplanStorageFragment.dismiss();
+        }
+        mealplanStorageFragment = new MealplanStorageFragment();
         mealplanStorageFragment.show(getSupportFragmentManager(),"Mealplan Storage");
 
 
@@ -166,8 +171,14 @@ public class MealPlanActivity extends AppCompatActivity
         bundle.putString("message", selectedItem);
 
 
-        addMealplanFragment.dismiss();
-        MealplanFragment add1MealplanFragment = new MealplanFragment();
+        if (addMealplanFragment != null) {
+            addMealplanFragment.dismiss();
+        }
+        if (add1MealplanFragment != null) {
+            add1MealplanFragment.dismiss();
+        }
+
+        add1MealplanFragment = new MealplanFragment();
 
 //        Fragment oldFragment = getSupportFragmentManager().findFragmentById(R.id.add_fragment);
 //        if (oldFragment != null) {

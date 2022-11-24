@@ -64,6 +64,7 @@ public class IngredientActivity extends AppCompatActivity implements
     public IngredientList ingredientAdapter;
     public ArrayList<Ingredient> ingredientlist;
     Ingredient selectedIngredient;
+    String currentSortingType;
 
     
     @Override
@@ -116,9 +117,6 @@ public class IngredientActivity extends AppCompatActivity implements
         ingredientlistview = findViewById(R.id.ingredient_list);
 
         ingredientlist = new ArrayList<>();
-        //ingredientlist.add(new Ingredient("egg",new Date(),Ingredient.Location.Pantry,3,2,"back"));
-        //ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
-        //ingredientlist.add(new Ingredient("ccc",new Date(2023,5,3),Ingredient.Location.Freezer,5,4,"ccc"));
         ingredientAdapter = new IngredientList(this, ingredientlist);
         ingredientAdapter.setIngredientButtonListener(this);
         ingredientlistview.setAdapter(ingredientAdapter);
@@ -154,6 +152,7 @@ public class IngredientActivity extends AppCompatActivity implements
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
                 String result = parent.getItemAtPosition(i).toString();
+                currentSortingType = result;
 //                Toast.makeText(IngredientActivity.this, result,Toast.LENGTH_SHORT).show();
                 sortIngredientList(ingredientlist, result);
             }
@@ -199,7 +198,15 @@ public class IngredientActivity extends AppCompatActivity implements
                             unit,
                             category));
                 }
-                ingredientAdapter.notifyDataSetChanged();
+                if (currentSortingType != null) {
+                    if (!currentSortingType.equals("Sort")) {
+                        sortIngredientList(ingredientlist,currentSortingType);
+                    } else {
+                        ingredientAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    ingredientAdapter.notifyDataSetChanged();
+                }
             }
         });
 
@@ -308,7 +315,6 @@ public class IngredientActivity extends AppCompatActivity implements
 
     // sort list by a certain type: description, category, best before date, location
     public void sortIngredientList(ArrayList<Ingredient> list, String sorting_type) {
-        IngredientList adapter;
         switch (sorting_type) {
             case "description":
                 Collections.sort(list, new Comparator<Ingredient>() {
@@ -318,8 +324,6 @@ public class IngredientActivity extends AppCompatActivity implements
                                 .compareTo(ingredient1.getIngredientDescription());
                     }
                 });
-                adapter = new IngredientList(this, list);
-                ingredientlistview.setAdapter(adapter);
                 break;
             case "category":
                 Collections.sort(list, new Comparator<Ingredient>() {
@@ -329,8 +333,6 @@ public class IngredientActivity extends AppCompatActivity implements
                                 .compareTo(ingredient1.getIngredientCategory());
                     }
                 });
-                adapter = new IngredientList(this, list);
-                ingredientlistview.setAdapter(adapter);
                 break;
             case "location":
                 Collections.sort(list, new Comparator<Ingredient>() {
@@ -340,8 +342,6 @@ public class IngredientActivity extends AppCompatActivity implements
                                 .compareTo(ingredient1.getIngredientLocation().toString());
                     }
                 });
-                adapter = new IngredientList(this, list);
-                ingredientlistview.setAdapter(adapter);
                 break;
             case "bbd":
                 Collections.sort(list, new Comparator<Ingredient>() {
@@ -358,12 +358,12 @@ public class IngredientActivity extends AppCompatActivity implements
                         }
                     }
                 });
-                adapter = new IngredientList(this, list);
-                ingredientlistview.setAdapter(adapter);
                 break;
             default:
                 break;
         }
+        ingredientlist = list;
+        ingredientAdapter.notifyDataSetChanged();
     }
 
 }

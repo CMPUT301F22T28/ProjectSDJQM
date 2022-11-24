@@ -5,47 +5,58 @@
  */
 package com.example.projectsdjqm.recipe_list;
 
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * RecipeFragment:
  * fragment for the recipe list
  */
+
 public class RecipeFragment extends DialogFragment {
+    public static ArrayList<Ingredient> l = new ArrayList<>();
     public interface OnFragmentInteractionListener {
         void onOkPressedAdd(Recipe recipe);
         void onOkPressedEdit(Recipe recipe,
                              String title,
-                             String preparationTime,
+                             int preparationTime,
                              int servingNumber,
                              String comments,
                              String category,
@@ -60,12 +71,17 @@ public class RecipeFragment extends DialogFragment {
     private EditText recipeServingNumber;
     private EditText recipeCategory;
     private EditText recipeComments;
-    private Button photoSelectButton;
-    private Button ingredientSelectButton;
     private ImageView photo;
+    private ImageView recipePhoto;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
+    final String TAG = "Recipe Fragment";
+
     private TextView ingredientText;
     private Recipe recipe;
     private boolean isEdit = false;
+    private final int requestCodeForTakePhoto = 1;
+    private final int requestCodeForChoosePhoto = 2;
     private OnFragmentInteractionListener listener;
 
     // super call (constructor)
@@ -86,7 +102,7 @@ public class RecipeFragment extends DialogFragment {
         if (context instanceof OnFragmentInteractionListener) {
             listener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString() + "This is not the correct fragment!");
+            throw new RuntimeException(context + "This is not the correct fragment!");
         }
     }
 
@@ -94,62 +110,87 @@ public class RecipeFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity())
+        l.clear();
+        View view = getLayoutInflater()
                 .inflate(R.layout.recipe_add_fragment, null);
         recipeTitle = view.findViewById(R.id.edit_recipe_title);
         recipePreparationTime = view.findViewById(R.id.edit_recipe_preparation_time);
         recipeServingNumber = view.findViewById(R.id.edit_recipe_servings);
         recipeCategory = view.findViewById(R.id.edit_recipe_category);
         recipeComments = view.findViewById(R.id.edit_recipe_comments);
-        photoSelectButton = view.findViewById(R.id.photo_select_button);
-        ingredientSelectButton = view.findViewById(R.id.ingredient_select_button);
+
+        Button takePhotoButton = view.findViewById(R.id.take_photo);
+        Button choosePhotoButton = view.findViewById(R.id.choose_from_album);
+        Button ingredientSelectButton = view.findViewById(R.id.ingredient_select_button);
+
         photo = view.findViewById(R.id.recipe_image);
+        recipePhoto = view.findViewById(R.id.recipe_image);
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+
         ingredientText = view.findViewById(R.id.recipe_ingredient);
-        // click edit, current recipe details show in fragment
         if (isEdit) {
             recipeTitle.setText(recipe.getTitle());
-            recipePreparationTime.setText(recipe.getPreparationTime());
             recipeServingNumber.setText(String.valueOf(recipe.getNumberofServings()));
             recipeCategory.setText(recipe.getRecipeCategory());
             recipeComments.setText(recipe.getComments());
-            photo.setImageDrawable(recipe.getPhotograph());
+            recipePreparationTime.setText(String.valueOf(recipe.getPreparationTime()));
             ArrayList<Ingredient> list = recipe.getListofIngredients();
-            String listText = "";
+
+            StringBuilder listText = new StringBuilder();
             for (int i=0; i<list.size(); i++) {
-                listText += list.get(i).getIngredientDescription();
-                listText += ",\n";
+                listText.append(list.get(i).getIngredientDescription());
+                listText.append(",\n");
             }
         }
-        photoSelectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new AlertDialog.Builder(getContext())
-                        .setMessage("Test")
-                        .setPositiveButton("Ok", null)
-                        .show();
-                Intent intent = new Intent(Intent.ACTION_PICK, null);
-                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
-                registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                        new ActivityResultCallback<ActivityResult>() {
-                            @Override
-                            public void onActivityResult(ActivityResult result) {
-                                if (result.getResultCode() == 2) {
-                                    if (result.getData().getClipData() != null) {
-                                        Uri uri = result.getData().getClipData().getItemAt(1).getUri();
-                                        photo.setImageURI(uri);
-                                    }
-                                }
-                            }
-                });
+        takePhotoButton.setOnClickListener(view12 -> {
+            // have permission and start taking photo
+            if (ContextCompat.checkSelfPermission(
+                    getContext(),
+                    Manifest.permission.CAMERA) == PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(
+                            getContext(),
+                            Manifest.permission.READ_EXTERNAL_STORAGE) == PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(
+                            getContext(),
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED){
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent,requestCodeForTakePhoto);
+            }
+            // request for permissions if do not have
+            else {
+                ActivityCompat.requestPermissions(
+                        getActivity(),
+                        new String[]{
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        requestCodeForTakePhoto);
             }
         });
+
+        choosePhotoButton.setOnClickListener(view1 -> {
+            // request for permissions if do not have
+            if (ContextCompat.checkSelfPermission(
+                            getContext(),
+                            Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                        getActivity(),
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        requestCodeForChoosePhoto);
+            } else {
+                // have permission and open album to choose a photo
+                Intent intent = new Intent("android.intent.action.GET_CONTENT");
+                intent.setType("image/*");
+                startActivityForResult(intent, requestCodeForChoosePhoto);
+            }
+        });
+
         ingredientSelectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AlertDialog.Builder(getContext())
-                        .setMessage("Test")
-                        .setPositiveButton("Ok", null)
-                        .show();
+                new AddIngredientFragment().show(getChildFragmentManager(),null);
             }
         });
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -185,10 +226,11 @@ public class RecipeFragment extends DialogFragment {
             String category = recipeCategory.getText().toString();
             String comments = recipeComments.getText().toString();
             Drawable photograph = photo.getDrawable();
+
             // need to change --------------------------
-            Ingredient i = new Ingredient("a",new Date(),Ingredient.Location.Pantry,2,1,"category");
+//            Ingredient i = new Ingredient("a",new Date(),Ingredient.Location.Pantry,2,1,"category");
             ArrayList<Ingredient> list = new ArrayList<>();
-            list.add(i);
+//            list.add(i);
             // need to change --------------------------
 
             // check title
@@ -203,26 +245,6 @@ public class RecipeFragment extends DialogFragment {
                 recipeCategory.setError("Enter a category");
             }
 
-            //check preparation time
-            int time = 0;
-            try {
-                if (!preparationTime.isEmpty()) {
-                    time = Integer.parseInt(preparationTime);
-
-                    if (time < 1) {
-                        isValid = false;
-                        recipePreparationTime.setError("Enter a positive number");
-                    }
-                } else {
-                    isValid = false;
-                    recipePreparationTime.setError("Enter a positive number");
-                }
-            } catch (NumberFormatException ex) {
-                isValid = false;
-                recipePreparationTime.setError("Enter a positive number");
-                Log.d("NumberFormatLog", "error on numberformat is " + ex.getMessage());
-                ex.printStackTrace();
-            }
             int serving = 0;
             try {
                 if (!servingNumber.isEmpty()) {
@@ -242,11 +264,30 @@ public class RecipeFragment extends DialogFragment {
                 ex.printStackTrace();
             }
 
+            int preparationT = 0;
+            try {
+                if (!preparationTime.isEmpty()) {
+                    preparationT = Integer.parseInt(preparationTime);
+                    if (preparationT < 1) {
+                        isValid = false;
+                        recipePreparationTime.setError("Enter a positive number");
+                    }
+                } else {
+                    isValid = false;
+                    recipePreparationTime.setError("Enter a positive number");
+                }
+            } catch (NumberFormatException ex) {
+                isValid = false;
+                recipePreparationTime.setError("Enter a positive number");
+                Log.d("NumberFormatLog", "error on numberformat is " + ex.getMessage());
+                ex.printStackTrace();
+            }
+
             if (isValid) {
                 if (!isEdit) {
                     listener.onOkPressedAdd(new Recipe(
                             title,
-                            preparationTime,
+                            preparationT,
                             serving,
                             category,
                             comments,
@@ -257,7 +298,7 @@ public class RecipeFragment extends DialogFragment {
                     listener.onOkPressedEdit(
                             recipe,
                             title,
-                            preparationTime,
+                            preparationT,
                             serving,
                             category,
                             comments,
@@ -270,4 +311,80 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // take photo
+        if (requestCode == requestCodeForTakePhoto) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent,requestCodeForTakePhoto);
+            }
+        }
+        // choose a photo
+        else if (requestCode == requestCodeForChoosePhoto) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent("android.intent.action.GET_CONTENT");
+                intent.setType("image/*");
+                startActivityForResult(intent, requestCodeForChoosePhoto);
+            }
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == requestCodeForTakePhoto && resultCode == Activity.RESULT_OK) {
+            assert data != null;
+            Bitmap b =(Bitmap) data.getExtras().get("data");
+            photo.setImageBitmap(b);
+            // Get the data from an ImageView as bytes
+            final String photokey = recipeTitle.getText().toString().replace(" ","");
+            StorageReference imageRef = storageReference.child("images/" + photokey);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            b.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] pic_data = baos.toByteArray();
+
+            UploadTask uploadTask = imageRef.putBytes(pic_data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                    Log.d(TAG,"image upload successfully");
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                    Log.d(TAG,"image not upload");
+                }
+            });
+
+
+        }else if (requestCode == requestCodeForChoosePhoto && resultCode == Activity.RESULT_OK) {
+            assert data != null;
+            Uri uri = data.getData();
+            photo.setImageURI(uri);
+
+            // set photokey for image upload
+            final String photokey = recipeTitle.getText().toString().replace(" ","");
+            StorageReference imageRef = storageReference.child("images/" + photokey);
+            imageRef.putFile(uri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Log.d(TAG,"image upload successfully");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG,"image not upload");
+                        }
+                    });
+        }
+        else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 }

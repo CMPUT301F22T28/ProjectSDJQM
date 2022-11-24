@@ -90,6 +90,7 @@ public class RecipeList extends ArrayAdapter<Recipe> {
         categoryTextView.setText(String.format("Category: %s", recipe.getRecipeCategory()));
         commentsTextView.setText(String.format("Comments:\n%s", recipe.getComments()));
         photographImageView.setImageDrawable(recipe.getPhotograph());
+
         ArrayList<Ingredient> list = recipe.getListofIngredients();
         StringBuilder text = new StringBuilder("\n");
         for (int i=0; i<list.size(); i++) {

@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
@@ -136,11 +137,13 @@ public class MealPlanActivity extends AppCompatActivity
                 addMealplanFragment.show(getSupportFragmentManager(),"Add Mealplan");
             }
         });
-
     }
 
 
     public void onOkPressedAdd(Mealplan mealplan) {
+        if (mealplanStorageFragment != null) {
+            mealplanStorageFragment.dismiss();
+        }
         mealplanAdapter.add(mealplan);
         mealplanListView.setAdapter(mealplanAdapter);
     }
@@ -161,9 +164,9 @@ public class MealPlanActivity extends AppCompatActivity
     }
 
 
-    public void On_storage_pressed(ArrayList<String> rec_sel_list,ArrayList<Integer> ingre_sel_list) {
+    public void On_storage_pressed(ArrayList<Integer> rec_sel_list,ArrayList<Integer> ingre_sel_list) {
         Bundle bundle = new Bundle();
-        bundle.putStringArrayList("rec_sel_list", rec_sel_list);
+        bundle.putIntegerArrayList("rec_sel_list", rec_sel_list);
         bundle.putIntegerArrayList("ingre_sel_list", ingre_sel_list);
 
 

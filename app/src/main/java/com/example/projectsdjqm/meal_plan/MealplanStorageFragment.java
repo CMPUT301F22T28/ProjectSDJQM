@@ -59,13 +59,13 @@ public class MealplanStorageFragment extends DialogFragment {
     RecipeList recipeAdapter;
     IngredientList ingredientAdapter;
     private String selectedItem;
-    private ArrayList<String> rec_sel_list = new ArrayList<>();
+    private ArrayList<Integer> rec_sel_list = new ArrayList<>();
     private ArrayList<Integer> ingre_sel_list = new ArrayList<>();
     View view;
 
     public interface DataPassListener {
         public void passData(String data);
-        public void On_storage_pressed(ArrayList<String> rec_sel_list, ArrayList<Integer> ingre_sel_list);
+        public void On_storage_pressed(ArrayList<Integer> rec_sel_list, ArrayList<Integer> ingre_sel_list);
     }
 
     @Override
@@ -88,30 +88,11 @@ public class MealplanStorageFragment extends DialogFragment {
         recipeListview.setAdapter(recipeAdapter);
         ingredientListview.setAdapter(ingredientAdapter);
         ArrayList<String> ingredientList_str = new ArrayList<String>();
+        ArrayList<String> recipeList_str = new ArrayList<String>();
         Log.d(TAG, "onCreateView");
         db = FirebaseFirestore.getInstance();
-        CollectionReference collectionReference = db.collection("Ingredients");
-
-//        ArrayList<Ingredient> ingredientList = new ArrayList<>();
-//        Ingredient testc = new Ingredient("apple", new Date(2020, 2, 1), Ingredient.Location.Fridge, 1, 1, "here");
-//        ingredientList.add(testc);
-//        ArrayList<Recipe> recipeList = new ArrayList<>();
-//        Drawable icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_notifications_black_24dp);
-//        Recipe testa = new Recipe("Orange Chicken", "30", 3,
-//                "category", "comments", icon,
-//                ingredientList);
-//        recipeList.add(testa);
-
-        // test cases for mealplan storage
-        // will be replaced by content within database
-//        ArrayList<String> recipeList_str = new ArrayList<String>();
-//        for (Recipe rec : recipeList) {
-//            recipeList_str.add(rec.getTitle());
-//        }
-//        ArrayAdapter<String> recipeAdapter =
-//                new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, recipeList_str);
-//        recipeListview.setAdapter(recipeAdapter);
-
+        CollectionReference collectionReference_ingre = db.collection("Ingredients");
+        CollectionReference collectionReference_rec = db.collection("Recipes");
 
         // retrieve data from firestore
         db.collection("Ingredients")
@@ -132,7 +113,7 @@ public class MealplanStorageFragment extends DialogFragment {
         ArrayList<Ingredient> ingredientList = new ArrayList<>();
         ArrayList<Recipe> recipeList = new ArrayList<>();
 
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        collectionReference_ingre.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
                     FirebaseFirestoreException error) {
@@ -179,6 +160,54 @@ public class MealplanStorageFragment extends DialogFragment {
         });
 
 
+        db.collection("Recipes")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+        collectionReference_rec.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                    FirebaseFirestoreException error) {
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+                {
+                    String title = doc.getId();
+                    String preptime = String.valueOf(doc.getData().get("Preparation Time"));
+                    int numser = Integer.valueOf(doc.getData().get("Serving Number").toString());
+                    String category = (String) doc.getData().get("Category");
+                    String comm = (String) doc.getData().get("Comments");
+                    ArrayList<Ingredient> ingredientlist = new ArrayList<>();
+                    ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
+                    Drawable icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_notifications_black_24dp);
+                    // drawable photo;
+                    // arrayList
+                    recipeList.add(new Recipe(
+                            title,
+                            preptime,
+                            numser,
+                            category,
+                            comm,
+                            icon,
+                            ingredientlist));
+                }
+                for (Recipe rec : recipeList) {
+                    recipeList_str.add(rec.getTitle());
+                }
+                ArrayAdapter<String> recipeAdapter =
+                        new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, recipeList_str);
+                recipeListview.setAdapter(recipeAdapter);
+            }
+        });
 
 
 
@@ -186,25 +215,18 @@ public class MealplanStorageFragment extends DialogFragment {
 
 
 
-//        recipeListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                selectedItem = (String) recipeAdapter.getItem(position);
-//                rec_sel_list.add(selectedItem);
-//                recipeList_str.add(selectedItem);
-//                recipeListview.setAdapter(recipeAdapter);
-//
-//            }
-//
-//        });
+        recipeListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                rec_sel_list.add(position);
+            }
+
+        });
 
         ingredientListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ingre_sel_list.add(position);
-//                ingredientList_str.add(selectedItem);
-//                ingredientListview.setAdapter(ingredientAdapter);
-
             }
 
         });
@@ -219,13 +241,6 @@ public class MealplanStorageFragment extends DialogFragment {
         });
 
 
-//        ActionBar actionBar = getSupportActionBar();
-//
-//        // showing the back button in action bar
-//        actionBar.setDisplayHomeAsUpEnabled(true);
-//
-//
-//
 
         return view;
     }

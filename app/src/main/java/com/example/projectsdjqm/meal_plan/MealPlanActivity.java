@@ -6,6 +6,9 @@
  */
 package com.example.projectsdjqm.meal_plan;
 
+import static android.system.Os.remove;
+
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -18,6 +21,8 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.projectsdjqm.MainActivity;
@@ -124,7 +129,9 @@ public class MealPlanActivity extends AppCompatActivity
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+//                MealplanStorageFragment mealplanStorageFragment = new MealplanStorageFragment();
+//                getSupportFragmentManager().beginTransaction()
+//                        .add(R.id.storage_fragment, mealplanStorageFragment).commit();
                 addMealplanFragment.show(getSupportFragmentManager(),"Add Mealplan");
             }
         });
@@ -138,7 +145,13 @@ public class MealPlanActivity extends AppCompatActivity
     }
 
     public void add_meal_plan_from_storage() {
+//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//        transaction.replace(R.id.add_fragment, mealplanStorageFragment);
+//        transaction.addToBackStack(null);
+//
+//        transaction.commit();
         mealplanStorageFragment.show(getSupportFragmentManager(),"Mealplan Storage");
+
 
     }
 
@@ -153,13 +166,18 @@ public class MealPlanActivity extends AppCompatActivity
         bundle.putString("message", selectedItem);
 
 
+        addMealplanFragment.dismiss();
         MealplanFragment add1MealplanFragment = new MealplanFragment();
-//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//        transaction.replace(R.id.add_fragment, add1MealplanFragment);
-//        transaction.addToBackStack(null);
-//
-//        // Commit the transaction
-//        transaction.commit();
+
+//        Fragment oldFragment = getSupportFragmentManager().findFragmentById(R.id.add_fragment);
+//        if (oldFragment != null) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .remove(oldFragment).commit();
+//        }
+//        addMealplanFragment.setArguments(bundle);
+//        addMealplanFragment.show(getSupportFragmentManager(), "Add Mealplan");
+
+
         add1MealplanFragment.show(getSupportFragmentManager(),"Add1 Mealplan");
         // Set Fragmentclass Arguments
         add1MealplanFragment.setArguments(bundle);

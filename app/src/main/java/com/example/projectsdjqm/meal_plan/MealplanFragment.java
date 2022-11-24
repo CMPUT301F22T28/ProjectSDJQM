@@ -2,6 +2,8 @@ package com.example.projectsdjqm.meal_plan;
 
 import static android.content.Intent.getIntent;
 
+import static androidx.fragment.app.FragmentKt.setFragmentResultListener;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -106,7 +108,7 @@ public class MealplanFragment extends DialogFragment {
 //            recipeList_str.add(rec.getTitle());
 //        }
 
-//        recipeList_str.add(selectedItem);
+
         ArrayAdapter<String> recipeAdapter =
                 new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, recipeList_str);
         recipeListview.setAdapter(recipeAdapter);
@@ -120,7 +122,14 @@ public class MealplanFragment extends DialogFragment {
 //        ingredientListview.setAdapter(ingredientAdapter);
 
 
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            selectedItem = bundle.getString("message");
+        } else {
+            selectedItem = "EMPTY!";
+        }
 
+        recipeList_str.add(selectedItem);
 
         Button recipe_add_button = (Button) view.findViewById(R.id.mealplan_r_add_button);
         recipe_add_button.setOnClickListener(new View.OnClickListener()
@@ -153,5 +162,6 @@ public class MealplanFragment extends DialogFragment {
 
 
     }
+
 
 }

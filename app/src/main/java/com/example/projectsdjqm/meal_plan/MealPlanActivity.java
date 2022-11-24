@@ -18,6 +18,7 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.projectsdjqm.MainActivity;
 import com.example.projectsdjqm.R;
@@ -144,6 +145,24 @@ public class MealPlanActivity extends AppCompatActivity
 
     public void passData(String data) {
 
+    }
+
+
+    public void On_storage_pressed(String selectedItem) {
+        Bundle bundle = new Bundle();
+        bundle.putString("message", selectedItem);
+
+
+        MealplanFragment add1MealplanFragment = new MealplanFragment();
+//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//        transaction.replace(R.id.add_fragment, add1MealplanFragment);
+//        transaction.addToBackStack(null);
+//
+//        // Commit the transaction
+//        transaction.commit();
+        add1MealplanFragment.show(getSupportFragmentManager(),"Add1 Mealplan");
+        // Set Fragmentclass Arguments
+        add1MealplanFragment.setArguments(bundle);
     }
 
 

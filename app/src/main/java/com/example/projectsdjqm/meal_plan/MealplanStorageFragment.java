@@ -45,6 +45,7 @@ public class MealplanStorageFragment extends DialogFragment {
 
     public interface DataPassListener {
         public void passData(String data);
+        public void On_storage_pressed(String selectedItem);
     }
 
     @Override
@@ -100,8 +101,9 @@ public class MealplanStorageFragment extends DialogFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectedItem = (String) recipeAdapter.getItem(position);
-//                recipeList_str.add(selectedItem);
-//                recipeListview.setAdapter(recipeAdapter);
+                recipeList_str.add(selectedItem);
+                recipeListview.setAdapter(recipeAdapter);
+
 //                MealplanFragment dialogFragment = new MealplanFragment();
 //                Bundle bundle = new Bundle();
 //                bundle.putString("TEXT", selectedItem);
@@ -118,8 +120,7 @@ public class MealplanStorageFragment extends DialogFragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
+                mCallback.On_storage_pressed(selectedItem);
             }
         });
 

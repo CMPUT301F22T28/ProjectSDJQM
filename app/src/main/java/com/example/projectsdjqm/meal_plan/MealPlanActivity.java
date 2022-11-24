@@ -50,7 +50,7 @@ public class MealPlanActivity extends AppCompatActivity
                     MealplanStorageFragment.DataPassListener{
 
     
-    // bottom nav
+    // initialization of variables
     BottomNavigationView bottomNavigationView;
     FirebaseFirestore db;
     final String TAG = "Recipes Activity";
@@ -68,11 +68,9 @@ public class MealPlanActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mealplan_main);
-
-
+        // bottom nav initialization
         bottomNavigationView = findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_meal_plan);
-
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -103,7 +101,6 @@ public class MealPlanActivity extends AppCompatActivity
                         overridePendingTransition(0,0);
                         return true;
 
-
                 }
                 return false;
             }
@@ -131,9 +128,6 @@ public class MealPlanActivity extends AppCompatActivity
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                MealplanStorageFragment mealplanStorageFragment = new MealplanStorageFragment();
-//                getSupportFragmentManager().beginTransaction()
-//                        .add(R.id.storage_fragment, mealplanStorageFragment).commit();
                 addMealplanFragment.show(getSupportFragmentManager(),"Add Mealplan");
             }
         });
@@ -157,12 +151,9 @@ public class MealPlanActivity extends AppCompatActivity
 
 
     }
-
-
     public void passData(String data) {
 
     }
-
 
     public void On_storage_pressed(ArrayList<Integer> rec_sel_list,ArrayList<Integer> ingre_sel_list) {
         Bundle bundle = new Bundle();

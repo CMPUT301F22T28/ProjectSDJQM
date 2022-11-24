@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -66,7 +67,8 @@ public class MealplanFragment extends DialogFragment {
     private DatePicker mealplan_date_view;
     private ListView recipeListview;
     private ListView ingredientListview;
-    private String selectedItem;
+    private String selectedItem_recipe;
+    private String selectedItem_ingre;
     private ArrayList<String> recipeList_str;
     private ArrayList<String> ingredientList_str;
     private ArrayList<Integer> recipeList_int = new ArrayList<Integer>();
@@ -107,34 +109,24 @@ public class MealplanFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
 
-        // initialize listviews
+        // initialize listviews and datepicker
         mealplan_date_view = view.findViewById(R.id.mealplan_date_picker);
         recipeListview = view.findViewById(R.id.mealplan_r_add_list);
         ingredientListview = view.findViewById(R.id.mealplan_in_add_list);
 
+        // initialize arraylists
+        ArrayList<Ingredient> ingredientList = new ArrayList<>();
+        ArrayList<Recipe> recipeList = new ArrayList<>();
+        ingredientList_str = new ArrayList<>();
+        recipeList_str = new ArrayList<>();
 
+        // firestore initialization
         Log.d(TAG, "onCreateView");
         db = FirebaseFirestore.getInstance();
         CollectionReference collectionReference_ingre = db.collection("Ingredients");
         CollectionReference collectionReference_rec = db.collection("Recipes");
 
-
-
-//        for (Recipe rec : recipeList) {
-//            recipeList_str.add(rec.getTitle());
-//        }
-
-        // Initial adding fragment page
-//        recipeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, recipeList_str);
-//        recipeListview.setAdapter(recipeAdapter);
-//        ingredientAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, ingredientList_str);
-//        ingredientListview.setAdapter(ingredientAdapter);
-//        ArrayList<String> ingredientList_str = new ArrayList<String>();
-//        for (Ingredient ingre : ingredientList) {
-//            ingredientList_str.add(ingre.getIngredientDescription());
-//        }
-
-        // retrieve data from firestore
+        // set database path of ingredients and recipes
         db.collection("Ingredients")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -165,15 +157,11 @@ public class MealplanFragment extends DialogFragment {
                     }
                 });
 
-        ArrayList<Ingredient> ingredientList = new ArrayList<>();
-        ArrayList<Recipe> recipeList = new ArrayList<>();
-        ingredientList_str = new ArrayList<>();
-        recipeList_str = new ArrayList<>();
-
-
-
+        // retrieve the user selected recipes from bundle object
+        // handle NULL POINTER EXCEPTION
         Bundle bundle = getArguments();
         if (bundle != null) {
+            // update the meal plan adding fragement for recipe
             if (bundle.getStringArrayList("rec_sel_list") != null) {
                 recipeList_int = bundle.getIntegerArrayList("rec_sel_list");
                 collectionReference_rec.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -213,8 +201,9 @@ public class MealplanFragment extends DialogFragment {
                         recipeListview.setAdapter(recipeAdapter);
                     }
                 });
-
             }
+            // retrieve the user selected recipes from bundle object
+            // update the meal plan adding fragement for recipe
             if (bundle.getIntegerArrayList("ingre_sel_list") != null) {
                 ingredientList_int = bundle.getIntegerArrayList("ingre_sel_list");
                 collectionReference_ingre.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -252,7 +241,6 @@ public class MealplanFragment extends DialogFragment {
 
 
                         }
-
                         for (Ingredient ingre : ingredientList) {
                             ingredientList_str.add(ingre.getIngredientDescription());
                         }
@@ -268,11 +256,11 @@ public class MealplanFragment extends DialogFragment {
                 });
             }
         } else {
+            ingredientList_str.add("EMPTY!");
             recipeList_str.add("EMPTY!");
         }
 
-
-
+        // ADD button to add recipes from database recipe storage
         Button recipe_add_button = (Button) view.findViewById(R.id.mealplan_r_add_button);
         recipe_add_button.setOnClickListener(new View.OnClickListener()
         {
@@ -282,7 +270,7 @@ public class MealplanFragment extends DialogFragment {
                 listener.add_meal_plan_from_storage();
             }
         });
-
+        // ADD button to add ingredients from database ingredients storage
         Button ingredient_add_button = (Button) view.findViewById(R.id.mealplan_in_add_button);
         ingredient_add_button.setOnClickListener(new View.OnClickListener()
         {
@@ -293,6 +281,45 @@ public class MealplanFragment extends DialogFragment {
             }
         });
 
+        // click on the recipe list view and use the delete button to delete selected recipe
+        recipeListview.setAdapter(recipeAdapter);
+        recipeListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectedItem_recipe = (String) recipeAdapter.getItem(position);
+            }
+
+        });
+        Button recipe_delete_button = (Button) view.findViewById(R.id.mealplan_r_delete_button);
+        recipe_delete_button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                recipeAdapter.remove(selectedItem_recipe);
+            }
+        });
+
+        // click on the ingredient list view and use the delete button to delete selected ingredient
+        ingredientListview.setAdapter(ingredientAdapter);
+        ingredientListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectedItem_ingre = (String) ingredientAdapter.getItem(position);
+            }
+
+        });
+        Button ingredient_delete_button = (Button) view.findViewById(R.id.mealplan_in_delete_button);
+        ingredient_delete_button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                ingredientAdapter.remove(selectedItem_ingre);
+            }
+        });
+
+        // builder of meal plan adding fragment
         return builder
                 .setView(view)
                 .setTitle("Adding Meal Plan")
@@ -314,7 +341,6 @@ public class MealplanFragment extends DialogFragment {
                         for (Integer num : ingredientList_int){
                             ingredientList_container.add(ingredientList.get(num));
                         }
-
                         listener.onOkPressedAdd(new Mealplan(recipeList_container,ingredientList_container,mealplan_date));
                     }
                 }).create();

@@ -52,13 +52,13 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MealplanStorageFragment extends DialogFragment {
+    // Initialization of variables
     FirebaseFirestore db;
     private DataPassListener mCallback;
     private ListView recipeListview;
     private ListView ingredientListview;
     RecipeList recipeAdapter;
     IngredientList ingredientAdapter;
-    private String selectedItem;
     private ArrayList<Integer> rec_sel_list = new ArrayList<>();
     private ArrayList<Integer> ingre_sel_list = new ArrayList<>();
     View view;
@@ -109,6 +109,20 @@ public class MealplanStorageFragment extends DialogFragment {
                         }
                     }
                 });
+        db.collection("Recipes")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
 
         ArrayList<Ingredient> ingredientList = new ArrayList<>();
         ArrayList<Recipe> recipeList = new ArrayList<>();
@@ -117,7 +131,6 @@ public class MealplanStorageFragment extends DialogFragment {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
                     FirebaseFirestoreException error) {
-//                ingredientlist.clear();
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     Log.d(TAG, String.valueOf(doc.getData().get("Category")));
                     String description = doc.getId();
@@ -159,22 +172,6 @@ public class MealplanStorageFragment extends DialogFragment {
             }
         });
 
-
-        db.collection("Recipes")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-
         collectionReference_rec.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
@@ -208,12 +205,6 @@ public class MealplanStorageFragment extends DialogFragment {
                 recipeListview.setAdapter(recipeAdapter);
             }
         });
-
-
-
-
-
-
 
         recipeListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

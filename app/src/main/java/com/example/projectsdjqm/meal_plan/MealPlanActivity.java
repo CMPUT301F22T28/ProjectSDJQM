@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -42,7 +43,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -147,6 +150,10 @@ public class MealPlanActivity extends AppCompatActivity
                 addMealplanFragment.show(getSupportFragmentManager(),"Add Mealplan");
             }
         });
+
+
+
+        //
         db.collection("MealPlans")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -163,16 +170,86 @@ public class MealPlanActivity extends AppCompatActivity
                 });
 
         collectionReference.addSnapshotListener((queryDocumentSnapshots, error) -> {
-            recipeList.clear();
             for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
             {
-                Date mealplan_date = doc.getDate("Mealplan_date");
+                String mealplan_id = doc.getId();
+                Timestamp ts = (Timestamp) doc.getData().get("Mealplan_date");
+                Date mealplan_date = new Date(2022,11,30);
+                String recipe_path = "MealPlans"+"/"+mealplan_id+"/"+"recipe List";
+                CollectionReference collectionReference_mealplan_recipe = db.collection(recipe_path);
+                db.collection(recipe_path)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                    }
+                                } else {
+                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                }
+                            }
+                        });
 
+                String ingre_path = "MealPlans"+"/"+mealplan_id+"/"+"ingredient List";
+                CollectionReference collectionReference_mealplan_ingredient = db.collection(ingre_path);
+                db.collection(ingre_path)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                    }
+                                } else {
+                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                }
+                            }
+                        });
+                collectionReference_mealplan_ingredient.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                            FirebaseFirestoreException error) {
+                        ArrayList<Ingredient> ingredientlist = new ArrayList<>();
+                        ingredientlist.clear();
+                        for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+                        {
+                            Log.d(TAG, String.valueOf(doc.getData().get("Category")));
+                            String description = doc.getId();
+                            int amount = Integer.valueOf(doc.getData().get("Amount").toString());
+                            Timestamp bbd = (Timestamp) doc.getData().get("Best Before Date");
+                            Date bestbeforedate = bbd.toDate();
+                            String category = (String) doc.getData().get("Category");
+                            String location_str = String.valueOf(doc.getData().get("Location"));
+                            Ingredient.Location location;
+                            switch (location_str) {
+                                case "Fridge":
+                                    location = Ingredient.Location.Fridge;
+                                    break;
+                                case "Freezer":
+                                    location = Ingredient.Location.Freezer;
+                                    break;
+                                default:
+                                    location = Ingredient.Location.Pantry;
+                            }
+                            int unit = Integer.valueOf(doc.getData().get("Unit").toString());
 
+                            ingredientlist.add(new Ingredient(
+                                    description,
+                                    bestbeforedate,
+                                    location,
+                                    amount,
+                                    unit,
+                                    category));
+                        }
+                        Mealplan test = new Mealplan(recipeList, ingredientlist, mealplan_date);
+                        mealplanList.add(test);
+                        mealplanAdapter.notifyDataSetChanged();
 
-//                Mealplan test = new Mealplan(recipeList, ingredientList, new Date(2022,11,30));
-//                mealplanList.add(test);
-
+                    }
+                });
             }
         });
     }
@@ -190,20 +267,10 @@ public class MealPlanActivity extends AppCompatActivity
         String mealplan_date_str = String.format(dateFormat.format(mealplan_date));
 
         HashMap<String, Object> data = new HashMap<>();
-        HashMap<String, Object> nestedData = new HashMap<>();
+        HashMap<String, Object> nestedData_rec = new HashMap<>();
+        HashMap<String, Object> nestedData_ingre = new HashMap<>();
 
-
-        data.put("Mealplan_Ingredient List",IngredientList);
         data.put("Mealplan_Date",mealplan_date);
-//        for (Recipe rec: recipeList) {
-//            nestedData.put("Title",rec.getTitle());
-//            nestedData.put("preptime",rec.getPreparationTime());
-//            nestedData.put("Serving Number",rec.getNumberofServings());
-//            nestedData.put("Category",rec.getRecipeCategory());
-//            nestedData.put("Comments",rec.getComments());
-//            nestedData.put("Ingredient List",rec.getListofIngredients());
-//        }
-//        data.put("Mealplan_Recipe List", nestedData);
 
         collectionReference
                 .document(mealplan_date_str)
@@ -215,18 +282,38 @@ public class MealPlanActivity extends AppCompatActivity
                     }
                 });
 
+        // add recipelist as collection
         for (Recipe rec: recipeList) {
             final String recipeTitle = rec.getTitle();
-            nestedData.put("Title",rec.getTitle());
-            nestedData.put("preptime",rec.getPreparationTime());
-            nestedData.put("Serving Number",rec.getNumberofServings());
-            nestedData.put("Category",rec.getRecipeCategory());
-            nestedData.put("Comments",rec.getComments());
-            nestedData.put("Ingredient List",rec.getListofIngredients());
+            nestedData_rec.put("Title",rec.getTitle());
+            nestedData_rec.put("preptime",rec.getPreparationTime());
+            nestedData_rec.put("Serving Number",rec.getNumberofServings());
+            nestedData_rec.put("Category",rec.getRecipeCategory());
+            nestedData_rec.put("Comments",rec.getComments());
+            nestedData_rec.put("Ingredient List",rec.getListofIngredients());
             collectionReference
                     .document(mealplan_date_str)
                     .collection("recipe List").document(recipeTitle)
-                    .set(nestedData)
+                    .set(nestedData_rec)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, mealplan_date + " data has been added successfully!");
+                        }
+                    });
+        }
+        // add ingredient list as collection
+        for (Ingredient ingre: IngredientList) {
+            final String ingredientDesc = ingre.getIngredientDescription();
+            nestedData_ingre.put("Amount",ingre.getIngredientAmount());
+            nestedData_ingre.put("Best Before Date",ingre.getIngredientBestBeforeDate());
+            nestedData_ingre.put("Category",ingre.getIngredientCategory());
+            nestedData_ingre.put("Location",ingre.getIngredientLocation());
+            nestedData_ingre.put("Unit",ingre.getIngredientUnit());
+            collectionReference
+                    .document(mealplan_date_str)
+                    .collection("ingredient List").document(ingredientDesc)
+                    .set(nestedData_ingre)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {

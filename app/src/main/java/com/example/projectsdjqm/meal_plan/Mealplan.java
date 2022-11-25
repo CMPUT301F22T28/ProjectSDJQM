@@ -9,6 +9,8 @@ import java.util.Date;
 /**
  * Mealplan:
  * mealplan class
+ * @author Jianming Ma
+ * @date Nov.23rd, 2022
  */
 public class Mealplan {
     /*

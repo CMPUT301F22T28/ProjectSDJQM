@@ -25,8 +25,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * MealplanList:
- * Custom array adapter for mealplan
+ * MealplanList
+ * @version 1.2
+ * @author Jianming Ma
+ * @date Nov.23rd, 2022
  */
 public class MealplanList extends ArrayAdapter<Mealplan> {
 

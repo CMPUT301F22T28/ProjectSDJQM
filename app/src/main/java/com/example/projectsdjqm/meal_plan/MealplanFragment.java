@@ -54,6 +54,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+/**
+ * MealplanFragment:
+ * mealplan adding fragment
+ * @author Jianming Ma
+ * @date Nov.23rd, 2022
+ */
+
 public class MealplanFragment extends DialogFragment {
     public interface OnFragmentInteractionListener {
         void onOkPressedAdd(Mealplan mealplan);

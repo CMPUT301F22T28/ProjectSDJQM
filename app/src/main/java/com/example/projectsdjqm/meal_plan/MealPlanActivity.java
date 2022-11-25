@@ -56,8 +56,10 @@ import java.util.Date;
 import java.util.HashMap;
 
 /**
- * MealPlanActivity:
- * Main page of the meal plan
+ * MealPlanActivity
+ * @version 1.2
+ * @author Jianming Ma
+ * @date Nov.23rd, 2022
  */
 public class MealPlanActivity extends AppCompatActivity
         implements MealplanFragment.OnFragmentInteractionListener,

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/add_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:animationCache="true">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="4dp"
+            android:padding="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:text="Pick a date: "
+                android:textSize="16sp" />
+
+            <DatePicker
+                android:id="@+id/mealplan_date_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:calendarViewShown="false"
+                android:datePickerMode="spinner" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="4dp"
+            android:padding="4dp"
+            android:orientation="vertical"
+            android:background="@drawable/border">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="100dp"
+                    android:text="Recipes: "
+                    android:textSize="18dp" />
+
+                <Button
+                    android:id="@+id/mealplan_r_add_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="ADD" />
+
+                <Button
+                    android:id="@+id/mealplan_r_delete_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="DELETE" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/mealplan_r_add_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </ListView>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="4dp"
+            android:padding="4dp"
+            android:orientation="vertical"
+            android:background="@drawable/border">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:text="List of Ingredients: "
+                    android:textSize="18dp" />
+
+                <Button
+                    android:id="@+id/mealplan_in_add_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="ADD" />
+
+                <Button
+                    android:id="@+id/mealplan_in_delete_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="DELETE" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/mealplan_in_add_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </ListView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

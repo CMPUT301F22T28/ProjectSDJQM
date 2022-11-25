@@ -220,15 +220,6 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                         sortRecipeList(recipeList,"title");
                     }
                 });
-//                if (currentSortingType != null) {
-//                    if (!currentSortingType.equals("(select one)")) {
-//                        sortRecipeList(recipeList,currentSortingType);
-//                    } else {
-//                        recipeAdapter.notifyDataSetChanged();
-//                    }
-//                } else {
-//                    recipeAdapter.notifyDataSetChanged();
-//                }
             }
         });
     }
@@ -353,7 +344,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
 
     private void sortRecipeList(ArrayList<Recipe> list, String sorting_type) {
         switch (sorting_type) {
-            case "title":
+            case "Title":
                 Collections.sort(list, new Comparator<Recipe>() {
                     @Override
                     public int compare(Recipe recipe, Recipe recipe1) {
@@ -362,7 +353,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                     }
                 });
                 break;
-            case "category":
+            case "Category":
                 Collections.sort(list, new Comparator<Recipe>() {
                     @Override
                     public int compare(Recipe recipe, Recipe recipe1) {
@@ -371,7 +362,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                     }
                 });
                 break;
-            case "preparation time":
+            case "Preparation Time":
                 Collections.sort(list, new Comparator<Recipe>() {
                     @Override
                     public int compare(Recipe recipe, Recipe recipe1) {
@@ -387,7 +378,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                     }
                 });
                 break;
-            case "serving size":
+            case "Serving Size":
                 Collections.sort(list, new Comparator<Recipe>() {
                     @Override
                     public int compare(Recipe recipe, Recipe recipe1) {

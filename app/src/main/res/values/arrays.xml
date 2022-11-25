@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="sorting_type">
-        <item>Sort</item>
-        <item>description</item>
-        <item>bbd</item>
-        <item>location</item>
-        <item>category</item>
+        <item>(Select One)</item>
+        <item>Description</item>
+        <item>Best Before Date</item>
+        <item>Location</item>
+        <item>Category</item>
     </string-array>
     <string-array name="sorting_type1">
-        <item>(select one)</item>
-        <item>title</item>
-        <item>preparation time</item>
-        <item>serving size</item>
-        <item>category</item>
+        <item>(Select One)</item>
+        <item>Title</item>
+        <item>Preparation Time</item>
+        <item>Serving Size</item>
+        <item>Category</item>
     </string-array>
 </resources>

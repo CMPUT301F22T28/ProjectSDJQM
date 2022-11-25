@@ -54,7 +54,7 @@ import java.util.HashMap;
 public class IngredientActivity extends AppCompatActivity implements
         IngredientFragment.OnFragmentInteractionListener,
         IngredientList.IngredientButtonListener {
-    
+
     // all init
     BottomNavigationView bottomNavigationView;
     FirebaseFirestore db;
@@ -66,7 +66,7 @@ public class IngredientActivity extends AppCompatActivity implements
     Ingredient selectedIngredient;
     String currentSortingType;
 
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -316,7 +316,7 @@ public class IngredientActivity extends AppCompatActivity implements
     // sort list by a certain type: description, category, best before date, location
     public void sortIngredientList(ArrayList<Ingredient> list, String sorting_type) {
         switch (sorting_type) {
-            case "description":
+            case "Description":
                 Collections.sort(list, new Comparator<Ingredient>() {
                     @Override
                     public int compare(Ingredient ingredient, Ingredient ingredient1) {
@@ -325,7 +325,7 @@ public class IngredientActivity extends AppCompatActivity implements
                     }
                 });
                 break;
-            case "category":
+            case "Category":
                 Collections.sort(list, new Comparator<Ingredient>() {
                     @Override
                     public int compare(Ingredient ingredient, Ingredient ingredient1) {
@@ -334,7 +334,7 @@ public class IngredientActivity extends AppCompatActivity implements
                     }
                 });
                 break;
-            case "location":
+            case "Location":
                 Collections.sort(list, new Comparator<Ingredient>() {
                     @Override
                     public int compare(Ingredient ingredient, Ingredient ingredient1) {
@@ -343,7 +343,7 @@ public class IngredientActivity extends AppCompatActivity implements
                     }
                 });
                 break;
-            case "bbd":
+            case "Best Before Date":
                 Collections.sort(list, new Comparator<Ingredient>() {
                     @Override
                     public int compare(Ingredient ingredient, Ingredient ingredient1) {
@@ -354,7 +354,7 @@ public class IngredientActivity extends AppCompatActivity implements
                         } else if (time == time1) {
                             return 0;
                         } else {
-                                return 1;
+                            return 1;
                         }
                     }
                 });

@@ -40,6 +40,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -165,7 +166,9 @@ public class MealPlanActivity extends AppCompatActivity
             recipeList.clear();
             for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
             {
-                String mealplan_date = doc.getId();
+                Date mealplan_date = doc.getDate("Mealplan_date");
+
+
 
 //                Mealplan test = new Mealplan(recipeList, ingredientList, new Date(2022,11,30));
 //                mealplanList.add(test);
@@ -189,18 +192,19 @@ public class MealPlanActivity extends AppCompatActivity
         HashMap<String, Object> data = new HashMap<>();
         HashMap<String, Object> nestedData = new HashMap<>();
 
+
         data.put("Mealplan_Ingredient List",IngredientList);
         data.put("Mealplan_Date",mealplan_date);
-        for (Recipe rec: recipeList) {
-            nestedData.put("Title",rec.getTitle());
-            nestedData.put("preptime",rec.getPreparationTime());
-            nestedData.put("Serving Number",rec.getNumberofServings());
-            nestedData.put("Category",rec.getRecipeCategory());
-            nestedData.put("Comments",rec.getComments());
-        }
+//        for (Recipe rec: recipeList) {
+//            nestedData.put("Title",rec.getTitle());
+//            nestedData.put("preptime",rec.getPreparationTime());
+//            nestedData.put("Serving Number",rec.getNumberofServings());
+//            nestedData.put("Category",rec.getRecipeCategory());
+//            nestedData.put("Comments",rec.getComments());
+//            nestedData.put("Ingredient List",rec.getListofIngredients());
+//        }
+//        data.put("Mealplan_Recipe List", nestedData);
 
-
-        data.put("Mealplan_Recipe List", nestedData);
         collectionReference
                 .document(mealplan_date_str)
                 .set(data)
@@ -211,6 +215,25 @@ public class MealPlanActivity extends AppCompatActivity
                     }
                 });
 
+        for (Recipe rec: recipeList) {
+            final String recipeTitle = rec.getTitle();
+            nestedData.put("Title",rec.getTitle());
+            nestedData.put("preptime",rec.getPreparationTime());
+            nestedData.put("Serving Number",rec.getNumberofServings());
+            nestedData.put("Category",rec.getRecipeCategory());
+            nestedData.put("Comments",rec.getComments());
+            nestedData.put("Ingredient List",rec.getListofIngredients());
+            collectionReference
+                    .document(mealplan_date_str)
+                    .collection("recipe List").document(recipeTitle)
+                    .set(nestedData)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, mealplan_date + " data has been added successfully!");
+                        }
+                    });
+        }
         mealplanAdapter.add(mealplan);
     }
 

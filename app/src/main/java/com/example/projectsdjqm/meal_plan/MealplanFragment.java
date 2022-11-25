@@ -171,7 +171,7 @@ public class MealplanFragment extends DialogFragment {
                         for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
                         {
                             String title = doc.getId();
-                            String preptime = String.valueOf(doc.getData().get("Preparation Time"));
+                            int preptime = Integer.parseInt(String.valueOf(doc.getData().get("Preparation Time")));
                             int numser = Integer.valueOf(doc.getData().get("Serving Number").toString());
                             String category = (String) doc.getData().get("Category");
                             String comm = (String) doc.getData().get("Comments");

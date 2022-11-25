@@ -111,6 +111,7 @@ Consistent and clear
 
 ## Test Cases
 
+1 = 
 ✓ Correct tests wtih realistic data
 ✘ Inomprehensive unit tests of entity (model) classes (only one test implemented)
 ✘ incomprehensive intent tests for implemented user stories (all test cases seem to have been compressed into two tests, which is very discouraged)

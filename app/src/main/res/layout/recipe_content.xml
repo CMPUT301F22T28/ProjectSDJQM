@@ -84,6 +84,12 @@
                         android:layout_height="wrap_content"
                         android:text="Number of Servings: " />
 
+                    <TextView
+                        android:id="@+id/recipe_comments"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Comments:" />
+
                 </LinearLayout>
 
                 <ImageView
@@ -99,24 +105,22 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:weightSum="2">
 
                 <TextView
                     android:id="@+id/recipe_ingredient_list"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginEnd="10dp"
                     android:text="Ingredients: ing1, ing2, ..." />
 
-                <TextView
-                    android:id="@+id/recipe_comments"
-                    android:layout_marginRight="30dp"
+                <ListView
+                    android:id="@+id/ingredient_list_onRecipe"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Comments:" />
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp" />
 
             </LinearLayout>
 

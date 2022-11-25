@@ -49,6 +49,12 @@ import com.google.firebase.firestore.auth.User;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * MealplanStorageFragment
+ * @version 1.1
+ * @author Jianming Ma
+ * @date Nov.23rd, 2022
+ */
 public class MealplanStorageFragment extends DialogFragment {
     // Initialization of variables
     FirebaseFirestore db;

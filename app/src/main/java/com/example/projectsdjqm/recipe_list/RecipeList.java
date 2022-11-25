@@ -85,7 +85,7 @@ public class RecipeList extends ArrayAdapter<Recipe> {
         ArrayList<Ingredient> ingredientList = recipe.getListofIngredients();
 //        ArrayList<Ingredient> ingredientList = new ArrayList<Ingredient>();
 //        ingredientList.add(new Ingredient("aaple",null,null,2,2,"category"));
-        ListView ingredientListview = view.findViewById(R.id.ingredient_listview);
+        ListView ingredientListview = view.findViewById(R.id.ingredient_list_onRecipe);
         IngredientInRecipeAdapter adapter = new IngredientInRecipeAdapter(getContext(),ingredientList);
         ingredientListview.setAdapter(adapter);
 

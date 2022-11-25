@@ -152,8 +152,8 @@ public class MealPlanActivity extends AppCompatActivity
         });
 
 
-
-        //
+        // Pull mealplanlist from database
+        // Initialization of main collection
         db.collection("MealPlans")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -169,12 +169,14 @@ public class MealPlanActivity extends AppCompatActivity
                     }
                 });
 
+        // main collection reference of mealplan
         collectionReference.addSnapshotListener((queryDocumentSnapshots, error) -> {
             for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
             {
                 String mealplan_id = doc.getId();
                 Timestamp ts = (Timestamp) doc.getData().get("Mealplan_date");
                 Date mealplan_date = new Date(2022,11,30);
+                // path of recipe list within mealplan collection
                 String recipe_path = "MealPlans"+"/"+mealplan_id+"/"+"recipe List";
                 CollectionReference collectionReference_mealplan_recipe = db.collection(recipe_path);
                 db.collection(recipe_path)
@@ -192,6 +194,7 @@ public class MealPlanActivity extends AppCompatActivity
                             }
                         });
 
+                // path of ingredient list within mealplan collection
                 String ingre_path = "MealPlans"+"/"+mealplan_id+"/"+"ingredient List";
                 CollectionReference collectionReference_mealplan_ingredient = db.collection(ingre_path);
                 db.collection(ingre_path)
@@ -208,6 +211,7 @@ public class MealPlanActivity extends AppCompatActivity
                                 }
                             }
                         });
+                // add snap shot of ingredient List subcollection
                 collectionReference_mealplan_ingredient.addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
@@ -270,8 +274,8 @@ public class MealPlanActivity extends AppCompatActivity
         HashMap<String, Object> nestedData_rec = new HashMap<>();
         HashMap<String, Object> nestedData_ingre = new HashMap<>();
 
+        // Store mealplan into database
         data.put("Mealplan_Date",mealplan_date);
-
         collectionReference
                 .document(mealplan_date_str)
                 .set(data)
@@ -282,7 +286,7 @@ public class MealPlanActivity extends AppCompatActivity
                     }
                 });
 
-        // add recipelist as collection
+        // add recipelist as subcollection
         for (Recipe rec: recipeList) {
             final String recipeTitle = rec.getTitle();
             nestedData_rec.put("Title",rec.getTitle());
@@ -302,7 +306,7 @@ public class MealPlanActivity extends AppCompatActivity
                         }
                     });
         }
-        // add ingredient list as collection
+        // add ingredient list as subcollection
         for (Ingredient ingre: IngredientList) {
             final String ingredientDesc = ingre.getIngredientDescription();
             nestedData_ingre.put("Amount",ingre.getIngredientAmount());

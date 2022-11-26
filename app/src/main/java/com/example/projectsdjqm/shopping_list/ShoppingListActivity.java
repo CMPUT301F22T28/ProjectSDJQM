@@ -153,6 +153,17 @@ public class ShoppingListActivity extends AppCompatActivity {
                             }
                         });
 
+        db.collection("MealPlans").document().collection("ingredient list")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Log.d(TAG, document.getId() + " => " + document.getData());
+                        }
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                });
 
         final FloatingActionButton addToStorageButton = findViewById(R.id.add_to_storage);
            //add checked items to ingredient storage if add button is clicked

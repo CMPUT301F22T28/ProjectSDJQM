@@ -40,7 +40,7 @@ public class IngredientListUnitTest {
         Date bbd = formatter.parse(dateInString);
 
         Ingredient.Location freezerloc = Ingredient.Location.valueOf("Freezer");
-        Ingredient test = new Ingredient("strawberry",bbd,freezerloc,5,2,"fruit");
+        Ingredient test = new Ingredient("strawberry",bbd,freezerloc,5,"kg","fruit");
 
         list = MockIngredientList();
         list.addIngredient(test);
@@ -68,9 +68,9 @@ public class IngredientListUnitTest {
         Ingredient.Location pantryloc = Ingredient.Location.valueOf("Pantry");
         Ingredient.Location fridgeloc = Ingredient.Location.valueOf("Fridge");
 
-        Ingredient test1 = new Ingredient("strawberry",bbd1,freezerloc,5,2,"fruit");
-        Ingredient test2 = new Ingredient("potato",bbd2,pantryloc,1,3,"vegetable");
-        Ingredient test3 = new Ingredient("cheesecake",bbd3,fridgeloc,2,1,"dessert");
+        Ingredient test1 = new Ingredient("strawberry",bbd1,freezerloc,5,"kg","fruit");
+        Ingredient test2 = new Ingredient("potato",bbd2,pantryloc,1,"kg","vegetable");
+        Ingredient test3 = new Ingredient("cheesecake",bbd3,fridgeloc,2,"kg","dessert");
 
         list = MockIngredientList();
         assertEquals(0, list.countIngredients());

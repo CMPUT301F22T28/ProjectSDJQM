@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="sorting_type">
+    <string-array name="sorting_ingredient">
         <item>(Select One)</item>
         <item>Description</item>
         <item>Best Before Date</item>
         <item>Location</item>
         <item>Category</item>
     </string-array>
-    <string-array name="sorting_type1">
+    <string-array name="sorting_recipe">
         <item>(Select One)</item>
         <item>Title</item>
         <item>Preparation Time</item>
         <item>Serving Size</item>
+        <item>Category</item>
+    </string-array>
+    <string-array name="sorting_shoppinglist">
+        <item>(Select One)</item>
+        <item>Description</item>
         <item>Category</item>
     </string-array>
 </resources>

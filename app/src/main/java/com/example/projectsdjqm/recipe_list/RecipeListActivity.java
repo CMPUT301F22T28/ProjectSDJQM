@@ -9,18 +9,14 @@ package com.example.projectsdjqm.recipe_list;
 import static com.example.projectsdjqm.recipe_list.RecipeFragment.l;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -34,7 +30,6 @@ import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import com.example.projectsdjqm.ingredient_storage.IngredientActivity;
 import com.example.projectsdjqm.meal_plan.MealPlanActivity;
 import com.example.projectsdjqm.shopping_list.ShoppingListActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -43,7 +38,6 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
@@ -153,7 +147,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
             addRecipeFragment.show(getSupportFragmentManager(),"Add Recipe");
         });
 
-        spinnerForRecipe = findViewById(R.id.spinner_for_recipe);
+        spinnerForRecipe = findViewById(R.id.recipe_sort_spinner);
         spinnerForRecipe.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {

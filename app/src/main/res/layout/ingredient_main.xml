@@ -37,10 +37,10 @@
             android:textSize="15sp"/>
 
         <Spinner
-            android:id="@+id/spinner"
+            android:id="@+id/ingredient_sort_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:entries="@array/sorting_type"
+            android:entries="@array/sorting_ingredient"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"></Spinner>
 

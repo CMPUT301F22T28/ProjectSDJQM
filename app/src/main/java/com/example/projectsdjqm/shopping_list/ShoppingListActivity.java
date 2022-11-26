@@ -29,7 +29,10 @@ import com.google.android.material.navigation.NavigationBarView;
 
 import android.app.AlertDialog;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Spinner;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
@@ -40,6 +43,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 
@@ -53,11 +58,12 @@ public class ShoppingListActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     FirebaseFirestore db;
     final String TAG = "Shopping List Activity";
-
+    Spinner spinner;
 //    ArrayList<Ingredient> checkedIngredientList;
     ListView shoppingListView;
     ShoppingListAdapter shoppingListAdapter;
     ArrayList<ShoppingList> shoppingCartList;
+    String currentSortingType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,11 +116,6 @@ public class ShoppingListActivity extends AppCompatActivity {
         shoppingListAdapter = new ShoppingListAdapter(this, shoppingCartList);
         shoppingListView.setAdapter(shoppingListAdapter);
         boolean pickup = false;
-
-//        ingredientlist = new ArrayList<>();
-//        ingredientAdapter = new IngredientList(this, ingredientlist);
-//        ingredientAdapter.setIngredientButtonListener(this);
-//        ingredientlistview.setAdapter(ingredientAdapter);
 
         db.collection("ShoppingLists")
                 .get()
@@ -191,6 +192,47 @@ public class ShoppingListActivity extends AppCompatActivity {
 
         });
 
+        spinner = findViewById(R.id.shopping_list_sort_spinner);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
+                String result = parent.getItemAtPosition(i).toString();
+                currentSortingType = result;
+                sortShoppingList(shoppingCartList, result);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    public void sortShoppingList(ArrayList<ShoppingList> list, String sorting_type) {
+        switch (sorting_type) {
+            case "Description":
+                Collections.sort(list, new Comparator<ShoppingList>() {
+                    @Override
+                    public int compare(ShoppingList shoppinglist, ShoppingList shoppinglist1) {
+                        return shoppinglist.getIngredient().getIngredientDescription()
+                                .compareTo(shoppinglist1.getIngredient().getIngredientDescription());
+                    }
+                });
+                break;
+            case "Category":
+                Collections.sort(list, new Comparator<ShoppingList>() {
+                    @Override
+                    public int compare(ShoppingList shoppinglist, ShoppingList shoppinglist1) {
+                        return shoppinglist.getIngredient().getIngredientCategory()
+                                .compareTo(shoppinglist1.getIngredient().getIngredientCategory());
+                    }
+                });
+                break;
+            default:
+                break;
+        }
+        shoppingCartList = list;
+        shoppingListAdapter.notifyDataSetChanged();
     }
 
 }

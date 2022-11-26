@@ -62,7 +62,7 @@ public class IngredientInRecipeAdapter extends ArrayAdapter<Ingredient> {
     @Override
     public View getView(int position, @Nullable View view, @Nullable ViewGroup parent) {
 //        ViewHolder viewHolder;
-        view = LayoutInflater.from(context).inflate(R.layout.ingredient_in_recipe_content,null);
+        View view1 = LayoutInflater.from(context).inflate(R.layout.ingredient_in_recipe_fragment,null);
 //        if (view == null) {
 //            LayoutInflater inflater = LayoutInflater.from(context);
 //            view = inflater.inflate(R.layout.ingredient_in_recipe_content, parent, false);
@@ -81,20 +81,20 @@ public class IngredientInRecipeAdapter extends ArrayAdapter<Ingredient> {
         Ingredient ingredient = ingredientList.get(position);
 
         // Get ingredient description
-        TextView IngredientDescTextView = view.findViewById(R.id.description_l);
+        TextView IngredientDescTextView = view1.findViewById(R.id.ing_description);
         IngredientDescTextView.setText(getDescription(ingredient));
 
         // Get ingredient amount
-        TextView IngredientAmountTextView = view.findViewById(R.id.count_l);
+        TextView IngredientAmountTextView = view1.findViewById(R.id.ing_amount);
         IngredientAmountTextView.setText(getAmount(ingredient));
 
         // Get ingredient unit
-        TextView IngredientUnitTextView = view.findViewById(R.id.unit_cost_l);
+        TextView IngredientUnitTextView = view1.findViewById(R.id.ing_unitost);
         IngredientUnitTextView.setText(getUnit(ingredient));
 
         // Get ingredient category
 
-        TextView IngredientCategoryTextView = view.findViewById(R.id.category_l);
+        TextView IngredientCategoryTextView = view1.findViewById(R.id.ing_category);
         IngredientCategoryTextView.setText(getCategory(ingredient));
 
 
@@ -117,7 +117,7 @@ public class IngredientInRecipeAdapter extends ArrayAdapter<Ingredient> {
 //                }
 //            }
 //        });
-        return view;
+        return view1;
     }
 
     /**
@@ -126,25 +126,25 @@ public class IngredientInRecipeAdapter extends ArrayAdapter<Ingredient> {
 
     private  String getDescription(Ingredient ingredient) {
         String description = ingredient.getIngredientDescription();
-        return String.format("%s: ",description);
+        return String.format("%s, ",description);
     }
     private String getAmount(Ingredient ingredient) {
         int amount = ingredient.getIngredientAmount();
-        return String.format("%s x ", amount);
+        return String.format("%s * ", amount);
     }
 
     private String getUnit(Ingredient ingredient) {
         int unit = ingredient.getIngredientUnit();
-        return String.format("$%s ", unit);
+        return String.format("unit cost: $%s, ", unit);
     }
 
     private String getCategory(Ingredient ingredient) {
         String category = ingredient.getIngredientCategory();
-        return String.format("%s", category);
+        return String.format("category: %s", category);
     }
 
-    public static class ViewHolder {
-        Button editButton;
-        Button deleteButton;
-    }
+//    public static class ViewHolder {
+//        Button editButton;
+//        Button deleteButton;
+//    }
 }

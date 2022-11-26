@@ -113,7 +113,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Ingredients: ing1, ing2, ..." />
+                    android:text="Ingredients"
+                    android:textColor="@color/black"
+                    />
 
                 <ListView
                     android:id="@+id/ingredient_list_onRecipe"

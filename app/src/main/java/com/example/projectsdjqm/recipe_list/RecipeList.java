@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -81,6 +83,13 @@ public class RecipeList extends ArrayAdapter<Recipe> {
         TextView commentsTextView = view.findViewById(R.id.recipe_comments);
         ImageView photographImageView = view.findViewById(R.id.recipe_photograph);
         TextView listOfIngredientsTextView = view.findViewById(R.id.recipe_ingredient_list);
+        ArrayList<Ingredient> ingredientList = recipe.getListofIngredients();
+//        ArrayList<Ingredient> ingredientList = new ArrayList<Ingredient>();
+//        ingredientList.add(new Ingredient("aaple",null,null,2,2,"category"));
+        ListView ingredientListview = view.findViewById(R.id.ingredient_list_onRecipe);
+        IngredientInRecipeAdapter adapter = new IngredientInRecipeAdapter(getContext(),ingredientList);
+        ingredientListview.setAdapter(adapter);
+        setListViewHeightBasedOnChildren(ingredientListview);
 
         titleTextView.setText(recipe.getTitle());
         preparationTimeTextView.setText(
@@ -92,14 +101,14 @@ public class RecipeList extends ArrayAdapter<Recipe> {
         photographImageView.setImageDrawable(recipe.getPhotograph());
 
         ArrayList<Ingredient> list = recipe.getListofIngredients();
-        StringBuilder text = new StringBuilder("\n");
-        for (int i=0; i<list.size(); i++) {
-            String temp = list.get(i).getIngredientDescription();
-//            String temp_amount = list.get(i).get
-            text.append(temp);
-            text.append(" ,\n");
-        }
-        listOfIngredientsTextView.setText(String.format("Ingredients: %s", text));
+//        StringBuilder text = new StringBuilder("\n");
+//        for (int i=0; i<list.size(); i++) {
+//            String temp = list.get(i).getIngredientDescription();
+////            String temp_amount = list.get(i).get
+//            text.append(temp);
+//            text.append(" ,\n");
+//        }
+        listOfIngredientsTextView.setText(String.format("Ingredients: "));
 
         viewHolder.editButton.setOnClickListener(view1 -> {
             if (recipeButtonListener != null) {
@@ -119,6 +128,24 @@ public class RecipeList extends ArrayAdapter<Recipe> {
     public static class ViewHolder {
         Button editButton;
         Button deleteButton;
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        // get the corresponding adapter
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+        int totalHeight = 0;
+        for (int i = 0, len = listAdapter.getCount(); i < len; i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            // calculate width and height of sub items
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight+ (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
     }
 
 }

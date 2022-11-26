@@ -221,12 +221,6 @@
                     android:textSize="10sp"/>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/recipe_ingredient"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Need to implement here"/>
-
             <ListView
                 android:id="@+id/ingredient_list_onRecipe"
                 android:layout_width="match_parent"

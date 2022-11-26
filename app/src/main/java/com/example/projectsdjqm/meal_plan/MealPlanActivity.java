@@ -11,6 +11,7 @@ import static android.system.Os.remove;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -177,7 +178,13 @@ public class MealPlanActivity extends AppCompatActivity
             {
                 String mealplan_id = doc.getId();
                 Timestamp ts = (Timestamp) doc.getData().get("Mealplan_date");
-                Date mealplan_date = new Date(2022,11,30);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date mealplan_date = null;
+                try{
+                    mealplan_date = dateFormat.parse(mealplan_id);
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                }
                 // path of recipe list within mealplan collection
                 String recipe_path = "MealPlans"+"/"+mealplan_id+"/"+"recipe List";
                 CollectionReference collectionReference_mealplan_recipe = db.collection(recipe_path);
@@ -214,6 +221,7 @@ public class MealPlanActivity extends AppCompatActivity
                             }
                         });
                 // add snap shot of ingredient List subcollection
+                Date finalMealplan_date = mealplan_date;
                 collectionReference_mealplan_ingredient.addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
@@ -250,7 +258,7 @@ public class MealPlanActivity extends AppCompatActivity
                                     unit,
                                     category));
                         }
-                        Mealplan test = new Mealplan(recipeList, ingredientlist, mealplan_date);
+                        Mealplan test = new Mealplan(recipeList, ingredientlist, finalMealplan_date);
                         mealplanList.add(test);
                         mealplanAdapter.notifyDataSetChanged();
 

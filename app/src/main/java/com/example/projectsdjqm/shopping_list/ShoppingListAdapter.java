@@ -43,25 +43,20 @@ public class ShoppingListAdapter extends ArrayAdapter<ShoppingList> {
     public View getView(int position, @Nullable View convertView, @Nullable ViewGroup parent) {
         ShoppingList shoppingList = getItem(position);
         Ingredient ingredient = shoppingList.getIngredient();
-//        View view = convertView;
-//        if (view == null) {
-//            view = LayoutInflater.from(context)
-//                    .inflate(R.layout.shopping_list_content, parent, false);
-//        }
         View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.shopping_list_content, parent, false);
 
-        TextView description = view.findViewById(R.id.description);
-        TextView category = view.findViewById(R.id.category);
-        TextView amount = view.findViewById(R.id.amount);
-        TextView unit = view.findViewById(R.id.unit);
+        TextView description = view.findViewById(R.id.shoppinglist_description);
+        TextView category = view.findViewById(R.id.shoppinglist_category);
+        TextView amount = view.findViewById(R.id.shoppinglist_amount);
+        TextView unit = view.findViewById(R.id.shoppinglist_unit);
         CheckBox checkbox = view.findViewById(R.id.box);
 
         description.setText(ingredient.getIngredientDescription());
 
         category.setText(String.format("Category: %s", ingredient.getIngredientCategory()));
-        amount.setText(String.format("Count: %s", ingredient.getIngredientAmount()));
-        unit.setText(String.format("Unit Cost($): %s", ingredient.getIngredientUnit()));
+        amount.setText(String.format("Amount: %s", ingredient.getIngredientAmount()));
+        unit.setText(String.format("Unit: %s", ingredient.getIngredientUnit()));
 
         checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

@@ -8,15 +8,20 @@ package com.example.projectsdjqm.shopping_list;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.projectsdjqm.MainActivity;
 import com.example.projectsdjqm.R;
+import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import com.example.projectsdjqm.ingredient_storage.IngredientActivity;
+import com.example.projectsdjqm.ingredient_storage.IngredientList;
 import com.example.projectsdjqm.meal_plan.MealPlanActivity;
+import com.example.projectsdjqm.recipe_list.RecipeFragment;
 import com.example.projectsdjqm.recipe_list.RecipeListActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -26,7 +31,16 @@ import android.app.AlertDialog;
 import android.view.View;
 import android.widget.ListView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
+import java.util.Date;
 
 
 /**
@@ -37,6 +51,8 @@ public class ShoppingListActivity extends AppCompatActivity {
     
     // attr init
     BottomNavigationView bottomNavigationView;
+    FirebaseFirestore db;
+    final String TAG = "Shopping List Activity";
 
 //    ArrayList<Ingredient> checkedIngredientList;
     ListView shoppingListView;
@@ -47,13 +63,13 @@ public class ShoppingListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.shopping_list_main);
+        db = FirebaseFirestore.getInstance();
+        CollectionReference collectionReference = db.collection("ShoppingLists");
 
 
         // bottom nav
         bottomNavigationView = findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_shopping_list);
-
-
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -88,20 +104,33 @@ public class ShoppingListActivity extends AppCompatActivity {
             }
         });
 
-        // possible future code
-        /*
         shoppingListView = findViewById(R.id.shopping_list);
 
         shoppingCartList = new ArrayList<>();
         shoppingListAdapter = new ShoppingListAdapter(this, shoppingCartList);
-//        ingredientAdapter.setIngredientButtonListener(this);
         shoppingListView.setAdapter(shoppingListAdapter);
+        boolean pickup = false;
+
+//        ingredientlist = new ArrayList<>();
+//        ingredientAdapter = new IngredientList(this, ingredientlist);
+//        ingredientAdapter.setIngredientButtonListener(this);
+//        ingredientlistview.setAdapter(ingredientAdapter);
+
+        db.collection("ShoppingLists")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Log.d(TAG, document.getId() + " => " + document.getData());
+                        }
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                });
+        shoppingListAdapter.notifyDataSetChanged();
 
         final FloatingActionButton addToStorageButton = findViewById(R.id.add_to_storage);
-
-
            //add checked items to ingredient storage if add button is clicked
-
         addToStorageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,7 +151,45 @@ public class ShoppingListActivity extends AppCompatActivity {
             }
         });
 
- */
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                    FirebaseFirestoreException error) {
+                shoppingCartList.clear();
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+                {
+                    Log.d(TAG, String.valueOf(doc.getData().get("Category")));
+                    String description = doc.getId();
+                    int amount = Integer.valueOf(doc.getData().get("Amount").toString());
+//                    Timestamp bbd = (Timestamp) doc.getData().get("Best Before Date");
+//                    Date bestbeforedate = bbd.toDate();
+                    String category = (String) doc.getData().get("Category");
+//                    String location_str = String.valueOf(doc.getData().get("Location"));
+//                    Ingredient.Location location;
+//                    switch (location_str) {
+//                        case "Fridge":
+//                            location = Ingredient.Location.Fridge;
+//                            break;
+//                        case "Freezer":
+//                            location = Ingredient.Location.Freezer;
+//                            break;
+//                        default:
+//                            location = Ingredient.Location.Pantry;
+//                    }
+                    int unit = Integer.valueOf(doc.getData().get("Unit").toString());
+
+                    Ingredient addingredient = new Ingredient(description,
+                            null,
+                            null,
+                            amount,
+                            unit,
+                            category);
+                    shoppingCartList.add(new ShoppingList(addingredient, pickup));
+                }
+                    shoppingListAdapter.notifyDataSetChanged();
+                }
+
+        });
 
     }
 

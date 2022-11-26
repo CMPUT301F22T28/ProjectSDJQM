@@ -115,8 +115,11 @@ public class ShoppingListActivity extends AppCompatActivity {
         shoppingCartList = new ArrayList<>();
         shoppingListAdapter = new ShoppingListAdapter(this, shoppingCartList);
         shoppingListView.setAdapter(shoppingListAdapter);
+
+
         boolean pickup = false;
 
+        // Getting information from shopping list
         db.collection("ShoppingLists")
                 .get()
                 .addOnCompleteListener(task -> {
@@ -129,6 +132,27 @@ public class ShoppingListActivity extends AppCompatActivity {
                     }
                 });
         shoppingListAdapter.notifyDataSetChanged();
+
+
+
+        // In order to obtain information from the firestore database, need to get collection meal plan
+        // Pull the date document and the ingredient list collection
+
+        // Once the ingredient list is collected then we want to create another collection that pulls from
+        // ingredient database and checks if that ingredient already exists in the storage, if it does then
+        // we will remove it from the ingredient list collection
+        db.collection("Ingredients")
+                .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Log.d(TAG, document.getId() + " => " + document.getData());
+                                }
+                            } else {
+                                Log.d(TAG, "Error getting documents: ", task.getException());
+                            }
+                        });
+
 
         final FloatingActionButton addToStorageButton = findViewById(R.id.add_to_storage);
            //add checked items to ingredient storage if add button is clicked

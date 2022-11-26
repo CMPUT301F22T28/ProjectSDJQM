@@ -33,7 +33,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-/* Create custom array adapter for Ingredient */
+/**
+ * IngredientInRecipeAdapter:
+ * This class defines a custom array adapter for Ingredient.
+ * @author Qingya Ye
+ * @version 1.0
+ * @date Nov. 22nd, 2022
+ */
 public class IngredientInRecipeAdapter extends ArrayAdapter<Ingredient> {
 //    private IngredientButtonListener ingredientButtonListener;
 //
@@ -47,6 +53,13 @@ public class IngredientInRecipeAdapter extends ArrayAdapter<Ingredient> {
     private final Context context;
 
     /* Constructor for IngredientList */
+
+    /**
+     * This is a constructor to create IngredientInRecipeAdapter object.
+     * packagename.classname#IngredientInRecipeAdapter
+     * @param context context
+     * @param ingredientList data to be bound with an ListView
+     */
     public IngredientInRecipeAdapter(Context context, ArrayList<Ingredient> ingredientList) {
         super(context,0, ingredientList);
         this.context = context;
@@ -58,6 +71,13 @@ public class IngredientInRecipeAdapter extends ArrayAdapter<Ingredient> {
 //        this.ingredientButtonListener = ingredientButtonListener;
 //    }
 
+    /**
+     * This is an override method GetView
+     * @param position Position of the data displayed by the view in the data set
+     * @param view The old view to reuse, if possible
+     * @param parent The parent that this view will eventually be attached to
+     * @return A View corresponding to the data at the specified position
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View view, @Nullable ViewGroup parent) {
@@ -122,8 +142,7 @@ public class IngredientInRecipeAdapter extends ArrayAdapter<Ingredient> {
 
     /**
      * Some cosmetics for the display
-     * */
-
+     **/
     private  String getDescription(Ingredient ingredient) {
         String description = ingredient.getIngredientDescription();
         return String.format("%s, ",description);

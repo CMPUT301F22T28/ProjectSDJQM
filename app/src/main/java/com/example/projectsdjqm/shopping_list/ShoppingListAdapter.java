@@ -2,6 +2,7 @@ package com.example.projectsdjqm.shopping_list;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ public class ShoppingListAdapter extends ArrayAdapter<ShoppingList> {
     // attr init
     private ArrayList<ShoppingList> shoppingList;
     private Context context;
+    final String TAG = "Picked up";
 
     // constructor
     public ShoppingListAdapter(Context context, ArrayList<ShoppingList> shoppingList) {
@@ -58,6 +60,7 @@ public class ShoppingListAdapter extends ArrayAdapter<ShoppingList> {
         amount.setText(String.format("Amount: %s", ingredient.getIngredientAmount()));
         unit.setText(String.format("Unit: %s", ingredient.getIngredientUnit()));
 
+
         checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -67,11 +70,13 @@ public class ShoppingListAdapter extends ArrayAdapter<ShoppingList> {
                     // As a meal planner, I want to note that I have picked up an ingredient on the
                     // shopping list. may need to change
                     new AlertDialog.Builder(getContext())
-                            .setMessage("You have picked up sth ")
+                            .setMessage("You have picked up "+(shoppingList.getIngredient().getIngredientDescription()))
                             .setPositiveButton("Ok", null)
                             .show();
+                            Log.d(TAG,"picked up "+shoppingList.getIngredient().getIngredientDescription()+" "+shoppingList.getPickedUp());
                 } else {
                     shoppingList.setPickedUp(false);
+                    Log.d(TAG,"picked up "+shoppingList.getIngredient().getIngredientDescription()+" "+shoppingList.getPickedUp());
                 }
             }
         });

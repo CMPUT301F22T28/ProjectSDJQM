@@ -20,7 +20,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:orientation="horizontal"
@@ -33,16 +33,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sort by"
-            tools:layout_editor_absoluteX="6dp"
-            android:textSize="15sp"/>
+            android:textSize="15sp"
+            tools:layout_editor_absoluteX="6dp" />
 
         <Spinner
             android:id="@+id/shopping_list_sort_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="180dp"
+            android:layout_height="match_parent"
             android:entries="@array/sorting_shoppinglist"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"></Spinner>
+            app:layout_constraintTop_toTopOf="parent">
+        </Spinner>
 
     </LinearLayout>
 
@@ -62,8 +63,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="5dp"
-            android:layout_marginBottom="50dp">
-        </ListView>
+            android:layout_marginBottom="50dp"/>
 
     </LinearLayout>
 
@@ -83,5 +83,4 @@
         app:layout_constraintBottom_toTopOf="@+id/nav_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_input_add"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

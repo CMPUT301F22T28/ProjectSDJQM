@@ -20,7 +20,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:orientation="horizontal"
@@ -42,19 +42,19 @@
             android:layout_height="wrap_content"
             android:entries="@array/sorting_ingredient"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"></Spinner>
+            app:layout_constraintTop_toTopOf="parent">
+        </Spinner>
 
     </LinearLayout>
 
-
     <LinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:paddingTop="25dp"
-        android:paddingBottom="10dp"
-        tools:layout_editor_absoluteX="10dp">
+        android:paddingBottom="10dp">
 
 
         <ListView
@@ -64,7 +64,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="5dp"
-            android:layout_marginBottom="50dp"></ListView>
+            android:layout_marginBottom="50dp"/>
 
     </LinearLayout>
 

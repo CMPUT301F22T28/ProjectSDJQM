@@ -288,6 +288,12 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         selectedRecipe = recipeList.get(position);
         recipeList.remove(position);
         recipeAdapter.notifyDataSetChanged();
+        for (Ingredient ingre: selectedRecipe.getListofIngredients()) {
+            collectionReference
+                    .document(selectedRecipe.getTitle())
+                    .collection("ingredient List").document(ingre.getIngredientDescription())
+                    .delete();
+        }
         collectionReference
                 .document(selectedRecipe.getTitle())
                 .delete();

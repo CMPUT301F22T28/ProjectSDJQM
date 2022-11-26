@@ -11,6 +11,7 @@ import static android.system.Os.remove;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -131,8 +132,8 @@ public class MealPlanActivity extends AppCompatActivity
         mealplanList = new ArrayList<Mealplan>();
 
         ArrayList<Ingredient> ingredientList = new ArrayList<>();
-//        Ingredient testc = new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here");
-//        ingredientList.add(testc);
+        Ingredient testc = new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here");
+        ingredientList.add(testc);
         ArrayList<Recipe> recipeList = new ArrayList<>();
 
         mealplanAdapter = new MealplanList(this, mealplanList);
@@ -165,12 +166,19 @@ public class MealPlanActivity extends AppCompatActivity
                 });
 
         // main collection reference of mealplan
+        ArrayList<Recipe> recipelist = new ArrayList<>();
         collectionReference.addSnapshotListener((queryDocumentSnapshots, error) -> {
             for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
             {
                 String mealplan_id = doc.getId();
                 Timestamp ts = (Timestamp) doc.getData().get("Mealplan_date");
-                Date mealplan_date = new Date(2022,11,30);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date mealplan_date = null;
+                try{
+                    mealplan_date = dateFormat.parse(mealplan_id);
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                }
                 // path of recipe list within mealplan collection
                 String recipe_path = "MealPlans"+"/"+mealplan_id+"/"+"recipe List";
                 CollectionReference collectionReference_mealplan_recipe = db.collection(recipe_path);
@@ -188,6 +196,34 @@ public class MealPlanActivity extends AppCompatActivity
                                 }
                             }
                         });
+
+                // add snap shot of recipe List subcollection
+                collectionReference_mealplan_recipe.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                            FirebaseFirestoreException error) {
+                        recipelist.clear();
+                        for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+                        {
+                            String title = doc.getId();
+                            String preptime = (String) doc.getData().get("Preparation Time");
+                            int numser = Integer.valueOf(doc.getData().get("Serving Number").toString());
+                            String category = (String) doc.getData().get("Category");
+                            String comm = (String) doc.getData().get("Comments");
+                            // add snap shot of Ingredient List of recipe list subcollection
+                            recipelist.add(new Recipe(
+                                    title,
+                                    preptime,
+                                    numser,
+                                    category,
+                                    comm,
+                                    icon,
+                                    ingredientList));
+
+                        }
+                    }
+                });
+
 
                 // path of ingredient list within mealplan collection
                 String ingre_path = "MealPlans"+"/"+mealplan_id+"/"+"ingredient List";
@@ -207,6 +243,7 @@ public class MealPlanActivity extends AppCompatActivity
                             }
                         });
                 // add snap shot of ingredient List subcollection
+                Date finalMealplan_date = mealplan_date;
                 collectionReference_mealplan_ingredient.addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
@@ -243,7 +280,7 @@ public class MealPlanActivity extends AppCompatActivity
                                     unit,
                                     category));
                         }
-                        Mealplan test = new Mealplan(recipeList, ingredientlist, mealplan_date);
+                        Mealplan test = new Mealplan(recipelist, ingredientlist, finalMealplan_date);
                         mealplanList.add(test);
                         mealplanAdapter.notifyDataSetChanged();
 

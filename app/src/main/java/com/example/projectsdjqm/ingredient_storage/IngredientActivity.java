@@ -186,7 +186,7 @@ public class IngredientActivity extends AppCompatActivity implements
                         default:
                             location = Ingredient.Location.Pantry;
                     }
-                    int unit = Integer.valueOf(doc.getData().get("Unit").toString());
+                    String unit = (String) doc.getData().get("Unit");
 
                     ingredientlist.add(new Ingredient(
                             description,
@@ -238,7 +238,7 @@ public class IngredientActivity extends AppCompatActivity implements
         final String ingredientCate = newIngredient.getIngredientCategory();
         final Date ingredientBestBeforeDate = newIngredient.getIngredientBestBeforeDate();
         final int ingredientAmt = newIngredient.getIngredientAmount();
-        final int ingredientUni = newIngredient.getIngredientUnit();
+        final String ingredientUni = newIngredient.getIngredientUnit();
         final Ingredient.Location ingredientLoc = newIngredient.getIngredientLocation();
 
         HashMap<String, Object> data = new HashMap<>();
@@ -270,7 +270,7 @@ public class IngredientActivity extends AppCompatActivity implements
                                 Date bestbeforedate,
                                 Ingredient.Location location,
                                 int amount,
-                                int unit,
+                                String unit,
                                 String category) {
 
         String oldDescription = ingredient.getIngredientDescription();
@@ -284,7 +284,7 @@ public class IngredientActivity extends AppCompatActivity implements
         final String ingredientCate = ingredient.getIngredientCategory();
         final Date ingredientBestBeforeDate = ingredient.getIngredientBestBeforeDate();
         final int ingredientAmt = ingredient.getIngredientAmount();
-        final int ingredientUni = ingredient.getIngredientUnit();
+        final String ingredientUni = ingredient.getIngredientUnit();
         final Ingredient.Location ingredientLoc = ingredient.getIngredientLocation();
 
         HashMap<String, Object> data = new HashMap<>();

@@ -177,7 +177,7 @@ public class ShoppingListActivity extends AppCompatActivity {
 //                        default:
 //                            location = Ingredient.Location.Pantry;
 //                    }
-                    int unit = Integer.valueOf(doc.getData().get("Unit").toString());
+                    String unit = (String) doc.getData().get("Unit");
 
                     Ingredient addingredient = new Ingredient(description,
                             null,

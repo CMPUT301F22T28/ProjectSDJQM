@@ -134,8 +134,8 @@ public class IngredientInRecipeAdapter extends ArrayAdapter<Ingredient> {
     }
 
     private String getUnit(Ingredient ingredient) {
-        int unit = ingredient.getIngredientUnit();
-        return String.format("unit cost: $%s, ", unit);
+        String unit = ingredient.getIngredientUnit();
+        return String.format("unit: %s, ", unit);
     }
 
     private String getCategory(Ingredient ingredient) {

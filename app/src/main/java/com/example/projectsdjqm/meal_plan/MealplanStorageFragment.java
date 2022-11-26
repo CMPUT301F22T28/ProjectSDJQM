@@ -154,7 +154,7 @@ public class MealplanStorageFragment extends DialogFragment {
                         default:
                             location = Ingredient.Location.Pantry;
                     }
-                    int unit = Integer.valueOf(doc.getData().get("Unit").toString());
+                    String unit = (String) doc.getData().get("Unit");
 
                     ingredientList.add(new Ingredient(
                             description,
@@ -188,7 +188,7 @@ public class MealplanStorageFragment extends DialogFragment {
                     String category = (String) doc.getData().get("Category");
                     String comm = (String) doc.getData().get("Comments");
                     ArrayList<Ingredient> ingredientlist = new ArrayList<>();
-                    ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
+                    //ingredientlist.add(new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here"));
                     Drawable icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_notifications_black_24dp);
                     // drawable photo;
                     // arrayList

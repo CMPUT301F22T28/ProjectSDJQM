@@ -154,7 +154,7 @@ public class IngredientList extends ArrayAdapter<Ingredient> {
     }
 
     private String getUnit(Ingredient ingredient) {
-        int unit = ingredient.getIngredientUnit();
+        String unit = ingredient.getIngredientUnit();
         return String.format("Unit: %s", unit);
     }
 

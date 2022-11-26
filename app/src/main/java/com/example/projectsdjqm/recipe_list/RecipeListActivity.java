@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -33,15 +34,20 @@ import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import com.example.projectsdjqm.ingredient_storage.IngredientActivity;
 import com.example.projectsdjqm.meal_plan.MealPlanActivity;
+import com.example.projectsdjqm.meal_plan.Mealplan;
 import com.example.projectsdjqm.shopping_list.ShoppingListActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -49,6 +55,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -128,7 +135,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         // recipe list view init
         recipeListView = findViewById(R.id.recipe_list);
         recipeList = new ArrayList<>();
-        ArrayList<Ingredient> ingredientlist = new ArrayList<>();
+//        ArrayList<Ingredient> ingredientlist = new ArrayList<>();
 
         // default icon if no image upload
         Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_notifications_black_24dp);
@@ -180,11 +187,53 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                 int number = Integer.parseInt(Objects.requireNonNull(doc.getData().get("Serving Number")).toString());
                 String category = (String) doc.getData().get("Category");
                 String comm = (String) doc.getData().get("Comments");
-//                City city = documentSnapshot.toObject(City.class);
-//                ArrayList<Ingredient> ingredientList = (ArrayList<Ingredient>) doc.getData().get("Ingredient List");
-                    ArrayList<Ingredient> ingredientList = new ArrayList<Ingredient>();
-                ingredientList.add(new Ingredient("test",null,null,2,2,"category"));
-                ingredientList.add(new Ingredient("test2",null,null,2,2,"category"));
+//                ArrayList<Ingredient> ingredientList = new ArrayList<Ingredient>();
+
+                String ingre_path = "Recipes"+"/"+title+"/"+"ingredient List";
+                CollectionReference collectionReference_recipe_ingredient = db.collection(ingre_path);
+                ArrayList<Ingredient> ingredientList = new ArrayList<>();
+//                // add snap shot of ingredient List subcollection
+                collectionReference_recipe_ingredient.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                            FirebaseFirestoreException error) {
+//                        ArrayList<Ingredient> ingredientlist = new ArrayList<>();
+                        ingredientList.clear();
+                        for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+                        {
+                            Log.d(TAG, String.valueOf(doc.getData().get("Category")));
+                            String description = doc.getId();
+                            int amount = Integer.valueOf(doc.getData().get("Amount").toString());
+//                            Timestamp bbd = (Timestamp) doc.getData().get("Best Before Date");
+//                            Date bestbeforedate = bbd.toDate();
+                            String category = (String) doc.getData().get("Category");
+//                            String location_str = String.valueOf(doc.getData().get("Location"));
+//                            Ingredient.Location location;
+//                            switch (location_str) {
+//                                case "Fridge":
+//                                    location = Ingredient.Location.Fridge;
+//                                    break;
+//                                case "Freezer":
+//                                    location = Ingredient.Location.Freezer;
+//                                    break;
+//                                default:
+//                                    location = Ingredient.Location.Pantry;
+//                            }
+                            int unit = Integer.valueOf(doc.getData().get("Unit").toString());
+
+                            ingredientList.add(new Ingredient(
+                                    description,
+                                    null,
+                                    null,
+                                    amount,
+                                    unit,
+                                    category));
+                        }
+                    }
+                });
+
+//                ingredientList.add(new Ingredient("test",null,null,2,2,"category"));
+//                ingredientList.add(new Ingredient("test2",null,null,2,2,"category"));
                 // use photokey (title of recipe) from firebase storage to load image to APP
                 final String photokey = title.replace(" ","");
                 StorageReference imageRef = storageReference.child("images/" + photokey);
@@ -278,18 +327,37 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         final ArrayList<Ingredient> recipeIngredientList = l;
 
         HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> nestedData_ingre = new HashMap<>();
 
         data.put("Preparation Time", recipePreparationTime);
         data.put("Serving Number", recipeServingNumber);
         data.put("Category", recipeCategory);
         data.put("Comments", recipeComments);
-        data.put("Ingredient List",recipeIngredientList);
+//        data.put("Ingredient List",recipeIngredientList);
 
         collectionReference
                 .document(recipeTitle)
                 .set(data)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, recipeTitle + " data has been added successfully!"));
 
+        for (Ingredient ingre: recipeIngredientList) {
+            final String ingredientDesc = ingre.getIngredientDescription();
+            nestedData_ingre.put("Amount",ingre.getIngredientAmount());
+            nestedData_ingre.put("Best Before Date",ingre.getIngredientBestBeforeDate());
+            nestedData_ingre.put("Category",ingre.getIngredientCategory());
+            nestedData_ingre.put("Location",ingre.getIngredientLocation());
+            nestedData_ingre.put("Unit",ingre.getIngredientUnit());
+            collectionReference
+                    .document(recipeTitle)
+                    .collection("ingredient List").document(ingredientDesc)
+                    .set(nestedData_ingre)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, " data has been added successfully!");
+                        }
+                    });
+        }
         recipeAdapter.add(recipe);
     }
     public void onOkPressedEdit(Recipe recipe,
@@ -325,7 +393,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         data.put("Serving Number", recipeSerNum);
         data.put("Category", recipeCate);
         data.put("Comments", recipeComm);
-        data.put("Ingredient List",recipeIng);
+//        data.put("Ingredient List",recipeIng);
 
         if (title == oldTitle) {
             collectionReference

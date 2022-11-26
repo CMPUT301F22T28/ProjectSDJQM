@@ -4,7 +4,11 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:weightSum="5">
-
+    <TextView
+        android:id="@+id/ing_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="amount "/>
     <TextView
         android:id="@+id/ing_description"
         android:layout_width="wrap_content"
@@ -12,21 +16,19 @@
         android:textSize="15sp"
         android:text="Description: "/>
     <TextView
-        android:id="@+id/ing_category"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="20dp"
-        android:text="category, "/>
-    <TextView
         android:id="@+id/ing_unitost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="10dp"
         android:text="unitcost"/>
     <TextView
-        android:id="@+id/ing_amount"
+        android:id="@+id/ing_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="amount "/>
+        android:paddingHorizontal="10dp"
+        android:text="category, "/>
+
+
 
 
 </LinearLayout>

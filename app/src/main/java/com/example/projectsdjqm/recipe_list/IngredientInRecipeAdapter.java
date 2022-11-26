@@ -130,7 +130,7 @@ public class IngredientInRecipeAdapter extends ArrayAdapter<Ingredient> {
     }
     private String getAmount(Ingredient ingredient) {
         int amount = ingredient.getIngredientAmount();
-        return String.format("Amount: %s ", amount);
+        return String.format("%s * ", amount);
     }
 
     private String getUnit(Ingredient ingredient) {
@@ -140,7 +140,7 @@ public class IngredientInRecipeAdapter extends ArrayAdapter<Ingredient> {
 
     private String getCategory(Ingredient ingredient) {
         String category = ingredient.getIngredientCategory();
-        return String.format("category: %s,", category);
+        return String.format("category: %s", category);
     }
 
 //    public static class ViewHolder {

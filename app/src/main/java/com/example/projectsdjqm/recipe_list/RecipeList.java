@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -88,6 +89,7 @@ public class RecipeList extends ArrayAdapter<Recipe> {
         ListView ingredientListview = view.findViewById(R.id.ingredient_list_onRecipe);
         IngredientInRecipeAdapter adapter = new IngredientInRecipeAdapter(getContext(),ingredientList);
         ingredientListview.setAdapter(adapter);
+        setListViewHeightBasedOnChildren(ingredientListview);
 
         titleTextView.setText(recipe.getTitle());
         preparationTimeTextView.setText(
@@ -126,6 +128,24 @@ public class RecipeList extends ArrayAdapter<Recipe> {
     public static class ViewHolder {
         Button editButton;
         Button deleteButton;
+    }
+
+    public void setListViewHeightBasedOnChildren(ListView listView) {
+        // get the corresponding adapter
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+        int totalHeight = 0;
+        for (int i = 0, len = listAdapter.getCount(); i < len; i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            // calculate width and height of sub items
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight+ (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
     }
 
 }

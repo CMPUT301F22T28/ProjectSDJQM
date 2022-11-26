@@ -137,6 +137,7 @@ public class MealPlanActivity extends AppCompatActivity
         Ingredient testc = new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here");
         ingredientList.add(testc);
         ArrayList<Recipe> recipeList = new ArrayList<>();
+        Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_notifications_black_24dp);
 
         mealplanAdapter = new MealplanList(this, mealplanList);
         mealplanListView.setAdapter(mealplanAdapter);
@@ -208,7 +209,7 @@ public class MealPlanActivity extends AppCompatActivity
                         for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
                         {
                             String title = doc.getId();
-                            String preptime = (String) doc.getData().get("Preparation Time");
+                            int preptime = Integer.valueOf(doc.getData().get("preptime").toString());
                             int numser = Integer.valueOf(doc.getData().get("Serving Number").toString());
                             String category = (String) doc.getData().get("Category");
                             String comm = (String) doc.getData().get("Comments");

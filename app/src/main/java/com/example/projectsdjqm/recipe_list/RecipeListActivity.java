@@ -216,7 +216,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
 //                                default:
 //                                    location = Ingredient.Location.Pantry;
 //                            }
-                            int unit = Integer.valueOf(doc.getData().get("Unit").toString());
+                            String unit = (String) doc.getData().get("Unit");
 
                             ingredientList.add(new Ingredient(
                                     description,

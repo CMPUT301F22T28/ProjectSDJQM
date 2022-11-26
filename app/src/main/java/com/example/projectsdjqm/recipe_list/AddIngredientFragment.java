@@ -107,7 +107,7 @@ public class AddIngredientFragment extends DialogFragment {
         public void onClick(View v) {
             String descriptionInput = description.getText().toString();
             String categoryInput = category.getText().toString();
-            String unitCostInputStr = unitCost.getText().toString();
+            String unitInput = unitCost.getText().toString();
             String amountInputStr = amount.getText().toString();
             boolean isValid = true;
 
@@ -127,24 +127,31 @@ public class AddIngredientFragment extends DialogFragment {
             }
 
             // check unit cost input
-            int unitCostInput = 0;
-            try {
-                if (!unitCostInputStr.isEmpty()) {
-                    unitCostInput = Integer.parseInt(unitCostInputStr);
-
-                    if (unitCostInput < 1) {
-                        isValid = false;
-                        unitCost.setError("Enter a positive number");
-                    }
-                } else {
-                    isValid = false;
-                    unitCost.setError("Enter a positive number");
-                }
-            } catch (NumberFormatException ex) {
+//            int unitCostInput = 0;
+//            try {
+//                if (!unitCostInputStr.isEmpty()) {
+//                    unitCostInput = Integer.parseInt(unitCostInputStr);
+//
+//                    if (unitCostInput < 1) {
+//                        isValid = false;
+//                        unitCost.setError("Enter a positive number");
+//                    }
+//                } else {
+//                    isValid = false;
+//                    unitCost.setError("Enter a positive number");
+//                }
+//            } catch (NumberFormatException ex) {
+//                isValid = false;
+//                unitCost.setError("Enter a positive number");
+//                Log.d("NumberFormatLog", "error on numberformat is " + ex.getMessage());
+//                ex.printStackTrace();
+//            }
+            if (unitInput.length() < 1) {
                 isValid = false;
-                unitCost.setError("Enter a positive number");
-                Log.d("NumberFormatLog", "error on numberformat is " + ex.getMessage());
-                ex.printStackTrace();
+                description.setError("Enter a unit");
+            } else if (unitInput.length() > Ingredient.MAX_LENGTH_NAME) {
+                description.setError("Name must be less than 30 characters");
+                isValid = false;
             }
 
             // check amount input
@@ -173,7 +180,7 @@ public class AddIngredientFragment extends DialogFragment {
                         null,
                         null,
                         amountInput,
-                        unitCostInput,
+                        unitInput,
                         categoryInput
                 );
                 listener.onAddIngredientOkPressed(ingredient);

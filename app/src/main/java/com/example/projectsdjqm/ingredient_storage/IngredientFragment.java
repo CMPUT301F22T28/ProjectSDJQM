@@ -41,7 +41,7 @@ public class IngredientFragment extends DialogFragment {
                              Date bestbeforedate,
                              Ingredient.Location location,
                              int amount,
-                             int unit,
+                             String unit,
                              String category);
     }
     
@@ -103,7 +103,7 @@ public class IngredientFragment extends DialogFragment {
             ingredientDescription.setText(ingredient.getIngredientDescription());
             ingredientCategory.setText(ingredient.getIngredientCategory());
             ingredientAmount.setText(Integer.toString(ingredient.getIngredientAmount()));
-            ingredientUnit.setText(Integer.toString(ingredient.getIngredientUnit()));
+            ingredientUnit.setText(ingredient.getIngredientUnit());
 
             switch (ingredient.getIngredientLocation()) {
                 case Freezer:
@@ -177,7 +177,7 @@ public class IngredientFragment extends DialogFragment {
             // check the description length
             if (IngredientDescInput.length() < 1) {
                 isValid = false;
-                ingredientDescription.setError("Enter a name");
+                ingredientDescription.setError("Enter a unit");
             } else if (IngredientDescInput.length() > Ingredient.MAX_LENGTH_NAME) {
                 ingredientDescription.setError("Name must be less than 30 characters");
                 isValid = false;
@@ -205,23 +205,31 @@ public class IngredientFragment extends DialogFragment {
             }
 
             // check unit  input
-            int unit = 0;
-            try {
-                if (!IngredientUnitInput.isEmpty()) {
-                    unit = Integer.parseInt(IngredientUnitInput);
+//            int unit = 0;
+//            try {
+//                if (!IngredientUnitInput.isEmpty()) {
+//                    unit = Integer.parseInt(IngredientUnitInput);
+//
+//                    if (unit < 1) {
+//                        isValid = false;
+//                        ingredientUnit.setError("Enter a positive number");
+//                    }
+//                } else {
+//                    isValid = false;
+//                    ingredientUnit.setError("Enter a positive number");
+//                }
+//            } catch (NumberFormatException ex) {
+//                isValid = false;
+//                ingredientUnit.setError("Enter a positive number");
+//                ex.printStackTrace();
+//            }
 
-                    if (unit < 1) {
-                        isValid = false;
-                        ingredientUnit.setError("Enter a positive number");
-                    }
-                } else {
-                    isValid = false;
-                    ingredientUnit.setError("Enter a positive number");
-                }
-            } catch (NumberFormatException ex) {
+            if (IngredientUnitInput.length() < 1) {
                 isValid = false;
-                ingredientUnit.setError("Enter a positive number");
-                ex.printStackTrace();
+                ingredientDescription.setError("Enter a name");
+            } else if (IngredientUnitInput.length() > Ingredient.MAX_LENGTH_NAME) {
+                ingredientDescription.setError("Name must be less than 30 characters");
+                isValid = false;
             }
 
             if (isValid) {
@@ -232,7 +240,7 @@ public class IngredientFragment extends DialogFragment {
                             IngredientBestBeforeDateInput,
                             location,
                             amount,
-                            unit,
+                            IngredientUnitInput,
                             IngredientCategoryInput);
                 } else {
                     listener.onOkPressedAdd(new Ingredient(
@@ -240,7 +248,7 @@ public class IngredientFragment extends DialogFragment {
                             IngredientBestBeforeDateInput,
                             location,
                             amount,
-                            unit,
+                            IngredientUnitInput,
                             IngredientCategoryInput
                     ));
                 }

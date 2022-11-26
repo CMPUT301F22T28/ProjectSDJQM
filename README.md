@@ -55,3 +55,68 @@ Object-Oriented Design
 •    Neatly laid out and labeled diagrams
 •    Helpful explanations or commentary
 •    Consistent with requirements, code, tests, and documentation
+
+# Project Part3 Feedback
+
+## Addressing Feedback
+3 = 
+addressed mostly all feedbacks
+
+## UserInterface Mockup Storyboard
+3 = 
+Consistent and clear
+• Complete UI mockups
+• Labeled elements on UI mockups
+• Detailed storyboard
+• Labeled actions for storyboard transitions
+• Covers all requirements
+• Intuitive user interface
+• Displays understanding of UI mockups and storyboarding
+
+## Sprint Planning
+
+3 = 
+- Comprehensive
+- Displays understanding of Scrum
+- Displays regular and frequent pacing of working software
+- Each sprint is reviewed
+- User stories are fully “done done” (implemented, tested, integrated, documented)
+- Early and frequent integration   
+
+## Demo Ability
+
+3 = 
+• Very good Demo ability
+• Clear and coherent
+• Logically organized by tangible features
+• Realistic data and inputs
+• All members was present
+• Members well coordinated
+
+## Tools Practice
+3 = effective use of GitHub tools
+
+## Relative Quality
+2 = somewhat above relative quality
+
+## Product Backlog
+3 = 
+✓ Numbered, tracked, and organized requirements
+✓ Tracked, and organized
+✓ Comprehensive requirements
+✓ Complete story point estimates
+✓ Complete risk levels
+✓ Requirements noted for half-way checkpoint
+✓ New requirements are added to the backlog regularly
+
+## Test Cases
+
+1 = 
+✓ Correct tests wtih realistic data
+✘ Inomprehensive unit tests of entity (model) classes (only one test implemented)
+✘ incomprehensive intent tests for implemented user stories (all test cases seem to have been compressed into two tests, which is very discouraged)
+✘ Most intent tests fail, probably because individual methods were not pre-screened with unit tests first (this is why unit tests are important)
+
+Total = 7.11
+
+## N.B..Not all parts are marked so this is not final score

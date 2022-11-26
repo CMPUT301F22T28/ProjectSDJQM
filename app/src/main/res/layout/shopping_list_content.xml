@@ -4,13 +4,15 @@
     android:layout_height="wrap_content"
     android:drawableBottom="@color/black"
     android:orientation="horizontal"
-    android:padding="10dp">
+    android:padding="3dp"
+    android:weightSum="2">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_weight=".3">
 
         <CheckBox
             android:id="@+id/box"
@@ -19,49 +21,51 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:orientation="vertical"
+        android:layout_weight="1.7">
 
         <TextView
-            android:id="@+id/description"
+            android:id="@+id/shoppinglist_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="Description"
-            android:textSize="16dp" />
+            android:textSize="18sp"
+            android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/category"
+            android:id="@+id/shoppinglist_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:text="Category"
-            android:textSize="16dp" />
+            android:layout_marginTop="5dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="2">
 
             <TextView
-                android:id="@+id/amount"
+                android:id="@+id/shoppinglist_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="50dp"
-                android:layout_weight=".5"
-                android:text="Amount" />
+                android:layout_marginRight="20dp"
+                android:text="Amount"
+                android:layout_weight="1"/>
 
             <TextView
-                android:id="@+id/unit"
+                android:id="@+id/shoppinglist_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight=".5"
-                android:text="Unit" />
+                android:text="Unit"
+                android:layout_weight="1"/>
         </LinearLayout>
     </LinearLayout>
+
+
 </LinearLayout>

@@ -2,6 +2,7 @@ package com.example.projectsdjqm.shopping_list;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ public class ShoppingListAdapter extends ArrayAdapter<ShoppingList> {
     // attr init
     private ArrayList<ShoppingList> shoppingList;
     private Context context;
+    final String TAG = "Picked up";
 
     // constructor
     public ShoppingListAdapter(Context context, ArrayList<ShoppingList> shoppingList) {
@@ -43,25 +45,21 @@ public class ShoppingListAdapter extends ArrayAdapter<ShoppingList> {
     public View getView(int position, @Nullable View convertView, @Nullable ViewGroup parent) {
         ShoppingList shoppingList = getItem(position);
         Ingredient ingredient = shoppingList.getIngredient();
-//        View view = convertView;
-//        if (view == null) {
-//            view = LayoutInflater.from(context)
-//                    .inflate(R.layout.shopping_list_content, parent, false);
-//        }
         View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.shopping_list_content, parent, false);
 
-        TextView description = view.findViewById(R.id.description);
-        TextView category = view.findViewById(R.id.category);
-        TextView amount = view.findViewById(R.id.amount);
-        TextView unit = view.findViewById(R.id.unit);
+        TextView description = view.findViewById(R.id.shoppinglist_description);
+        TextView category = view.findViewById(R.id.shoppinglist_category);
+        TextView amount = view.findViewById(R.id.shoppinglist_amount);
+        TextView unit = view.findViewById(R.id.shoppinglist_unit);
         CheckBox checkbox = view.findViewById(R.id.box);
 
         description.setText(ingredient.getIngredientDescription());
 
         category.setText(String.format("Category: %s", ingredient.getIngredientCategory()));
-        amount.setText(String.format("Count: %s", ingredient.getIngredientAmount()));
-        unit.setText(String.format("Unit Cost($): %s", ingredient.getIngredientUnit()));
+        amount.setText(String.format("Amount: %s", ingredient.getIngredientAmount()));
+        unit.setText(String.format("Unit: %s", ingredient.getIngredientUnit()));
+
 
         checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -72,11 +70,13 @@ public class ShoppingListAdapter extends ArrayAdapter<ShoppingList> {
                     // As a meal planner, I want to note that I have picked up an ingredient on the
                     // shopping list. may need to change
                     new AlertDialog.Builder(getContext())
-                            .setMessage("You have picked up sth ")
+                            .setMessage("You have picked up "+(shoppingList.getIngredient().getIngredientDescription()))
                             .setPositiveButton("Ok", null)
                             .show();
+                            Log.d(TAG,"picked up "+shoppingList.getIngredient().getIngredientDescription()+" "+shoppingList.getPickedUp());
                 } else {
                     shoppingList.setPickedUp(false);
+                    Log.d(TAG,"picked up "+shoppingList.getIngredient().getIngredientDescription()+" "+shoppingList.getPickedUp());
                 }
             }
         });

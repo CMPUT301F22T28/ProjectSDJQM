@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -69,6 +70,7 @@ public class MealplanList extends ArrayAdapter<Mealplan> {
         ArrayAdapter<String> recipeAdapter =
                 new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, recipeList_str);
         recipeListview.setAdapter(recipeAdapter);
+        setListViewHeightBasedOnChildren(recipeListview);
 
         // Set ingredient list of one day's meal plan
         ListView ingredientListview = view.findViewById(R.id.mealplan_in_list);
@@ -80,6 +82,7 @@ public class MealplanList extends ArrayAdapter<Mealplan> {
         ArrayAdapter<String> ingredientAdapter =
                 new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, ingredientList_str);
         ingredientListview.setAdapter(ingredientAdapter);
+        setListViewHeightBasedOnChildren(ingredientListview);
         return view;
     }
 
@@ -88,5 +91,21 @@ public class MealplanList extends ArrayAdapter<Mealplan> {
         Date date = mealplan.getMealplan_date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return String.format(dateFormat.format(date));
+    }
+
+    public void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+        int totalHeight = 0;
+        for (int i = 0, len = listAdapter.getCount(); i < len; i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight+ (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
     }
 }

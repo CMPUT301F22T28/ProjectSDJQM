@@ -6,7 +6,9 @@
  */
 package com.example.projectsdjqm.recipe_list;
 
+import static com.example.projectsdjqm.recipe_list.RecipeFragment.ingAdapter;
 import static com.example.projectsdjqm.recipe_list.RecipeFragment.l;
+import static com.example.projectsdjqm.recipe_list.RecipeFragment.list;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -313,6 +315,8 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
     public void onAddIngredientOkPressed(Ingredient ingredient) {
 //        l.clear();
         l.add(ingredient);
+        list.add(ingredient);
+        ingAdapter.notifyDataSetChanged();
     }
     @Override
     public void onOkPressedAdd(Recipe recipe) {
@@ -324,7 +328,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         final int recipeServingNumber = recipe.getNumberofServings();
         final String recipeCategory = recipe.getRecipeCategory();
         final String recipeComments = recipe.getComments();
-        final ArrayList<Ingredient> recipeIngredientList = l;
+        final ArrayList<Ingredient> recipeIngredientList = list;
 
         HashMap<String, Object> data = new HashMap<>();
         HashMap<String, Object> nestedData_ingre = new HashMap<>();
@@ -407,6 +411,34 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                     .document(title)
                     .set(data);
         }
+        HashMap<String, Object> nestedData_ingre = new HashMap<>();
+        for (Ingredient ingre: recipeIng) {
+            collectionReference
+                    .document(title)
+                    .collection("ingredient List")
+                    .document(ingre.getIngredientDescription())
+                    .delete();
+        }
+
+        for (Ingredient ingre: recipeIng) {
+            final String ingredientDesc = ingre.getIngredientDescription();
+            nestedData_ingre.put("Amount",ingre.getIngredientAmount());
+            nestedData_ingre.put("Best Before Date",ingre.getIngredientBestBeforeDate());
+            nestedData_ingre.put("Category",ingre.getIngredientCategory());
+            nestedData_ingre.put("Location",ingre.getIngredientLocation());
+            nestedData_ingre.put("Unit",ingre.getIngredientUnit());
+            collectionReference
+                    .document(title)
+                    .collection("ingredient List").document(ingredientDesc)
+                    .set(nestedData_ingre)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, " data has been added successfully!");
+                        }
+                    });
+        }
+        ingAdapter.notifyDataSetChanged();
         recipeAdapter.notifyDataSetChanged();
     };
 

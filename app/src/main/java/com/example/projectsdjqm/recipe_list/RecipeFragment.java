@@ -7,6 +7,8 @@ package com.example.projectsdjqm.recipe_list;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
+import static com.example.projectsdjqm.recipe_list.RecipeList.setListViewHeightBasedOnChildren;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,6 +27,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -45,6 +48,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * RecipeFragment:
@@ -75,9 +79,12 @@ public class RecipeFragment extends DialogFragment {
     private ImageView photo;
     private ImageView recipePhoto;
     private FirebaseStorage storage;
+    private ListView ingredientListViewOnFragment;
     private StorageReference storageReference;
     final String TAG = "Recipe Fragment";
+    static IngredientInRecipeAdapter ingAdapter;
 
+    public static ArrayList<Ingredient> list = new ArrayList<>();
     private TextView ingredientText;
     private Recipe recipe;
     private boolean isEdit = false;
@@ -112,6 +119,7 @@ public class RecipeFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         l.clear();
+        list.clear();
         View view = getLayoutInflater()
                 .inflate(R.layout.recipe_add_fragment, null);
         recipeTitle = view.findViewById(R.id.edit_recipe_title);
@@ -119,30 +127,31 @@ public class RecipeFragment extends DialogFragment {
         recipeServingNumber = view.findViewById(R.id.edit_recipe_servings);
         recipeCategory = view.findViewById(R.id.edit_recipe_category);
         recipeComments = view.findViewById(R.id.edit_recipe_comments);
-
+        ingredientListViewOnFragment = view.findViewById(R.id.ingredient_list_onRecipe);
         Button takePhotoButton = view.findViewById(R.id.take_photo);
         Button choosePhotoButton = view.findViewById(R.id.choose_from_album);
         Button ingredientSelectButton = view.findViewById(R.id.ingredient_select_button);
-
-        photo = view.findViewById(R.id.recipe_image);
+        ingAdapter = new IngredientInRecipeAdapter(getContext(),list);
+        ingredientListViewOnFragment.setAdapter(ingAdapter);
+        setListViewHeightBasedOnChildren(ingredientListViewOnFragment);
+        ingAdapter.notifyDataSetChanged();
         recipePhoto = view.findViewById(R.id.recipe_image);
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        ingredientText = view.findViewById(R.id.recipe_ingredient);
         if (isEdit) {
             recipeTitle.setText(recipe.getTitle());
             recipeServingNumber.setText(String.valueOf(recipe.getNumberofServings()));
             recipeCategory.setText(recipe.getRecipeCategory());
             recipeComments.setText(recipe.getComments());
             recipePreparationTime.setText(String.valueOf(recipe.getPreparationTime()));
-            ArrayList<Ingredient> list = recipe.getListofIngredients();
-
-            StringBuilder listText = new StringBuilder();
-            for (int i=0; i<list.size(); i++) {
-                listText.append(list.get(i).getIngredientDescription());
-                listText.append(",\n");
-            }
+            list = recipe.getListofIngredients();
+            ingAdapter = new IngredientInRecipeAdapter(getContext(),list);
+            ingredientListViewOnFragment.setAdapter(ingAdapter);
+            ingAdapter.notifyDataSetChanged();
+            setListViewHeightBasedOnChildren(ingredientListViewOnFragment);
+//            ingAdapter.notifyDataSetChanged();
+            recipePhoto.setImageDrawable(recipe.getPhotograph());
         }
         takePhotoButton.setOnClickListener(view12 -> {
             // have permission and start taking photo
@@ -226,17 +235,13 @@ public class RecipeFragment extends DialogFragment {
             String servingNumber = recipeServingNumber.getText().toString();
             String category = recipeCategory.getText().toString();
             String comments = recipeComments.getText().toString();
-            Drawable photograph = photo.getDrawable();
+            Drawable photograph = recipePhoto.getDrawable();
 
-            // need to change --------------------------
-            Ingredient i = new Ingredient("test",new Date(),Ingredient.Location.Pantry,2,1,"category");
-            // 应该改成recipeListView.get()?
-            //获取listview里的所有，显示出来，
-            ArrayList<Ingredient> list = new ArrayList<>();
-            list.add(i);
-//            list.add(i);
-            // need to change --------------------------
-
+            list = new ArrayList<Ingredient>();
+            for (int i = 0; i < ingredientListViewOnFragment.getAdapter().getCount(); i++) {
+                list.add((Ingredient) ingredientListViewOnFragment.getAdapter().getItem(i));
+//                list.set(i, (Ingredient) ingredientListViewOnFragment.getAdapter().getItem(i));
+            }
             // check title
             if (title.length() < 1) {
                 isValid = false;

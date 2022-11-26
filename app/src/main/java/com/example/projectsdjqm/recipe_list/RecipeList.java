@@ -130,7 +130,7 @@ public class RecipeList extends ArrayAdapter<Recipe> {
         Button deleteButton;
     }
 
-    public void setListViewHeightBasedOnChildren(ListView listView) {
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
         // get the corresponding adapter
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {

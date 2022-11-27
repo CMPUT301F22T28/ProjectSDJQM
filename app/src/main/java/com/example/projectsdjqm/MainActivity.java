@@ -8,6 +8,7 @@ package com.example.projectsdjqm;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -23,19 +24,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 
 /**
@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<String> allRecipes = new ArrayList<>();
     public ArrayList<String> allShoppingListEntries = new ArrayList<>();
     public ArrayList<String> allMealplans = new ArrayList<>();
+    public ArrayList<String> allMealplanDate = new ArrayList<String>();
+    public String tmrwMealPlanRecipes = "";
+    public String tmrwMealPlanIngredients = "";
 
 
     @Override
@@ -207,8 +210,15 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
+        // current date inits
+        Date currentDate = Calendar.getInstance().getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String stringCurrDate = dateFormat.format(currentDate);
+        Log.d(TAG,  "stringCurrDate => " + stringCurrDate);
 
-        // mealplan count
+
+
+        // mealplan count + entries for tomorrows meal plan
         db.collection("MealPlans")
                 // .whereEqualTo("capital", true)
                 .get()
@@ -217,14 +227,22 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                // Log.d(TAG, document.getId() + " => " + document.getData());
+
                                 allMealplans.add(document.getId().toString());
+                                // Log.d(TAG, document.getId() + " ! ");
+
+                                if (document.getId().equals(stringCurrDate)) {
+                                    Log.d(TAG, "CONDITIONAL ACHIEVED");
+                                    allMealplanDate.add(document.getId());
+                                }
+
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
 
                         mealplanTextView.setText("Mealplans - " + String.valueOf(allMealplans.size()));
+
 
                     }
                 });
@@ -233,7 +251,103 @@ public class MainActivity extends AppCompatActivity {
 
 
         // tomorrow's mealplan -------------------------------------------------------------------------
-        tomorrowMealPlan.setText("something here");
+
+        // delay this portion, to ensure that allMealplanDate is appended to first
+        // https://stackoverflow.com/questions/41664409/wait-for-5-seconds
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                // ---------------------------------------
+                // mealplan recipes
+
+                Log.d(TAG, "ALL MEAL PLANS -------------: " + allMealplanDate);
+                allMealplanDate.add("2022-11-25");
+
+                for (int j = 0; j < allMealplanDate.size(); j++) {
+                    Log.d(TAG, "RUNNING THROUGH ------------------------: " + allMealplanDate.get(j));
+                    db.collection("MealPlans" + "/" + allMealplanDate.get(j) + "/" + "recipe List")
+                            // .whereEqualTo(stringCurrDate, true)
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                            Log.d(TAG, document.getId());
+                                            tmrwMealPlanRecipes += document.getId() + "\n";
+                                        }
+                                    } else {
+                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                    }
+
+
+                                    tomorrowMealPlan.setText(tmrwMealPlanRecipes);
+
+
+                                }
+                            });
+                }
+
+
+
+
+                Handler handler2 = new Handler();
+                handler2.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // ---------------------------------------
+                        // mealplan ingredients
+                        for (int j = 0; j < allMealplanDate.size(); j++) {
+                            db.collection("MealPlans" + "/" + allMealplanDate.get(j) + "/" + "ingredient List")
+                                    // .whereEqualTo(stringCurrDate, true)
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                                    Log.d(TAG, document.getId());
+                                                    tmrwMealPlanIngredients += document.getId() + "\n";
+                                                }
+                                            } else {
+                                                Log.d(TAG, "Error getting documents: ", task.getException());
+                                            }
+
+
+                                            tomorrowMealPlan.setText(tmrwMealPlanIngredients);
+
+
+                                        }
+                                    });
+                        }
+                    }
+                }, 250);
+
+
+
+
+            }
+        }, 1500);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -66,7 +66,8 @@ import java.util.HashMap;
  */
 public class MealPlanActivity extends AppCompatActivity
         implements MealplanFragment.OnFragmentInteractionListener,
-                    MealplanStorageFragment.DataPassListener{
+                    MealplanStorageFragment.DataPassListener,
+                    MealplanList.recipeScaleListener{
 
     
     // initialization of variables
@@ -80,6 +81,7 @@ public class MealPlanActivity extends AppCompatActivity
     MealplanFragment addMealplanFragment = new MealplanFragment();
     MealplanStorageFragment mealplanStorageFragment = null;
     MealplanFragment add1MealplanFragment = null;
+    MealplanScaleFragment editRecipeScale = null;
 
 
 
@@ -91,6 +93,7 @@ public class MealPlanActivity extends AppCompatActivity
         Log.d(TAG, "onCreate");
         db = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = db.collection("MealPlans");
+
 
         // bottom nav initialization
         bottomNavigationView = findViewById(R.id.nav_view);
@@ -134,9 +137,7 @@ public class MealPlanActivity extends AppCompatActivity
         mealplanList = new ArrayList<Mealplan>();
 
         ArrayList<Ingredient> ingredientList = new ArrayList<>();
-        Ingredient testc = new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,"kg","here");
-        ingredientList.add(testc);
-        ArrayList<Recipe> recipeList = new ArrayList<>();
+        ArrayList<ArrayList<Recipe>> recipeList = new ArrayList<>();
         Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_notifications_black_24dp);
 
         mealplanAdapter = new MealplanList(this, mealplanList);
@@ -153,6 +154,7 @@ public class MealPlanActivity extends AppCompatActivity
 
         // Pull mealplanlist from database
         // Initialization of main collection
+        final ArrayList<Recipe>[] recipelist = new ArrayList[]{new ArrayList<>()};
         db.collection("MealPlans")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -169,7 +171,6 @@ public class MealPlanActivity extends AppCompatActivity
                 });
 
         // main collection reference of mealplan
-        ArrayList<Recipe> recipelist = new ArrayList<>();
         collectionReference.addSnapshotListener((queryDocumentSnapshots, error) -> {
             for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
             {
@@ -182,6 +183,7 @@ public class MealPlanActivity extends AppCompatActivity
                 } catch (java.text.ParseException e) {
                     e.printStackTrace();
                 }
+                ArrayList<Integer> recipeScale = (ArrayList<Integer>) doc.getData().get("Recipe Scale");
                 // path of recipe list within mealplan collection
                 String recipe_path = "MealPlans"+"/"+mealplan_id+"/"+"recipe List";
                 CollectionReference collectionReference_mealplan_recipe = db.collection(recipe_path);
@@ -205,7 +207,7 @@ public class MealPlanActivity extends AppCompatActivity
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
                             FirebaseFirestoreException error) {
-                        recipelist.clear();
+                        recipelist[0] = new ArrayList<Recipe>();
                         for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
                         {
                             String title = doc.getId();
@@ -214,7 +216,7 @@ public class MealPlanActivity extends AppCompatActivity
                             String category = (String) doc.getData().get("Category");
                             String comm = (String) doc.getData().get("Comments");
                             // add snap shot of Ingredient List of recipe list subcollection
-                            recipelist.add(new Recipe(
+                            recipelist[0].add(new Recipe(
                                     title,
                                     preptime,
                                     numser,
@@ -222,8 +224,8 @@ public class MealPlanActivity extends AppCompatActivity
                                     comm,
                                     icon,
                                     ingredientList));
-
                         }
+                        recipeList.add(recipelist[0]);
                     }
                 });
 
@@ -253,6 +255,7 @@ public class MealPlanActivity extends AppCompatActivity
                             FirebaseFirestoreException error) {
                         ArrayList<Ingredient> ingredientlist = new ArrayList<>();
                         ingredientlist.clear();
+                        int count = 0;
                         for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
                         {
                             Log.d(TAG, String.valueOf(doc.getData().get("Category")));
@@ -283,7 +286,8 @@ public class MealPlanActivity extends AppCompatActivity
                                     unit,
                                     category));
                         }
-                        Mealplan test = new Mealplan(recipelist, ingredientlist, finalMealplan_date);
+                        Mealplan test = new Mealplan(recipelist[0], ingredientlist, finalMealplan_date, recipeScale);
+                        count++;
                         mealplanList.add(test);
                         mealplanAdapter.notifyDataSetChanged();
 
@@ -304,6 +308,7 @@ public class MealPlanActivity extends AppCompatActivity
         final Date mealplan_date = mealplan.getMealplan_date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String mealplan_date_str = String.format(dateFormat.format(mealplan_date));
+        final ArrayList<Integer> recipeScale = mealplan.getRecipeScale();
 
         HashMap<String, Object> data = new HashMap<>();
         HashMap<String, Object> nestedData_rec = new HashMap<>();
@@ -311,6 +316,7 @@ public class MealPlanActivity extends AppCompatActivity
 
         // Store mealplan into database
         data.put("Mealplan_Date",mealplan_date);
+        data.put("Recipe Scale",recipeScale);
         collectionReference
                 .document(mealplan_date_str)
                 .set(data)
@@ -413,4 +419,9 @@ public class MealPlanActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void onRecipeScaleListPressed(int position) {
+        editRecipeScale = new MealplanScaleFragment();
+        editRecipeScale.show(getSupportFragmentManager(),"Edit scale");
+    }
 }

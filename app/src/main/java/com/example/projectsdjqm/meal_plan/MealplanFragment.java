@@ -341,14 +341,18 @@ public class MealplanFragment extends DialogFragment {
                         Date mealplan_date = new Date(calendar.getTimeInMillis());
 
                         ArrayList<Recipe> recipeList_container = new ArrayList<>();
+                        ArrayList<Integer> recipeScale_container = new ArrayList<>();
                         for (Integer num : recipeList_int){
                             recipeList_container.add(recipeList.get(num));
+                            recipeScale_container.add(1);
                         }
                         ArrayList<Ingredient> ingredientList_container = new ArrayList<>();
+
                         for (Integer num : ingredientList_int){
                             ingredientList_container.add(ingredientList.get(num));
+
                         }
-                        listener.onOkPressedAdd(new Mealplan(recipeList_container,ingredientList_container,mealplan_date));
+                        listener.onOkPressedAdd(new Mealplan(recipeList_container,ingredientList_container,mealplan_date,recipeScale_container));
                     }
                 }).create();
 

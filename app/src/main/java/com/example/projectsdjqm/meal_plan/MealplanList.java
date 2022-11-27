@@ -33,6 +33,10 @@ import java.util.stream.Collectors;
  */
 public class MealplanList extends ArrayAdapter<Mealplan> {
 
+    public interface recipeScaleListener {
+        void onRecipeScalePressed(int position);
+    }
+
     // attr init
     private ArrayList<Mealplan> mealplanList;
     private Context context;
@@ -83,6 +87,23 @@ public class MealplanList extends ArrayAdapter<Mealplan> {
                 new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, ingredientList_str);
         ingredientListview.setAdapter(ingredientAdapter);
         setListViewHeightBasedOnChildren(ingredientListview);
+
+        // Set recipe scale list
+        ListView recipe_scale_view = view.findViewById(R.id.recipe_scale);
+        ArrayList<Integer> recipe_scale_list = mealplan.getRecipeScale();
+        ArrayAdapter<Integer> scaleAdapter =  new ArrayAdapter<Integer>(context, android.R.layout.simple_list_item_1, recipe_scale_list);
+        recipe_scale_view.setAdapter(scaleAdapter);
+        setListViewHeightBasedOnChildren(recipe_scale_view);
+
+        recipe_scale_view.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                if (ingredientButtonListener != null) {
+                    ingredientButtonListener.onEditIngredientClickListener(position);
+                }
+            }
+        });
         return view;
     }
 

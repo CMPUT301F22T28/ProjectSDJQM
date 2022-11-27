@@ -23,6 +23,7 @@ import com.example.projectsdjqm.ingredient_storage.IngredientList;
 import com.example.projectsdjqm.meal_plan.MealPlanActivity;
 import com.example.projectsdjqm.recipe_list.RecipeFragment;
 import com.example.projectsdjqm.recipe_list.RecipeListActivity;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -34,7 +35,6 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -42,10 +42,15 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 
 
 /**
@@ -64,6 +69,7 @@ public class ShoppingListActivity extends AppCompatActivity {
     ShoppingListAdapter shoppingListAdapter;
     ArrayList<ShoppingList> shoppingCartList;
     String currentSortingType;
+    Calendar calendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,16 +122,18 @@ public class ShoppingListActivity extends AppCompatActivity {
         shoppingListAdapter = new ShoppingListAdapter(this, shoppingCartList);
         shoppingListView.setAdapter(shoppingListAdapter);
         boolean pickup = false;
+        calendar = Calendar.getInstance();
+
 
         db.collection("ShoppingLists")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            Log.d(TAG, document.getId() + " => " + document.getData());
+                            //Log.d(TAG, document.getId() + " => " + document.getData());
                         }
                     } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
+                        //Log.d(TAG, "Error getting documents: ", task.getException());
                     }
                 });
         shoppingListAdapter.notifyDataSetChanged();
@@ -137,16 +145,51 @@ public class ShoppingListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 for (int i=0; i < shoppingCartList.size(); i++) {
                     if (shoppingCartList.get(i).getPickedUp()) {
+
                         // add ingredient from checkedIngredientList to ingredient storage
+                        Ingredient newIngredient = shoppingCartList.get(i).getIngredient();
+                        CollectionReference addIngCollection = db.collection("Ingredients");
+                        final String ingredientDesc = newIngredient.getIngredientDescription();
+                        final String ingredientCate = newIngredient.getIngredientCategory();
+                        final int ingredientAmt = newIngredient.getIngredientAmount();
+                        final String ingredientUni = newIngredient.getIngredientUnit();
+                        // use system date as pickup date and store it in new ingredient
+                        Date pickDate = calendar.getTime();
+                        newIngredient.setIngredientBestBeforeDate(pickDate);
+                        final Date ingredientBestBeforeDate = newIngredient.getIngredientBestBeforeDate();
+                        // by default, picked ingredient will be add to pantry
+                        Ingredient.Location tempLoc = Ingredient.Location.Pantry;
+                        newIngredient.setIngredientLocation(tempLoc);
+                        final Ingredient.Location ingredientLoc = newIngredient.getIngredientLocation();
+
+                        HashMap<String, Object> data = new HashMap<>();
+                        data.put("Best Before Date", ingredientBestBeforeDate);
+                        data.put("Amount", ingredientAmt);
+                        data.put("Unit", ingredientUni);
+                        data.put("Category", ingredientCate);
+                        data.put("Location", ingredientLoc);
+                        addIngCollection
+                                .document(ingredientDesc)
+                                .set(data)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d(TAG, ingredientDesc + "data has been added successfully!");
+                                    }
+                                });
 
                         // remove thi shoppingItem from shoppingCartList
                         shoppingCartList.remove(i);
+                        collectionReference
+                                .document(ingredientDesc)
+                                .delete();
                     }
+                    shoppingListAdapter.notifyDataSetChanged();
                 }
                 new AlertDialog.Builder(ShoppingListActivity.this)
                         .setMessage("Checked Items from shopping list have been added into your" +
-                                " storage! Please complete details: location, actual amount, and " +
-                                "unit!")
+                                " storage! Please return to ingredient page to complete details: " +
+                                "Location, Actual amount, and Unit!")
                         .setPositiveButton("Ok", null)
                         .show();
             }
@@ -159,7 +202,7 @@ public class ShoppingListActivity extends AppCompatActivity {
                 shoppingCartList.clear();
                 for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
                 {
-                    Log.d(TAG, String.valueOf(doc.getData().get("Category")));
+                    //Log.d(TAG, String.valueOf(doc.getData().get("Category")));
                     String description = doc.getId();
                     int amount = Integer.valueOf(doc.getData().get("Amount").toString());
 //                    Timestamp bbd = (Timestamp) doc.getData().get("Best Before Date");
@@ -206,6 +249,19 @@ public class ShoppingListActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void onDeleteClickListener(ShoppingList shoppingList) {
+        final CollectionReference collectionReference = db.collection("ShoppingLists");
+
+        if (shoppingList.getPickedUp() == true) {
+            shoppingCartList.remove(shoppingList.getIngredient());
+        }
+
+        shoppingListAdapter.notifyDataSetChanged();
+        collectionReference
+                .document(shoppingList.getIngredient().getIngredientDescription())
+                .delete();
     }
 
     public void sortShoppingList(ArrayList<ShoppingList> list, String sorting_type) {

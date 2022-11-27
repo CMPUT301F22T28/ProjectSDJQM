@@ -21,6 +21,7 @@ public class Mealplan {
 
 
     // attr init
+    private ArrayList<Integer> recipeScale;
     private Date mealplan_date;
     private ArrayList<Recipe> recipeList;
     private ArrayList<Ingredient> ingredientList;
@@ -29,10 +30,12 @@ public class Mealplan {
     // mealplan constructor
     public Mealplan (ArrayList<Recipe> recipeList,
                      ArrayList<Ingredient> ingredientList,
-                     Date mealplan_date) {
+                     Date mealplan_date,
+                     ArrayList<Integer> recipeScale) {
         this.recipeList = recipeList;
         this.ingredientList = ingredientList;
         this.mealplan_date = mealplan_date;
+        this.recipeScale = recipeScale;
     }
 
     // getter (recipe)
@@ -62,6 +65,11 @@ public class Mealplan {
         this.mealplan_date = mealplan_date;
     }
 
+    public ArrayList<Integer> getRecipeScale() {
+        return recipeScale;
+    }
 
-
+    public void setRecipeScale(ArrayList<Integer> recipeScale) {
+        this.recipeScale = recipeScale;
+    }
 }

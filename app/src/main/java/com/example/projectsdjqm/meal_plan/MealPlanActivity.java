@@ -92,6 +92,7 @@ public class MealPlanActivity extends AppCompatActivity
         db = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = db.collection("MealPlans");
 
+
         // bottom nav initialization
         bottomNavigationView = findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_meal_plan);
@@ -182,6 +183,7 @@ public class MealPlanActivity extends AppCompatActivity
                 } catch (java.text.ParseException e) {
                     e.printStackTrace();
                 }
+                ArrayList<Integer> recipeScale = (ArrayList<Integer>) doc.getData().get("Recipe Scale");
                 // path of recipe list within mealplan collection
                 String recipe_path = "MealPlans"+"/"+mealplan_id+"/"+"recipe List";
                 CollectionReference collectionReference_mealplan_recipe = db.collection(recipe_path);
@@ -283,7 +285,7 @@ public class MealPlanActivity extends AppCompatActivity
                                     unit,
                                     category));
                         }
-                        Mealplan test = new Mealplan(recipelist, ingredientlist, finalMealplan_date);
+                        Mealplan test = new Mealplan(recipelist, ingredientlist, finalMealplan_date, recipeScale);
                         mealplanList.add(test);
                         mealplanAdapter.notifyDataSetChanged();
 
@@ -304,6 +306,7 @@ public class MealPlanActivity extends AppCompatActivity
         final Date mealplan_date = mealplan.getMealplan_date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String mealplan_date_str = String.format(dateFormat.format(mealplan_date));
+        final ArrayList<Integer> recipeScale = mealplan.getRecipeScale();
 
         HashMap<String, Object> data = new HashMap<>();
         HashMap<String, Object> nestedData_rec = new HashMap<>();
@@ -311,6 +314,7 @@ public class MealPlanActivity extends AppCompatActivity
 
         // Store mealplan into database
         data.put("Mealplan_Date",mealplan_date);
+        data.put("Recipe Scale",recipeScale);
         collectionReference
                 .document(mealplan_date_str)
                 .set(data)

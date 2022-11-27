@@ -134,7 +134,7 @@ public class MealPlanActivity extends AppCompatActivity
         mealplanList = new ArrayList<Mealplan>();
 
         ArrayList<Ingredient> ingredientList = new ArrayList<>();
-        Ingredient testc = new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,1,"here");
+        Ingredient testc = new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,"kg","here");
         ingredientList.add(testc);
         ArrayList<Recipe> recipeList = new ArrayList<>();
         Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_notifications_black_24dp);
@@ -273,7 +273,7 @@ public class MealPlanActivity extends AppCompatActivity
                                 default:
                                     location = Ingredient.Location.Pantry;
                             }
-                            int unit = Integer.valueOf(doc.getData().get("Unit").toString());
+                            String unit = (String) doc.getData().get("Unit");
 
                             ingredientlist.add(new Ingredient(
                                     description,

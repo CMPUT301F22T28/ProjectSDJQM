@@ -38,12 +38,12 @@ public class Ingredient {
     private Date IngredientBestBeforeDate;
     private Location IngredientLocation;
     private int IngredientAmount;
-    private int IngredientUnit;
+    private String IngredientUnit;
     private String IngredientCategory;
 
     // Ingredient Constructor
     public Ingredient(String Description, Date BestBeforeDate, Location Location,
-                      int Count, int Unit, String IngredientCategory) {
+                      int Count, String Unit, String IngredientCategory) {
         this.IngredientDescription = Description;
         this.IngredientBestBeforeDate = BestBeforeDate;
         this.IngredientLocation = Location;
@@ -69,7 +69,7 @@ public class Ingredient {
         return IngredientAmount;
     }
 
-    public int getIngredientUnit() {
+    public String getIngredientUnit() {
         return IngredientUnit;
     }
 
@@ -94,7 +94,7 @@ public class Ingredient {
         this.IngredientAmount = ingredientAmount;
     }
 
-    public void setIngredientUnit(int ingredientUnit) {
+    public void setIngredientUnit(String ingredientUnit) {
         this.IngredientUnit = ingredientUnit;
     }
 

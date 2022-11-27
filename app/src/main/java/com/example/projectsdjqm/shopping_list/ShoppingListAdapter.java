@@ -70,8 +70,10 @@ public class ShoppingListAdapter extends ArrayAdapter<ShoppingList> {
                     // As a meal planner, I want to note that I have picked up an ingredient on the
                     // shopping list. may need to change
                     new AlertDialog.Builder(getContext())
-                            .setMessage("You have picked up "+(shoppingList.getIngredient().getIngredientDescription()))
-                            .setPositiveButton("Ok", null)
+                            .setMessage("You have picked up "+(shoppingList.getIngredient().getIngredientDescription())
+                            +". Please confirm the amount and unit.")
+                            .setPositiveButton("Ok",null)
+                            .setNegativeButton("Cancel",null)
                             .show();
                             Log.d(TAG,"picked up "+shoppingList.getIngredient().getIngredientDescription()+" "+shoppingList.getPickedUp());
                 } else {

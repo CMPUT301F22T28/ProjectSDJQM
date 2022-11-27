@@ -53,12 +53,33 @@ import java.util.List;
 /**
  * RecipeFragment:
  * fragment for the recipe list
+ * @author Qingya Ye, Muchen Li
+ * @version 1.0
  */
 
 public class RecipeFragment extends DialogFragment {
     public static ArrayList<Ingredient> l = new ArrayList<>();
+    /**
+     * Interface for add / edit listeners
+     */
     public interface OnFragmentInteractionListener {
+        /**
+         * a method that add a recipe to recipe list and database
+         * @param recipe the recipe to be added
+         */
         void onOkPressedAdd(Recipe recipe);
+
+        /**
+         * a method that edit a existing recipe
+         * @param recipe the recipe to be edited
+         * @param title new title
+         * @param preparationTime new preparation time
+         * @param servingNumber new serving number
+         * @param comments new comments
+         * @param category new category
+         * @param photo new photo
+         * @param list new list of ingredients
+         */
         void onOkPressedEdit(Recipe recipe,
                              String title,
                              int preparationTime,
@@ -71,7 +92,6 @@ public class RecipeFragment extends DialogFragment {
 
     // attr init
     private EditText recipeTitle;
-    // preparation time should change to a time selector? can discuss and decide in project part 4
     private EditText recipePreparationTime;
     private EditText recipeServingNumber;
     private EditText recipeCategory;
@@ -92,7 +112,11 @@ public class RecipeFragment extends DialogFragment {
     private final int requestCodeForChoosePhoto = 2;
     private OnFragmentInteractionListener listener;
 
-    // super call (constructor)
+    /**
+     * This is a constructor to create RecipeFragment object.
+     * packagename.classname#RecipeFragment
+     * @param recipe current recipe to be edited
+     */
     public RecipeFragment(Recipe recipe) {
         super();
         this.recipe = recipe;
@@ -103,7 +127,13 @@ public class RecipeFragment extends DialogFragment {
 
     }
 
-    // fragment interaction listener
+    /**
+     * This is an override method onAttach
+     * Called when a fragment is first attached to its context,
+     * Create the fragment iteraction listener
+     * @param context context
+     * @throws RuntimeException
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -114,7 +144,13 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
-    // layout inflater to update fields
+    /**
+     * This is an override method onCreateDialog
+     * layout inflater to update fields
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment
+     * @return Dialog Return a new Dialog instance to be displayed by the Fragment
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -218,7 +254,10 @@ public class RecipeFragment extends DialogFragment {
         return alertDialog;
     }
 
-    // view click listener
+    /**
+     * CustomListener
+     * This is a class implements View.OnClickListener
+     */
     class CustomListener implements View.OnClickListener {
         private final Dialog dialog;
 
@@ -320,6 +359,18 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Override method onRequestPermissionsResult:
+     * Two actions with different request Code:
+     * (request code == 1) start an Intent to take photo if the grant results are PERMISSION_GRANTED
+     * (request code == 2) start an intent to choose a photo from album if grant results are
+     * PERMISSION_GRANTED
+     *
+     * @param requestCode The request code passed in requestPermissions
+     * @param permissions The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions which is either
+     * PERMISSION_GRANTED or PERMISSION_DENIED. Never null.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -341,6 +392,16 @@ public class RecipeFragment extends DialogFragment {
             }
         }
     }
+
+    /**
+     * Override method onActivityResult
+     * Called when an activity (from startActivityResult) launched exits
+     * Get additional data,an image, with getExtras(), store it to firebase storage
+     * @param requestCode The integer request code originally supplied to startActivityForResult()
+     * @param resultCode The integer result code returned by the child activity through its
+     * setResult()
+     * @param data An Intent, which can return result data to the caller
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == requestCodeForTakePhoto && resultCode == Activity.RESULT_OK) {

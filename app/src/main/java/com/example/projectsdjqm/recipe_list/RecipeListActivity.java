@@ -59,6 +59,9 @@ import java.util.Objects;
 /**
  * RecipeListActivity:
  * Main page for Recipe
+ * @version 1.2
+ * @author Qingya Ye, Muchen Li, Defrim Binakaj
+ * @date Nov. 3rd, 2022
  */
 public class RecipeListActivity extends AppCompatActivity
         implements RecipeList.RecipeButtonListener,
@@ -443,6 +446,11 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         recipeAdapter.notifyDataSetChanged();
     };
 
+    /**
+     * a method to sort the recipe list
+     * @param list the list to be sorted
+     * @param sorting_type sorting type that sort the list
+     */
     private void sortRecipeList(ArrayList<Recipe> list, String sorting_type) {
         switch (sorting_type) {
             case "Title":

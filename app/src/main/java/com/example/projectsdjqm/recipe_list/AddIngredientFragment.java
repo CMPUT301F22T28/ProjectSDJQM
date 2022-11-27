@@ -41,7 +41,8 @@ public class AddIngredientFragment extends DialogFragment {
 
     /**
      * This is an override method onAttach
-     * Called when a fragment is first attached to its context.
+     * Called when a fragment is first attached to its context,
+     * Create the fragment iteraction listener
      * @param context context
      * @throws RuntimeException
      */

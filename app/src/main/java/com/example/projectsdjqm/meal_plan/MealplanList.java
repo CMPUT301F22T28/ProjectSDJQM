@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 import com.example.projectsdjqm.MainActivity;
 import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
+import com.example.projectsdjqm.ingredient_storage.IngredientList;
 import com.example.projectsdjqm.recipe_list.Recipe;
 import com.example.projectsdjqm.recipe_list.RecipeList;
 
@@ -32,15 +34,21 @@ import java.util.stream.Collectors;
  * @date Nov.23rd, 2022
  */
 public class MealplanList extends ArrayAdapter<Mealplan> {
-
-    public interface recipeScaleListener {
-        void onRecipeScalePressed(int position);
-    }
-
     // attr init
     private ArrayList<Mealplan> mealplanList;
     private Context context;
+    private recipeScaleListener scalelistener;
 
+
+    public interface recipeScaleListener {
+        void onRecipeScaleListPressed(int position);
+    }
+
+
+
+    public void setIngredientButtonListener(recipeScaleListener scalelistener) {
+        this.scalelistener = scalelistener;
+    }
 
     // constructor
     public MealplanList(Context context, ArrayList<Mealplan> mealplanList) {
@@ -91,19 +99,18 @@ public class MealplanList extends ArrayAdapter<Mealplan> {
         // Set recipe scale list
         ListView recipe_scale_view = view.findViewById(R.id.recipe_scale);
         ArrayList<Integer> recipe_scale_list = mealplan.getRecipeScale();
-        ArrayAdapter<Integer> scaleAdapter =  new ArrayAdapter<Integer>(context, android.R.layout.simple_list_item_1, recipe_scale_list);
+        ArrayAdapter<Integer> scaleAdapter =
+                new ArrayAdapter<Integer>(context, android.R.layout.simple_list_item_1, recipe_scale_list);
         recipe_scale_view.setAdapter(scaleAdapter);
-        setListViewHeightBasedOnChildren(recipe_scale_view);
-
-        recipe_scale_view.setOnClickListener(new View.OnClickListener() {
-
+        recipe_scale_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
-                if (ingredientButtonListener != null) {
-                    ingredientButtonListener.onEditIngredientClickListener(position);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (scalelistener != null) {
+                    scalelistener.onRecipeScaleListPressed(position);
                 }
             }
         });
+        setListViewHeightBasedOnChildren(recipe_scale_view);
         return view;
     }
 

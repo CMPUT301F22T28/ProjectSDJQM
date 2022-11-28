@@ -76,7 +76,11 @@ public class ShoppingListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.shopping_list_main);
         db = FirebaseFirestore.getInstance();
-        CollectionReference collectionReference = db.collection("ShoppingLists");
+        CollectionReference shoppinglistcollectionReference = db.collection("ShoppingLists");
+        CollectionReference mealplancollectionReference = db.collection("MealPlans");
+        CollectionReference ingredientcollectionReference = db.collection("Ingredients");
+        CollectionReference recipecollectionReference = db.collection("Recipes");
+
 
 
         // bottom nav
@@ -139,7 +143,7 @@ public class ShoppingListActivity extends AppCompatActivity {
         shoppingListAdapter.notifyDataSetChanged();
 
         final FloatingActionButton addToStorageButton = findViewById(R.id.add_to_storage);
-           //add checked items to ingredient storage if add button is clicked
+        //add checked items to ingredient storage if add button is clicked
         addToStorageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -180,7 +184,7 @@ public class ShoppingListActivity extends AppCompatActivity {
 
                         // remove thi shoppingItem from shoppingCartList
                         shoppingCartList.remove(i);
-                        collectionReference
+                        shoppinglistcollectionReference
                                 .document(ingredientDesc)
                                 .delete();
                     }
@@ -195,11 +199,13 @@ public class ShoppingListActivity extends AppCompatActivity {
             }
         });
 
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        //grab items from firebase shopping list
+        shoppinglistcollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
                     FirebaseFirestoreException error) {
                 shoppingCartList.clear();
+
                 for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
                 {
                     //Log.d(TAG, String.valueOf(doc.getData().get("Category")));
@@ -230,9 +236,41 @@ public class ShoppingListActivity extends AppCompatActivity {
                             category);
                     shoppingCartList.add(new ShoppingList(addingredient, pickup));
                 }
-                    shoppingListAdapter.notifyDataSetChanged();
+                shoppingListAdapter.notifyDataSetChanged();
                 }
+        });
 
+        //grab items based on meal plan and ingredient storage
+        //shopping list should be generated if
+        //    1. meal plan exist but
+        //    2. ingredient missing from storage
+        mealplancollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                    FirebaseFirestoreException error) {
+                //shoppingCartList.clear();
+
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+                {
+                    String recipe_path = "MealPlans"+"/"+doc.getId()+"/"+"recipe List";
+                    CollectionReference collectionReference_mealplan_recipe = db.collection(recipe_path);
+
+                    collectionReference_mealplan_recipe.
+                            addSnapshotListener(new EventListener<QuerySnapshot>()
+                            {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                                        FirebaseFirestoreException error) {
+                                    Log.d(TAG, "meal plan" + doc.getId());
+                                    for (QueryDocumentSnapshot recipedoc : queryDocumentSnapshots) {
+                                        Log.d(TAG, "meal plan" + recipedoc.getId());
+                                    }
+                                }
+                            });
+
+                }
+                //shoppingListAdapter.notifyDataSetChanged();
+            }
         });
 
         spinner = findViewById(R.id.shopping_list_sort_spinner);
@@ -249,19 +287,6 @@ public class ShoppingListActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    public void onDeleteClickListener(ShoppingList shoppingList) {
-        final CollectionReference collectionReference = db.collection("ShoppingLists");
-
-        if (shoppingList.getPickedUp() == true) {
-            shoppingCartList.remove(shoppingList.getIngredient());
-        }
-
-        shoppingListAdapter.notifyDataSetChanged();
-        collectionReference
-                .document(shoppingList.getIngredient().getIngredientDescription())
-                .delete();
     }
 
     public void sortShoppingList(ArrayList<ShoppingList> list, String sorting_type) {

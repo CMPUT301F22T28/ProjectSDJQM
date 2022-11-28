@@ -1,16 +1,9 @@
-// IngredientAdapter
 /**
- * IngredientList
- * Custom array adapter for Ingredient
- *
- * @version 1.1
- * @update fixed some minor bugs
- * @author Muchen Li
- * @date Oct 30, 2022
- *
+ * IngredientInRecipeAdapter:
+ * This class defines a custom array adapter for Ingredient.
+ * @author Qingya Ye
  * @version 1.0
- * @author Muchen Li
- * @date Oct 27, 2022
+ * @date Nov. 22nd, 2022
  */
 package com.example.projectsdjqm.recipe_list;
 
@@ -19,34 +12,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
-/* Create custom array adapter for Ingredient */
+
 public class IngredientInRecipeAdapter extends ArrayAdapter<Ingredient> {
-//    private IngredientButtonListener ingredientButtonListener;
-//
-//    /* Interface for ingredient button lister*/
-//    public interface IngredientButtonListener {
-//        void onEditIngredientClickListener(int position);
-//        void onDeleteIngredientClickListener(int position);
-//    }
-
     private final ArrayList<Ingredient> ingredientList;
     private final Context context;
 
     /* Constructor for IngredientList */
+    /**
+     * This is a constructor to create IngredientInRecipeAdapter object.
+     * packagename.classname#IngredientInRecipeAdapter
+     * @param context context
+     * @param ingredientList data to be bound with an ListView
+     */
     public IngredientInRecipeAdapter(Context context, ArrayList<Ingredient> ingredientList) {
         super(context,0, ingredientList);
         this.context = context;
@@ -54,28 +38,17 @@ public class IngredientInRecipeAdapter extends ArrayAdapter<Ingredient> {
     }
 
     /* Ingredient button listener */
-//    public void setIngredientButtonListener(IngredientButtonListener ingredientButtonListener) {
-//        this.ingredientButtonListener = ingredientButtonListener;
-//    }
-
+    /**
+     * This is an override method GetView
+     * @param position Position of the data displayed by the view in the data set
+     * @param view The old view to reuse, if possible
+     * @param parent The parent that this view will eventually be attached to
+     * @return A View corresponding to the data at the specified position
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View view, @Nullable ViewGroup parent) {
-//        ViewHolder viewHolder;
         View view1 = LayoutInflater.from(context).inflate(R.layout.ingredient_in_recipe_fragment,null);
-//        if (view == null) {
-//            LayoutInflater inflater = LayoutInflater.from(context);
-//            view = inflater.inflate(R.layout.ingredient_in_recipe_content, parent, false);
-
-//            viewHolder = new ViewHolder();
-//            viewHolder.editButton = (Button) view.findViewById(R.id.edit_button);
-//            viewHolder.deleteButton = (Button) view.findViewById(R.id.delete_button);
-//
-//            view.setTag(viewHolder);
-//        }
-//        else {
-//            viewHolder = (ViewHolder) view.getTag();
-//        }
 
         // Get ingredient at this position
         Ingredient ingredient = ingredientList.get(position);
@@ -97,33 +70,12 @@ public class IngredientInRecipeAdapter extends ArrayAdapter<Ingredient> {
         TextView IngredientCategoryTextView = view1.findViewById(R.id.ing_category);
         IngredientCategoryTextView.setText(getCategory(ingredient));
 
-
-        // Edit and Delete buttons
-//        viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View view) {
-//                if (ingredientButtonListener != null) {
-//                    ingredientButtonListener.onEditIngredientClickListener(position);
-//                }
-//            }
-//        });
-//
-//        viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (ingredientButtonListener != null) {
-//                    ingredientButtonListener.onDeleteIngredientClickListener(position);
-//                }
-//            }
-//        });
         return view1;
     }
 
     /**
      * Some cosmetics for the display
-     * */
-
+     **/
     private  String getDescription(Ingredient ingredient) {
         String description = ingredient.getIngredientDescription();
         return String.format("%s, ",description);
@@ -143,8 +95,4 @@ public class IngredientInRecipeAdapter extends ArrayAdapter<Ingredient> {
         return String.format("category: %s", category);
     }
 
-//    public static class ViewHolder {
-//        Button editButton;
-//        Button deleteButton;
-//    }
 }

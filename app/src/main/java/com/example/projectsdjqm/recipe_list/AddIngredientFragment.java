@@ -1,3 +1,10 @@
+/**
+ * AddIngredientFragment:
+ * This class defines a custom DialogFragment to add an Ingredient
+ * @author Qingya Ye
+ * @version 1.0
+ * @date Nov. 22nd, 2022
+ */
 package com.example.projectsdjqm.recipe_list;
 
 import android.app.AlertDialog;
@@ -9,11 +16,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
 
@@ -25,11 +30,22 @@ public class AddIngredientFragment extends DialogFragment {
     private EditText amount;
     private OnAddIngreidentFragmentIteractionListener listener;
 
-
     public interface OnAddIngreidentFragmentIteractionListener {
+        /**
+         * This method will be used to add an ingredient to the ingredient list when the positive
+         * button of the dialog is pressed
+         * @param ingredient a candidate ingredient to be added
+         */
         void onAddIngredientOkPressed(Ingredient ingredient);
     }
 
+    /**
+     * This is an override method onAttach
+     * Called when a fragment is first attached to its context,
+     * Create the fragment iteraction listener
+     * @param context context
+     * @throws RuntimeException
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -39,6 +55,13 @@ public class AddIngredientFragment extends DialogFragment {
             throw new RuntimeException(context + "This is not the correct fragment!");
         }
     }
+
+    /**
+     * This is an override method onCreateDialog
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment
+     * @return Dialog Return a new Dialog instance to be displayed by the Fragment
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -54,7 +77,7 @@ public class AddIngredientFragment extends DialogFragment {
                 .setView(view)
                 .setTitle("Add Ingredient")
                 .setNegativeButton("Cancel", null)
-                .setPositiveButton("OK", null)
+                .setPositiveButton("ok", null)
                 .create();
         alertDialog.show();
 
@@ -64,6 +87,10 @@ public class AddIngredientFragment extends DialogFragment {
         return alertDialog;
     }
 
+    /**
+     * CustomListener
+     * This is a class implements View.OnClickListener
+     */
     class CustomListener implements View.OnClickListener {
         private final Dialog dialog;
 
@@ -71,6 +98,12 @@ public class AddIngredientFragment extends DialogFragment {
             this.dialog = dialog;
         }
 
+        /**
+         * This is an override method onClick
+         * @param v View
+         * when it is clicked, get the ingredient data from the DialogFragment, and add to an
+         * ingredient list
+         */
         @Override
         public void onClick(View v) {
             String descriptionInput = description.getText().toString();

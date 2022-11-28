@@ -1,13 +1,13 @@
 /**
- * RecipeListActivity
+ * RecipeListActivity:
+ * Main page for Recipe
  * @version 1.2
- * @author Muchen Li & Defrim Binakaj @ Qingya Ye
- * @date Nov 3, 2022
+ * @author Qingya Ye, Muchen Li, Defrim Binakaj
+ * @date Nov. 3rd, 2022
  */
 package com.example.projectsdjqm.recipe_list;
 
 import static com.example.projectsdjqm.recipe_list.RecipeFragment.ingAdapter;
-import static com.example.projectsdjqm.recipe_list.RecipeFragment.l;
 import static com.example.projectsdjqm.recipe_list.RecipeFragment.list;
 
 import android.content.Intent;
@@ -32,15 +32,12 @@ import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import com.example.projectsdjqm.ingredient_storage.IngredientActivity;
 import com.example.projectsdjqm.meal_plan.MealPlanActivity;
-import com.example.projectsdjqm.meal_plan.Mealplan;
 import com.example.projectsdjqm.shopping_list.ShoppingListActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -52,14 +49,9 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
-/**
- * RecipeListActivity:
- * Main page for Recipe
- */
 public class RecipeListActivity extends AppCompatActivity
         implements RecipeList.RecipeButtonListener,
         RecipeFragment.OnFragmentInteractionListener,
@@ -71,8 +63,8 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
     private FirebaseStorage storage;
     private StorageReference storageReference;
     final String TAG = "Recipes Activity";
-    ListView recipeListView;
-    RecipeList recipeAdapter;
+    public ListView recipeListView;
+    public RecipeList recipeAdapter;
     public ArrayList<Recipe> recipeList;
     Recipe selectedRecipe;
     Spinner spinnerForRecipe;
@@ -132,7 +124,6 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         // recipe list view init
         recipeListView = findViewById(R.id.recipe_list);
         recipeList = new ArrayList<>();
-//        ArrayList<Ingredient> ingredientlist = new ArrayList<>();
 
         // default icon if no image upload
         Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_notifications_black_24dp);
@@ -189,33 +180,20 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                 String ingre_path = "Recipes"+"/"+title+"/"+"ingredient List";
                 CollectionReference collectionReference_recipe_ingredient = db.collection(ingre_path);
                 ArrayList<Ingredient> ingredientList = new ArrayList<>();
+
 //                // add snap shot of ingredient List subcollection
                 collectionReference_recipe_ingredient.addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
                             FirebaseFirestoreException error) {
-//                        ArrayList<Ingredient> ingredientlist = new ArrayList<>();
                         ingredientList.clear();
                         for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
                         {
                             Log.d(TAG, String.valueOf(doc.getData().get("Category")));
                             String description = doc.getId();
                             int amount = Integer.valueOf(doc.getData().get("Amount").toString());
-//                            Timestamp bbd = (Timestamp) doc.getData().get("Best Before Date");
-//                            Date bestbeforedate = bbd.toDate();
                             String category = (String) doc.getData().get("Category");
-//                            String location_str = String.valueOf(doc.getData().get("Location"));
-//                            Ingredient.Location location;
-//                            switch (location_str) {
-//                                case "Fridge":
-//                                    location = Ingredient.Location.Fridge;
-//                                    break;
-//                                case "Freezer":
-//                                    location = Ingredient.Location.Freezer;
-//                                    break;
-//                                default:
-//                                    location = Ingredient.Location.Pantry;
-//                            }
+
                             String unit = (String) doc.getData().get("Unit");
 
                             ingredientList.add(new Ingredient(
@@ -229,8 +207,6 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                     }
                 });
 
-//                ingredientList.add(new Ingredient("test",null,null,2,2,"category"));
-//                ingredientList.add(new Ingredient("test2",null,null,2,2,"category"));
                 // use photokey (title of recipe) from firebase storage to load image to APP
                 final String photokey = title.replace(" ","");
                 StorageReference imageRef = storageReference.child("images/" + photokey);
@@ -311,14 +287,49 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         });
     }
 
-//    private ArrayList<Ingredient> l = new ArrayList<>();
+    /**
+     * This method is called when the ok button of ingredient adding fragment is pressed
+     * on the recipe adding fragment
+     * @param recipeTitle the title of a recipe that the candidate ingredient belongs to
+     * @param ingredient the ingredient to be deleted
+     */
+    /**
+     * This method is called when the ok button
+     * @param ingredient a candidate ingredient to be added
+     */
     @Override
     public void onAddIngredientOkPressed(Ingredient ingredient) {
-//        l.clear();
-        l.add(ingredient);
         list.add(ingredient);
         ingAdapter.notifyDataSetChanged();
     }
+
+
+    /**
+     * This method is called when the ok button of ingredient removing AlertDialog is pressed
+     * on the recipe adding fragment
+     * @param recipeTitle the title of a recipe that the candidate ingredient belongs to
+     * @param ingredient the ingredient to be deleted
+     */
+    @Override
+    public void onRemoveIngredient(String recipeTitle, Ingredient ingredient) {
+        list.remove(ingredient);
+        ingAdapter.notifyDataSetChanged();
+        CollectionReference collectionReference = db.collection("Recipes");
+
+        try {
+            collectionReference.document(recipeTitle)
+                    .collection("ingredient List")
+                    .document(ingredient.getIngredientDescription())
+                    .delete();
+        } catch (Exception e) {
+            Log.d("removeIng","recipe has not been created");
+        }
+    }
+    /**
+     * This method is called when the ok button of recipe adding fragment is pressed
+     * @param recipe Recipe instance that is sent by adding fragment, will be
+     * added to database
+     */
     @Override
     public void onOkPressedAdd(Recipe recipe) {
 
@@ -329,7 +340,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         final int recipeServingNumber = recipe.getNumberofServings();
         final String recipeCategory = recipe.getRecipeCategory();
         final String recipeComments = recipe.getComments();
-        final ArrayList<Ingredient> recipeIngredientList = list;
+        final ArrayList<Ingredient> recipeIngredientList = recipe.getListofIngredients();
 
         HashMap<String, Object> data = new HashMap<>();
         HashMap<String, Object> nestedData_ingre = new HashMap<>();
@@ -338,7 +349,6 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         data.put("Serving Number", recipeServingNumber);
         data.put("Category", recipeCategory);
         data.put("Comments", recipeComments);
-//        data.put("Ingredient List",recipeIngredientList);
 
         collectionReference
                 .document(recipeTitle)
@@ -365,6 +375,18 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         }
         recipeAdapter.add(recipe);
     }
+
+    /**
+     * This method is called when the ok button of ingredient editing fragment is pressed
+     * @param recipe the recipe to be edited
+     * @param title new title
+     * @param preparationTime new preparation time
+     * @param servingNumber new serving number
+     * @param category new category
+     * @param comments new comments
+     * @param photo new photo
+     * @param list1 new ingredient list
+     */
     public void onOkPressedEdit(Recipe recipe,
                          String title,
                          int preparationTime,
@@ -372,7 +394,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
                          String category,
                          String comments,
                          Drawable photo,
-                         ArrayList<Ingredient> list) {
+                         ArrayList<Ingredient> list1) {
         String oldTitle = recipe.getTitle();
         recipe.setTitle(title);
         recipe.setPreparationTime(preparationTime);
@@ -380,7 +402,7 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         recipe.setComments(comments);
         recipe.setPhotograph(photo);
         recipe.setNumberofServings(servingNumber);
-        recipe.setListofIngredients(list);
+        recipe.setListofIngredients(list1);
 
         final CollectionReference collectionReference = db.collection("Recipes");
         final int recipePrepTime = recipe.getPreparationTime();
@@ -388,9 +410,6 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         final String recipeCate = recipe.getRecipeCategory();
         final String recipeComm = recipe.getComments();
         final ArrayList<Ingredient> recipeIng = recipe.getListofIngredients();
-        for (int i=0; i< l.size(); i++) {
-            recipeIng.add(l.get(i));
-        }
 
         HashMap<String, Object> data = new HashMap<>();
 
@@ -398,9 +417,8 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         data.put("Serving Number", recipeSerNum);
         data.put("Category", recipeCate);
         data.put("Comments", recipeComm);
-//        data.put("Ingredient List",recipeIng);
 
-        if (title == oldTitle) {
+        if (Objects.equals(title, oldTitle)) {
             collectionReference
                     .document(title)
                     .update(data);
@@ -411,38 +429,44 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
             collectionReference
                     .document(title)
                     .set(data);
-        }
-        HashMap<String, Object> nestedData_ingre = new HashMap<>();
-        for (Ingredient ingre: recipeIng) {
-            collectionReference
-                    .document(title)
-                    .collection("ingredient List")
-                    .document(ingre.getIngredientDescription())
-                    .delete();
+            HashMap<String, Object> nestedData_ingre = new HashMap<>();
+            for (Ingredient ingre: recipeIng) {
+                collectionReference
+                        .document(title)
+                        .collection("ingredient List")
+                        .document(ingre.getIngredientDescription())
+                        .delete();
+            }
+
+            for (Ingredient ingre: recipeIng) {
+                final String ingredientDesc = ingre.getIngredientDescription();
+                nestedData_ingre.put("Amount",ingre.getIngredientAmount());
+                nestedData_ingre.put("Best Before Date",ingre.getIngredientBestBeforeDate());
+                nestedData_ingre.put("Category",ingre.getIngredientCategory());
+                nestedData_ingre.put("Location",ingre.getIngredientLocation());
+                nestedData_ingre.put("Unit",ingre.getIngredientUnit());
+                collectionReference
+                        .document(title)
+                        .collection("ingredient List").document(ingredientDesc)
+                        .set(nestedData_ingre)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, " data has been added successfully!");
+                            }
+                        });
+            }
         }
 
-        for (Ingredient ingre: recipeIng) {
-            final String ingredientDesc = ingre.getIngredientDescription();
-            nestedData_ingre.put("Amount",ingre.getIngredientAmount());
-            nestedData_ingre.put("Best Before Date",ingre.getIngredientBestBeforeDate());
-            nestedData_ingre.put("Category",ingre.getIngredientCategory());
-            nestedData_ingre.put("Location",ingre.getIngredientLocation());
-            nestedData_ingre.put("Unit",ingre.getIngredientUnit());
-            collectionReference
-                    .document(title)
-                    .collection("ingredient List").document(ingredientDesc)
-                    .set(nestedData_ingre)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d(TAG, " data has been added successfully!");
-                        }
-                    });
-        }
         ingAdapter.notifyDataSetChanged();
         recipeAdapter.notifyDataSetChanged();
     };
 
+    /**
+     * a method to sort the recipe list
+     * @param list the list to be sorted
+     * @param sorting_type sorting type that sort the list
+     */
     private void sortRecipeList(ArrayList<Recipe> list, String sorting_type) {
         switch (sorting_type) {
             case "Title":

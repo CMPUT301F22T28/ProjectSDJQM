@@ -235,16 +235,17 @@ public class ShoppingListActivity extends AppCompatActivity {
                                             int mealPlanIngredientAmount = (int) mealPlanDoc.getData().get("Amount");
                                             String mealPlanIngredientCatgeory = (String) mealPlanDoc.getData().get("Category");
                                             Timestamp mealPlanIngredientBBD = (Timestamp) mealPlanDoc.getData().get("Best Before Date:");
+                                            Date mealIngredientBestBefore = mealPlanIngredientBBD.toDate();
                                             String mealPlanIngredientStorage = (String) mealPlanDoc.getData().get("Location");
                                             String mealPlanIngredientUnit = (String) mealPlanDoc.getData().get("Unit");
                                             mealPlanIngredientList.add(new Ingredient(
                                                     mealPlanIngredientDescription,
-                                                    mealPlanIngredientBBD,
-                                                    mealPlanIngredientStorage
+                                                    mealIngredientBestBefore,
+                                                    null,
                                                     mealPlanIngredientAmount,
                                                     mealPlanIngredientUnit,
                                                     mealPlanIngredientCatgeory));
-                                        }
+                                        } // Ignoring location since getting weird error as of now
 
                                         // Pulling information from ingredient list to compare with the meal plan ingredient list
                                         ingredientReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -253,16 +254,37 @@ public class ShoppingListActivity extends AppCompatActivity {
                                                 ArrayList<Ingredient> ingredientsStored = new ArrayList<>();
 
                                                 for (QueryDocumentSnapshot ingredientDoc : queryDocumentSnapshots) {
+                                                    String ingredientDescription = ingredientDoc.getId();
+                                                    int ingredientAmount = (int) ingredientDoc.getData().get("Amount");
+                                                    String ingredientCatgeory = (String) ingredientDoc.getData().get("Category");
+                                                    String ingredientLocation = String.valueOf(ingredientDoc.getData().get("Location"));
+                                                    Ingredient.Location loc;
+                                                    switch (ingredientLocation) {
+                                                        case "Fridge":
+                                                            loc = Ingredient.Location.Fridge;
+                                                            break;
+                                                        case "Freezer":
+                                                            loc = Ingredient.Location.Freezer;
+                                                            break;
+                                                        default:
+                                                            loc = Ingredient.Location.Pantry;
+                                                    }
+                                                    Timestamp ingredientBBD = (Timestamp) ingredientDoc.getData().get("Best Before Date:");
+                                                    Date ingredientBestBefore = ingredientBBD.toDate();
 
-                                                }
+                                                    String ingredientUnit = (String) ingredientDoc.getData().get("Unit");
+                                                    ingredientsStored.add(new Ingredient(
+                                                            ingredientDescription,
+                                                            ingredientBestBefore,
+                                                            null,
+                                                            ingredientAmount,
+                                                            ingredientUnit,
+                                                            ingredientCatgeory));
+                                                } // Ignoring location since getting weird error as of now
 
                                             }
 
                                         });
-
-                                        for (QueryDocumentSnapshot ingredientDoc : queryDocumentSnapshots) {
-
-                                        }
                                     }
                                 });
                             }

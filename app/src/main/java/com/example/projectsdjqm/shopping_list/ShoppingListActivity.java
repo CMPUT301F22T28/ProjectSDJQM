@@ -48,6 +48,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class ShoppingListActivity extends AppCompatActivity {
     private final String TAG = "Shopping List Activity";
@@ -280,12 +283,14 @@ public class ShoppingListActivity extends AppCompatActivity {
 
                                     ShoppingList addToShoppingList = new ShoppingList(addMealPlanIngredient, pickup);
 
-                                    if (!shoppingCartList.contains(addToShoppingList)) {
-                                        shoppingCartList.add(addToShoppingList);
-                                    }
-
-
+                                    // Attempting to remove duplicates
+                                    shoppingCartList.add(addToShoppingList);
+                                    Set<ShoppingList> set = new HashSet<>(shoppingCartList);
+                                    shoppingCartList.clear();
+                                    shoppingCartList.addAll(set);
                                 }
+
+
                                 shoppingListAdapter.notifyDataSetChanged();
                             }
                         });

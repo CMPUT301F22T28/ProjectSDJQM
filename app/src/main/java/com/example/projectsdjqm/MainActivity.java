@@ -67,7 +67,9 @@ public class MainActivity extends AppCompatActivity {
         TextView shoppinglistTextView = (TextView) findViewById(R.id.shoppinglistText);
         TextView mealplanTextView = (TextView) findViewById(R.id.mealplanText);
 
-        TextView tomorrowMealPlan = (TextView) findViewById(R.id.nextdayMealPlan);
+        TextView tomorrowRecipe = (TextView) findViewById(R.id.nextdayRecipes);
+        TextView tomorrowIngredients = (TextView) findViewById(R.id.nextdayIngredients);
+
         
         /**
         * the following nav bar switch statement used to transition btw activities
@@ -262,11 +264,15 @@ public class MainActivity extends AppCompatActivity {
                 // ---------------------------------------
                 // mealplan recipes
 
-                Log.d(TAG, "ALL MEAL PLANS -------------: " + allMealplanDate);
-                allMealplanDate.add("2022-11-25");
+                // Log.d(TAG, "ALL MEAL PLANS -------------: " + allMealplanDate);
+                // allMealplanDate.add("2022-11-25");
+
+                if (allMealplanDate.size() == 0) {
+                    tomorrowRecipe.setText("None");
+                }
 
                 for (int j = 0; j < allMealplanDate.size(); j++) {
-                    Log.d(TAG, "RUNNING THROUGH ------------------------: " + allMealplanDate.get(j));
+                    // Log.d(TAG, "RUNNING THROUGH ------------------------: " + allMealplanDate.get(j));
                     db.collection("MealPlans" + "/" + allMealplanDate.get(j) + "/" + "recipe List")
                             // .whereEqualTo(stringCurrDate, true)
                             .get()
@@ -276,15 +282,20 @@ public class MainActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                            Log.d(TAG, document.getId());
+                                            // Log.d(TAG, document.getId());
                                             tmrwMealPlanRecipes += document.getId() + "\n";
                                         }
                                     } else {
                                         Log.d(TAG, "Error getting documents: ", task.getException());
                                     }
 
+                                    if (tmrwMealPlanRecipes.equals("")) {
+                                        tomorrowRecipe.setText("None");
+                                    }
+                                    else {
+                                        tomorrowRecipe.setText(tmrwMealPlanRecipes);
+                                    }
 
-                                    tomorrowMealPlan.setText(tmrwMealPlanRecipes);
 
 
                                 }
@@ -300,6 +311,10 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         // ---------------------------------------
                         // mealplan ingredients
+                        if (allMealplanDate.size() == 0) {
+                            tomorrowIngredients.setText("None");
+                        }
+
                         for (int j = 0; j < allMealplanDate.size(); j++) {
                             db.collection("MealPlans" + "/" + allMealplanDate.get(j) + "/" + "ingredient List")
                                     // .whereEqualTo(stringCurrDate, true)
@@ -310,15 +325,20 @@ public class MainActivity extends AppCompatActivity {
                                             if (task.isSuccessful()) {
                                                 for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                                    Log.d(TAG, document.getId());
+                                                    // Log.d(TAG, document.getId());
                                                     tmrwMealPlanIngredients += document.getId() + "\n";
                                                 }
                                             } else {
                                                 Log.d(TAG, "Error getting documents: ", task.getException());
                                             }
 
+                                            if (tmrwMealPlanIngredients.equals("")) {
+                                                tomorrowIngredients.setText("None");
+                                            }
+                                            else {
+                                                tomorrowIngredients.setText(tmrwMealPlanIngredients);
+                                            }
 
-                                            tomorrowMealPlan.setText(tmrwMealPlanIngredients);
 
 
                                         }
@@ -331,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             }
-        }, 1500);
+        }, 1200);
 
 
 

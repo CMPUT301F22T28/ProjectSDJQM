@@ -61,9 +61,9 @@
         android:id="@+id/currentPlan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="15dp"
-        android:text="Current Stock:"
+        android:text="Current Total Stock:"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20dp"
@@ -74,9 +74,9 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="17dp"
         android:layout_marginTop="1dp"
-        android:layout_marginEnd="253dp"
+        android:layout_marginEnd="219dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -161,8 +161,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="5dp"
-        android:text="Tomorrow's Mealplan:"
+        android:layout_marginEnd="25dp"
+        android:text="Today's Mealplan:"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/black"
@@ -176,26 +176,72 @@
         android:layout_height="1dp"
         android:layout_marginStart="230dp"
         android:layout_marginTop="1dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginEnd="20dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/nextdayText" />
 
 
+
     <TextView
-        android:id="@+id/nextdayMealPlan"
+        android:id="@+id/nextdayRecipeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="30dp"
-        android:text="Loading..."
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="130dp"
+        android:text="Recipes:"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/black"
-        android:textSize="12dp"
+        android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nextdayText" />
+
+    <TextView
+        android:id="@+id/nextdayRecipes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="80dp"
+        android:text="Loading..."
+        android:gravity="left"
+        android:textAlignment="gravity"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textSize="11dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nextdayRecipeText" />
+
+
+    <TextView
+        android:id="@+id/nextdayIngredientText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="109dp"
+        android:text="Ingredients:"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nextdayRecipes" />
+
+    <TextView
+        android:id="@+id/nextdayIngredients"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="80dp"
+        android:text="Loading..."
+        android:gravity="left"
+        android:textAlignment="gravity"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textSize="11dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nextdayIngredientText" />
 
 
 

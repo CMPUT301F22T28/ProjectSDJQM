@@ -299,15 +299,29 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         });
     }
 
-//    private ArrayList<Ingredient> l = new ArrayList<>();
+    /**
+     * This method is called when the ok button of ingredient adding fragment is pressed
+     * on the recipe adding fragment
+     * @param recipeTitle the title of a recipe that the candidate ingredient belongs to
+     * @param ingredient the ingredient to be deleted
+     */
+    /**
+     * This method is called when the ok button
+     * @param ingredient a candidate ingredient to be added
+     */
     @Override
     public void onAddIngredientOkPressed(Ingredient ingredient) {
-//        l.clear();
-//        l.add(ingredient);
         list.add(ingredient);
         ingAdapter.notifyDataSetChanged();
     }
 
+
+    /**
+     * This method is called when the ok button of ingredient removing AlertDialog is pressed
+     * on the recipe adding fragment
+     * @param recipeTitle the title of a recipe that the candidate ingredient belongs to
+     * @param ingredient the ingredient to be deleted
+     */
     @Override
     public void onRemoveIngredient(String recipeTitle, Ingredient ingredient) {
         list.remove(ingredient);
@@ -323,6 +337,11 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
             Log.d("removeIng","recipe has not been created");
         }
     }
+    /**
+     * This method is called when the ok button of recipe adding fragment is pressed
+     * @param recipe Recipe instance that is sent by adding fragment, will be
+     * added to database
+     */
     @Override
     public void onOkPressedAdd(Recipe recipe) {
 
@@ -369,6 +388,18 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
         }
         recipeAdapter.add(recipe);
     }
+
+    /**
+     * This method is called when the ok button of ingredient editing fragment is pressed
+     * @param recipe the recipe to be edited
+     * @param title new title
+     * @param preparationTime new preparation time
+     * @param servingNumber new serving number
+     * @param category new category
+     * @param comments new comments
+     * @param photo new photo
+     * @param list1 new ingredient list
+     */
     public void onOkPressedEdit(Recipe recipe,
                          String title,
                          int preparationTime,

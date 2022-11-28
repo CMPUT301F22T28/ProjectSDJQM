@@ -48,6 +48,8 @@ import java.util.HashMap;
  * IngredientActivity:
  * The main page of the ingredient storage feature.
  * Grants access to other types of ingredient storage functions
+ * @author Muchen Li
+ * @date Oct.25th, 2022
  */
 public class IngredientActivity extends AppCompatActivity implements
         IngredientFragment.OnFragmentInteractionListener,
@@ -211,6 +213,10 @@ public class IngredientActivity extends AppCompatActivity implements
     }
 
     // Edit button triggered
+    /**
+     * This method is called when the edit button of an Ingredient in ingredient list is pressed
+     * @param position the position of item in listview
+     */
     public void onEditIngredientClickListener(int position) {
         Ingredient currentIngredient = ingredientlist.get(position);
         IngredientFragment addIngredientFragment = new IngredientFragment(currentIngredient);
@@ -218,6 +224,11 @@ public class IngredientActivity extends AppCompatActivity implements
     }
 
     // Delete button triggered
+
+    /**
+     * This method is called when the delete button of an Ingredient in ingredient list is pressed
+     * @param position the position of item in listview
+     */
     public void onDeleteIngredientClickListener(int position) {
         final CollectionReference collectionReference = db.collection("Ingredients");
 
@@ -230,6 +241,11 @@ public class IngredientActivity extends AppCompatActivity implements
     }
 
     // perform add click
+    /**
+     * This method is called when the ok button of ingredient adding fragment is pressed
+     * @param newIngredient Ingredient instance that is sent by adding fragment, will be
+     * added to database
+     */
     @Override
     public void onOkPressedAdd(Ingredient newIngredient) {
 
@@ -264,6 +280,16 @@ public class IngredientActivity extends AppCompatActivity implements
     }
 
     // perform edit click
+    /**
+     * This method is called when the ok button of ingredient editing fragment is pressed
+     * @param ingredient The ingredient to be edited
+     * @param description new description
+     * @param bestbeforedate new bestbeforedate
+     * @param location new location
+     * @param amount new amount
+     * @param unit new unit
+     * @param category new category
+     */
     @Override
     public void onOkPressedEdit(Ingredient ingredient,
                                 String description,
@@ -312,6 +338,11 @@ public class IngredientActivity extends AppCompatActivity implements
     }
 
     // sort list by a certain type: description, category, best before date, location
+    /**
+     * a method to sort the ingredient list
+     * @param list the list to be sorted
+     * @param sorting_type sorting type that sort the list
+     */
     public void sortIngredientList(ArrayList<Ingredient> list, String sorting_type) {
         switch (sorting_type) {
             case "Description":

@@ -11,7 +11,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="20dp"
-        android:orientation="vertical">
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="40dp"
+        android:orientation="vertical"
+        android:background="@drawable/border">
 
         <TextView
             android:layout_width="wrap_content"
@@ -19,13 +23,16 @@
             android:text="Recipe Scale:"
             android:textSize="20dp"
             android:textColor="#4a4a4a"
-            android:layout_margin="10dp"></TextView>
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"></TextView>
 
         <EditText
             android:id="@+id/edit_recipe_scale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="40dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
             android:padding="10dp"/>

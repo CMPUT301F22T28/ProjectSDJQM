@@ -35,26 +35,27 @@ import java.util.stream.Collectors;
  */
 public class MealplanList extends ArrayAdapter<Mealplan> {
     // attr init
-    private ArrayList<Mealplan> mealplanList;
-    private Context context;
-    private recipeScaleListener scalelistener;
-
+    private final ArrayList<Mealplan> mealplanList;
 
     public interface recipeScaleListener {
-        void onRecipeScaleListPressed(int position);
+        void onRecipeScaleListPressed(int position, int mealplan_position);
     }
 
+    private final Context context;
+    private recipeScaleListener scalelistener;
+    private Integer seletedItem;
+    private Integer mealplan_position;
 
-
-    public void setIngredientButtonListener(recipeScaleListener scalelistener) {
-        this.scalelistener = scalelistener;
-    }
 
     // constructor
     public MealplanList(Context context, ArrayList<Mealplan> mealplanList) {
         super(context, 0, mealplanList);
         this.mealplanList = mealplanList;
         this.context = context;
+    }
+
+    public void setScalelistener(recipeScaleListener scalelistener) {
+        this.scalelistener = scalelistener;
     }
 
     // view inflater
@@ -67,6 +68,7 @@ public class MealplanList extends ArrayAdapter<Mealplan> {
         }
 //        will implement the meal plan content depending on the recipe list here
         Mealplan mealplan = mealplanList.get(position);
+        mealplan_position = position;
 
         // Set mealplan Date
         TextView mealplan_date = view.findViewById(R.id.mealplan_date);
@@ -106,7 +108,7 @@ public class MealplanList extends ArrayAdapter<Mealplan> {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (scalelistener != null) {
-                    scalelistener.onRecipeScaleListPressed(position);
+                    scalelistener.onRecipeScaleListPressed(position,mealplan_position);
                 }
             }
         });

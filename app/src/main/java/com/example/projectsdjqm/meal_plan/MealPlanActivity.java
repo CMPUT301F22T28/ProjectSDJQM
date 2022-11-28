@@ -11,7 +11,6 @@ import static android.system.Os.remove;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,6 +52,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,7 +67,8 @@ import java.util.HashMap;
 public class MealPlanActivity extends AppCompatActivity
         implements MealplanFragment.OnFragmentInteractionListener,
                     MealplanStorageFragment.DataPassListener,
-                    MealplanList.recipeScaleListener{
+                    MealplanList.recipeScaleListener,
+                    MealplanScaleFragment.OnMealplanScaleFragmentListener{
 
     
     // initialization of variables
@@ -75,13 +76,15 @@ public class MealPlanActivity extends AppCompatActivity
     FirebaseFirestore db;
     final String TAG = "Mealplan Activity";
     ListView mealplanListView;
-    ArrayAdapter<Mealplan> mealplanAdapter;
+    MealplanList mealplanAdapter;
     ArrayList<Mealplan> mealplanList;
     Recipe selectedMealplan;
     MealplanFragment addMealplanFragment = new MealplanFragment();
     MealplanStorageFragment mealplanStorageFragment = null;
     MealplanFragment add1MealplanFragment = null;
     MealplanScaleFragment editRecipeScale = null;
+    private int recipe_position;
+    private int mealplan_index;
 
 
 
@@ -141,6 +144,7 @@ public class MealPlanActivity extends AppCompatActivity
         Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_notifications_black_24dp);
 
         mealplanAdapter = new MealplanList(this, mealplanList);
+        mealplanAdapter.setScalelistener(this);
         mealplanListView.setAdapter(mealplanAdapter);
 
         final FloatingActionButton addButton = findViewById(R.id.add_meal_plan);
@@ -180,7 +184,7 @@ public class MealPlanActivity extends AppCompatActivity
                 Date mealplan_date = null;
                 try{
                     mealplan_date = dateFormat.parse(mealplan_id);
-                } catch (java.text.ParseException e) {
+                } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 ArrayList<Integer> recipeScale = (ArrayList<Integer>) doc.getData().get("Recipe Scale");
@@ -287,7 +291,6 @@ public class MealPlanActivity extends AppCompatActivity
                                     category));
                         }
                         Mealplan test = new Mealplan(recipelist[0], ingredientlist, finalMealplan_date, recipeScale);
-                        count++;
                         mealplanList.add(test);
                         mealplanAdapter.notifyDataSetChanged();
 
@@ -420,8 +423,33 @@ public class MealPlanActivity extends AppCompatActivity
 
 
     @Override
-    public void onRecipeScaleListPressed(int position) {
+    public void onRecipeScaleListPressed(int position, int mealplan_position) {
+        recipe_position = position;
+        mealplan_index = mealplan_position-1;
         editRecipeScale = new MealplanScaleFragment();
         editRecipeScale.show(getSupportFragmentManager(),"Edit scale");
+    }
+
+    @Override
+    public void OnScaleOkpressedAdd(int recipeScale) {
+        ArrayList<Integer> recipeScale_list = mealplanList.get(mealplan_index).getRecipeScale();
+        final Date mealplan_date = mealplanList.get(mealplan_index).getMealplan_date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String mealplan_date_str = String.format(dateFormat.format(mealplan_date));
+
+        recipeScale_list.set(recipe_position,recipeScale);
+        final CollectionReference collectionReference = db.collection("MealPlans");
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("Recipe Scale",recipeScale_list);
+        mealplanAdapter.notifyDataSetChanged();
+        collectionReference
+                .document(mealplan_date_str)
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, mealplan_date + " data has been added successfully!");
+                    }
+                });
     }
 }

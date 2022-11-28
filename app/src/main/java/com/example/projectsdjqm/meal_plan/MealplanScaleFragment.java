@@ -20,7 +20,7 @@ public class MealplanScaleFragment extends DialogFragment {
     private EditText recipe_scale_text;
 
     public interface OnMealplanScaleFragmentListener {
-
+        void OnScaleOkpressedAdd(int recipeScale);
     }
 
     @Override
@@ -48,7 +48,12 @@ public class MealplanScaleFragment extends DialogFragment {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        int recipeScale = 0;
+                        try{
+                            recipeScale = Integer.parseInt(recipe_scale_text.getText().toString());
+                        } catch(NumberFormatException ex){
+                        }
+                        listener.OnScaleOkpressedAdd(recipeScale);
                     }
                 }).create();
 

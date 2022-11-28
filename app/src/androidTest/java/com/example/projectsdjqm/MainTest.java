@@ -133,7 +133,7 @@ public class MainTest {
         onView(isAssignableFrom(DatePicker.class)).perform(setDate(2022, 12, 3));
         onView(withId(R.id.Freezer)).perform(scrollTo(),click());
         solo.enterText((EditText) solo.getView(R.id.edit_amount), "10");
-        solo.enterText((EditText) solo.getView(R.id.edit_unit), "5");
+        solo.enterText((EditText) solo.getView(R.id.edit_unit), "kg");
         solo.clickOnButton("OK");
         solo.waitForText("frozenbroccoli", 1, 2000);
         IngredientActivity activity = (IngredientActivity)solo.getCurrentActivity();
@@ -151,7 +151,7 @@ public class MainTest {
         assertEquals(new Date(timeInMilliseconds), newingre.getIngredientBestBeforeDate());
         assertEquals(Ingredient.Location.Freezer, newingre.getIngredientLocation());
         assertEquals(10, newingre.getIngredientAmount());
-        assertEquals(5, newingre.getIngredientUnit());
+        assertEquals("kg", newingre.getIngredientUnit());
 
         // check whether attributes of a ingredient can be viewed by user
         solo.waitForText("frozenbroccoli", 1, 2000);
@@ -159,7 +159,7 @@ public class MainTest {
         solo.waitForText("2022-12-3", 1, 2000);
         solo.waitForText("Freezer", 1, 2000);
         solo.waitForText("10", 1, 2000);
-        solo.waitForText("5", 1, 2000);
+        solo.waitForText("kg", 1, 2000);
 
         // check whether an ingredient can be edit by a user and do the following changes to
         // certain ingredient
@@ -171,7 +171,7 @@ public class MainTest {
         onView(isAssignableFrom(DatePicker.class)).perform(setDate(2022, 11, 8));
         onView(withId(R.id.Pantry)).perform(scrollTo(),click());
         onView(withId(R.id.edit_amount)).perform(scrollTo(),clearText(), typeText("12"));
-        onView(withId(R.id.edit_unit)).perform(scrollTo(),clearText(), typeText("8"));
+        onView(withId(R.id.edit_unit)).perform(scrollTo(),clearText(), typeText("kg"));
         solo.clickOnButton("OK");
         solo.waitForText("broccoli", 1, 2000);
         Ingredient editedingre = (Ingredient) ingredientlist.getItemAtPosition(0); // Get item from first position
@@ -186,7 +186,7 @@ public class MainTest {
         assertEquals(new Date(edit_timeInMilliseconds), editedingre.getIngredientBestBeforeDate());
         assertEquals(Ingredient.Location.Pantry, editedingre.getIngredientLocation());
         assertEquals(12, editedingre.getIngredientAmount());
-        assertEquals(8, editedingre.getIngredientUnit());
+        assertEquals("kg", editedingre.getIngredientUnit());
 
         // check whether attributes of a ingredient can be viewed by user
         solo.waitForText("broccoli", 1, 2000);
@@ -194,7 +194,7 @@ public class MainTest {
         solo.waitForText("2022-11-8", 1, 2000);
         solo.waitForText("Pantry", 1, 2000);
         solo.waitForText("12", 1, 2000);
-        solo.waitForText("8", 1, 2000);
+        solo.waitForText("kg", 1, 2000);
 
         // delete this ingredient and check for validity
         onView(withId(R.id.delete_button)).perform(click());
@@ -203,7 +203,7 @@ public class MainTest {
         assertFalse(solo.searchText("2022-11-8"));
         assertFalse(solo.searchText("Pantry"));
         assertFalse(solo.searchText("12"));
-        assertFalse(solo.searchText("8"));
+        assertFalse(solo.searchText("kg"));
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class );
     }
 
@@ -229,7 +229,7 @@ public class MainTest {
         onView(isAssignableFrom(DatePicker.class)).perform(setDate(2022, 12, 3));
         onView(withId(R.id.Freezer)).perform(scrollTo(),click());
         solo.enterText((EditText) solo.getView(R.id.edit_amount), "10");
-        solo.enterText((EditText) solo.getView(R.id.edit_unit), "5");
+        solo.enterText((EditText) solo.getView(R.id.edit_unit), "kg");
         solo.clickOnButton("OK");
         // Details of the second ingredient
         solo.clickOnView(solo.getView(R.id.add_ingredient));
@@ -239,7 +239,7 @@ public class MainTest {
         onView(isAssignableFrom(DatePicker.class)).perform(setDate(2022, 12, 15));
         onView(withId(R.id.Freezer)).perform(scrollTo(),click());
         solo.enterText((EditText) solo.getView(R.id.edit_amount), "20");
-        solo.enterText((EditText) solo.getView(R.id.edit_unit), "7");
+        solo.enterText((EditText) solo.getView(R.id.edit_unit), "kg");
         solo.clickOnButton("OK");
         // Details of the third ingredient
         solo.clickOnView(solo.getView(R.id.add_ingredient));
@@ -249,7 +249,7 @@ public class MainTest {
         onView(isAssignableFrom(DatePicker.class)).perform(setDate(2022, 11, 15));
         onView(withId(R.id.Pantry)).perform(scrollTo(),click());
         solo.enterText((EditText) solo.getView(R.id.edit_amount), "7");
-        solo.enterText((EditText) solo.getView(R.id.edit_unit), "3");
+        solo.enterText((EditText) solo.getView(R.id.edit_unit), "kg");
         solo.clickOnButton("OK");
         solo.waitForText("apple", 1, 2000);
 
@@ -268,7 +268,7 @@ public class MainTest {
         assertEquals(new Date(timeInMilliseconds), first_ingre.getIngredientBestBeforeDate());
         assertEquals(Ingredient.Location.Freezer, first_ingre.getIngredientLocation());
         assertEquals(10, first_ingre.getIngredientAmount());
-        assertEquals(5, first_ingre.getIngredientUnit());
+        assertEquals("kg", first_ingre.getIngredientUnit());
         // Second ingredient
         Ingredient second_ingre = (Ingredient) ingredientlist.getItemAtPosition(1); // Get item from Second position
         assertEquals("chickenthigh", second_ingre.getIngredientDescription());
@@ -280,7 +280,7 @@ public class MainTest {
         assertEquals(new Date(sec_timeInMilliseconds), second_ingre.getIngredientBestBeforeDate());
         assertEquals(Ingredient.Location.Freezer, second_ingre.getIngredientLocation());
         assertEquals(20, second_ingre.getIngredientAmount());
-        assertEquals(7, second_ingre.getIngredientUnit());
+        assertEquals("kg", second_ingre.getIngredientUnit());
         // Third ingredient
         final ArrayList<Ingredient> list_ingre = activity.ingredientlist; // Get the ingredient list
         Ingredient third_ingre = list_ingre.get(2); // Get item from Third position
@@ -293,7 +293,7 @@ public class MainTest {
         assertEquals(new Date(third_timeInMilliseconds), third_ingre.getIngredientBestBeforeDate());
         assertEquals(Ingredient.Location.Pantry, third_ingre.getIngredientLocation());
         assertEquals(7, third_ingre.getIngredientAmount());
-        assertEquals(3, third_ingre.getIngredientUnit());
+        assertEquals("kg", third_ingre.getIngredientUnit());
 
         // check whether this list of ingredients can be seen by the meal-planer
         // First ingredient
@@ -302,21 +302,21 @@ public class MainTest {
         solo.waitForText("2022-12-3", 1, 2000);
         solo.waitForText("Freezer", 1, 2000);
         solo.waitForText("10", 1, 2000);
-        solo.waitForText("5", 1, 2000);
+        solo.waitForText("kg", 1, 2000);
         // Second ingredient
         solo.waitForText("chickenthigh", 1, 2000);
         solo.waitForText("meat", 1, 2000);
         solo.waitForText("2022-12-15", 1, 2000);
         solo.waitForText("Freezer", 1, 2000);
         solo.waitForText("12", 1, 2000);
-        solo.waitForText("8", 1, 2000);
+        solo.waitForText("kg", 1, 2000);
         // Third ingredient
         solo.waitForText("apple", 1, 2000);
         solo.waitForText("fruits", 1, 2000);
         solo.waitForText("2022-11-15", 1, 2000);
         solo.waitForText("Pantry", 1, 2000);
         solo.waitForText("7", 1, 2000);
-        solo.waitForText("3", 1, 2000);
+        solo.waitForText("kg", 1, 2000);
 
         // start to apply sorting techniques by click on the spinner on the top right corner
         onView(withId(R.id.ingredient_sort_spinner)).perform(click());

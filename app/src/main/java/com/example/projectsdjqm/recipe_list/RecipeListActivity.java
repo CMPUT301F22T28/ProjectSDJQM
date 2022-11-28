@@ -429,35 +429,35 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
             collectionReference
                     .document(title)
                     .set(data);
-            HashMap<String, Object> nestedData_ingre = new HashMap<>();
-            for (Ingredient ingre: recipeIng) {
-                collectionReference
-                        .document(title)
-                        .collection("ingredient List")
-                        .document(ingre.getIngredientDescription())
-                        .delete();
-            }
 
-            for (Ingredient ingre: recipeIng) {
-                final String ingredientDesc = ingre.getIngredientDescription();
-                nestedData_ingre.put("Amount",ingre.getIngredientAmount());
-                nestedData_ingre.put("Best Before Date",ingre.getIngredientBestBeforeDate());
-                nestedData_ingre.put("Category",ingre.getIngredientCategory());
-                nestedData_ingre.put("Location",ingre.getIngredientLocation());
-                nestedData_ingre.put("Unit",ingre.getIngredientUnit());
-                collectionReference
-                        .document(title)
-                        .collection("ingredient List").document(ingredientDesc)
-                        .set(nestedData_ingre)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, " data has been added successfully!");
-                            }
-                        });
-            }
+        }
+        HashMap<String, Object> nestedData_ingre = new HashMap<>();
+        for (Ingredient ingre: recipeIng) {
+            collectionReference
+                    .document(title)
+                    .collection("ingredient List")
+                    .document(ingre.getIngredientDescription())
+                    .delete();
         }
 
+        for (Ingredient ingre: recipeIng) {
+            final String ingredientDesc = ingre.getIngredientDescription();
+            nestedData_ingre.put("Amount",ingre.getIngredientAmount());
+            nestedData_ingre.put("Best Before Date",ingre.getIngredientBestBeforeDate());
+            nestedData_ingre.put("Category",ingre.getIngredientCategory());
+            nestedData_ingre.put("Location",ingre.getIngredientLocation());
+            nestedData_ingre.put("Unit",ingre.getIngredientUnit());
+            collectionReference
+                    .document(title)
+                    .collection("ingredient List").document(ingredientDesc)
+                    .set(nestedData_ingre)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, " data has been added successfully!");
+                        }
+                    });
+        }
         ingAdapter.notifyDataSetChanged();
         recipeAdapter.notifyDataSetChanged();
     };

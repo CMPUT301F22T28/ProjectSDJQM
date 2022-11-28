@@ -76,7 +76,7 @@ public class MealPlanActivity extends AppCompatActivity
     FirebaseFirestore db;
     final String TAG = "Mealplan Activity";
     ListView mealplanListView;
-    MealplanList mealplanAdapter;
+    public MealplanList mealplanAdapter;
     ArrayList<Mealplan> mealplanList;
     Recipe selectedMealplan;
     MealplanFragment addMealplanFragment = new MealplanFragment();

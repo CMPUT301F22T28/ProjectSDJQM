@@ -54,7 +54,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
+
 import java.util.Objects;
+
 import java.util.Set;
 
 public class ShoppingListActivity extends AppCompatActivity {
@@ -140,6 +142,18 @@ public class ShoppingListActivity extends AppCompatActivity {
                 });
         shoppingListAdapter.notifyDataSetChanged();
 
+        db.collection("Ingredients")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Log.d(TAG, "Grabbing ingredients from ingredient storage here");
+                        }
+                    }
+
+                });
+
+        // Retrieving all dates from meal plans database
         db.collection("MealPlans")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -154,22 +168,6 @@ public class ShoppingListActivity extends AppCompatActivity {
                         }
                     }
                 });
-        /*
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                // ---------------------------------------
-                // mealplan recipes
-
-                Log.d(TAG, "ALL MEAL PLANS -------------: " + allMealPlanDate.size());
-
-            }
-
-         */
-
-
 
         //Log.d(TAG, "---------- new meal plan date size: " + allMealPlanDate.size());
         final FloatingActionButton addToStorageButton = findViewById(R.id.add_to_storage);
@@ -301,8 +299,10 @@ public class ShoppingListActivity extends AppCompatActivity {
         handler2.postDelayed(new Runnable() {
         @Override
         public void run () {
+
             ArrayList<String> ingredientDescriptionList = new ArrayList<>();
             ArrayList<Ingredient> ingredientArrayList = new ArrayList<>();
+
             Log.d(TAG, "---------------------------------size of all meal plans date" + allMealPlanDate.size());
             for (int i = 0; i < allMealPlanDate.size(); i++) {
                 //Log.d(TAG, "Running through list: " + allMealPlanDate.get(i));
@@ -361,16 +361,7 @@ public class ShoppingListActivity extends AppCompatActivity {
                                             }
                                         }
                                     }
-
-
-
-                                    // Attempting to remove duplicates
-//                                    Set<ShoppingList> set = new HashSet<>(shoppingCartList);
-//                                    shoppingCartList.clear();
-//                                    shoppingCartList.addAll(set);
                                 }
-
-
                                 shoppingListAdapter.notifyDataSetChanged();
                             }
                         });

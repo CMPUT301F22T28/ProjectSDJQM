@@ -9,6 +9,7 @@ package com.example.projectsdjqm.shopping_list;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import androidx.annotation.NonNull;
@@ -20,7 +21,9 @@ import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import com.example.projectsdjqm.ingredient_storage.IngredientActivity;
 import com.example.projectsdjqm.meal_plan.MealPlanActivity;
 import com.example.projectsdjqm.recipe_list.RecipeListActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import android.app.AlertDialog;
@@ -51,6 +54,7 @@ public class ShoppingListActivity extends AppCompatActivity {
     private ListView shoppingListView;
     private ShoppingListAdapter shoppingListAdapter;
     private ArrayList<ShoppingList> shoppingCartList;
+    public ArrayList<String> allMealPlanDate = new ArrayList<>();
     private String currentSortingType;
     private Calendar calendar;
     private boolean pickup = false;
@@ -121,6 +125,38 @@ public class ShoppingListActivity extends AppCompatActivity {
                 });
         shoppingListAdapter.notifyDataSetChanged();
 
+        db.collection("MealPlans")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot doc: task.getResult()) {
+                                //Log.d(TAG, "all meal plan dates: " + doc.getId());
+                                allMealPlanDate.add(doc.getId()); // Adding all dates of meal plan to list
+                                //Log.d(TAG, "meal plan date size: " + allMealPlanDate.size());
+                            }
+                        }
+                    }
+                });
+        /*
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                // ---------------------------------------
+                // mealplan recipes
+
+                Log.d(TAG, "ALL MEAL PLANS -------------: " + allMealPlanDate.size());
+
+            }
+
+         */
+
+
+
+        //Log.d(TAG, "---------- new meal plan date size: " + allMealPlanDate.size());
         final FloatingActionButton addToStorageButton = findViewById(R.id.add_to_storage);
         //add checked items to ingredient storage if add button is clicked
         addToStorageButton.setOnClickListener(new View.OnClickListener() {
@@ -200,15 +236,60 @@ public class ShoppingListActivity extends AppCompatActivity {
                             unit,
                             category);
                     shoppingCartList.add(new ShoppingList(addingredient, pickup));
+                    Log.d(TAG, "Added new item to shopping list");
                 }
                 shoppingListAdapter.notifyDataSetChanged();
             }
         });
 
+        Handler handler2 = new Handler();
+        handler2.postDelayed(new Runnable() {
+        @Override
+        public void run () {
+
+            Log.d(TAG, "---------------------------------size of all meal plans date" + allMealPlanDate.size());
+            for (int i = 0; i < allMealPlanDate.size(); i++) {
+                //Log.d(TAG, "Running through list: " + allMealPlanDate.get(i));
+                db.collection("MealPlans" + "/" + allMealPlanDate.get(i) + "/" + "ingredient List")
+                        .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                            @Override
+                            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
+                                for (QueryDocumentSnapshot mealPlanDoc : queryDocumentSnapshots) {
+                                    Log.d(TAG, "description here?" + mealPlanDoc.getId());
+                                    Log.d(TAG, "Category here?" + mealPlanDoc.getData().get("Category"));
+                                    String mealPlanIngredientDescription = mealPlanDoc.getId();
+                                    String mealPlanIngredientCategory = (String) mealPlanDoc.getData().get("Category");
+                                    //int mealPlanIngredientAmount = (int) mealPlanDoc.getData().get("Amount");
+                                    String mealPlanIngredientUnit = (String) mealPlanDoc.getData().get("Unit");
+
+                                    Ingredient addMealPlanIngredient = new Ingredient(mealPlanIngredientDescription,
+                                            null,
+                                            null,
+                                            2,
+                                            mealPlanIngredientUnit,
+                                            mealPlanIngredientCategory);
+
+                                    shoppingCartList.add(new ShoppingList(addMealPlanIngredient, pickup));
+                                }
+                                shoppingListAdapter.notifyDataSetChanged();
+                            }
+                        });
+            }
+            // ---------------------------------------
+            // mealplan recipes
+
+        }
+    }, 500);
+
+
         //grab items based on meal plan and ingredient storage
         //shopping list should be generated if
         //    1. meal plan exist but
         //    2. ingredient missing from storage
+
+
+
+        /*
         mealplancollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
@@ -217,25 +298,45 @@ public class ShoppingListActivity extends AppCompatActivity {
 
                 for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
                 {
-                    String recipe_path = "MealPlans"+"/"+doc.getId()+"/"+"ingredient List";
-                    CollectionReference collectionReference_mealplan_recipe = db.collection(recipe_path);
+                    String ingredient_path = "MealPlans"+"/"+doc.getId()+"/"+"ingredient List";
+                    CollectionReference collectionReference_mealPlan_ingredient = db.collection(ingredient_path);
 
-                    collectionReference_mealplan_recipe.
+                    collectionReference_mealPlan_ingredient.
                             addSnapshotListener(new EventListener<QuerySnapshot>()
                             {
                                 @Override
                                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
                                         FirebaseFirestoreException error) {
                                     Log.d(TAG, "meal plan" + doc.getId());
-                                    for (QueryDocumentSnapshot recipedoc : queryDocumentSnapshots) {
-                                        Log.d(TAG, "meal plan" + recipedoc.getId());
+                                    for (QueryDocumentSnapshot ingredientDoc : queryDocumentSnapshots) {
+                                        String mealPlanIngredientDescription = ingredientDoc.getId();
+                                        //Log.d(TAG, "meal plan ingredients: " + mealPlanIngredientDescription);
+                                        //Log.d(TAG, "meal plan ingredient catgeory: " + ingredientDoc.getData().get("Category"));
+                                        //Log.d(TAG, "meal plan ingredient amount: " + ingredientDoc.getData().get("Amount"));
+                                        //Log.d(TAG, "meal plan ingredient unit: " + ingredientDoc.getData().get("unit"));
+                                        String mealPlanIngredientCategory = (String) ingredientDoc.getData().get("Category");
+                                        int mealPlanIngredientAmount = (int) ingredientDoc.getData().get("Amount");
+                                        String mealPlanIngredientUnit = (String) ingredientDoc.getData().get("Unit");
+
+                                        Ingredient addMealPlanIngredient = new Ingredient(mealPlanIngredientDescription,
+                                                null,
+                                                null,
+                                                mealPlanIngredientAmount,
+                                                mealPlanIngredientUnit,
+                                                mealPlanIngredientCategory);
+
+                                        //shoppingCartList.add(new ShoppingList(addMealPlanIngredient, pickup));
+
                                     }
+                                    //shoppingListAdapter.notifyDataSetChanged();
                                 }
                             });
                 }
-                //shoppingListAdapter.notifyDataSetChanged();
+
             }
         });
+
+         */
 
         //call sort function to sort list
         spinner = findViewById(R.id.shopping_list_sort_spinner);

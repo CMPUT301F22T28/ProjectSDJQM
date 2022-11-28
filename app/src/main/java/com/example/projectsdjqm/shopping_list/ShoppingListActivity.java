@@ -200,7 +200,7 @@ public class ShoppingListActivity extends AppCompatActivity {
             }
         });
 
-        // pull data from database
+        // pull data from database for shoppoing list
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
@@ -209,57 +209,65 @@ public class ShoppingListActivity extends AppCompatActivity {
                 for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
                 {
                     Log.d(TAG, String.valueOf(doc.getData().get("Category")));
-                    String description = doc.getId();
-                    int amount = Integer.valueOf(doc.getData().get("Amount").toString());
-//                    Timestamp bbd = (Timestamp) doc.getData().get("Best Before Date");
-//                    Date bestbeforedate = bbd.toDate();
-                    String category = (String) doc.getData().get("Category");
-//                    String location_str = String.valueOf(doc.getData().get("Location"));
-//                    Ingredient.Location location;
-//                    switch (location_str) {
-//                        case "Fridge":
-//                            location = Ingredient.Location.Fridge;
-//                            break;
-//                        case "Freezer":
-//                            location = Ingredient.Location.Freezer;
-//                            break;
-//                        default:
-//                            location = Ingredient.Location.Pantry;
-//                    }
+
                     String unit = (String) doc.getData().get("Unit");
 
-                    CollectionReference collectionReference_mealPlan_shopping = db.collection("MealPlans");
-                    ArrayList<Ingredient> mealPlanIngredientList = new ArrayList<>();
 
                     // pulling information from meal plan database that can be put into shopping list
-                    collectionReference_mealPlan_shopping.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    mealReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
                         public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                            ArrayList<Ingredient> ingredientList = new ArrayList<>();
-                            mealPlanIngredientList.clear();
+                            ArrayList<Ingredient> mealPlanIngredientList = new ArrayList<>();
+
                             for (QueryDocumentSnapshot doc: queryDocumentSnapshots) {
                                 String ingredient_path = "MealPlans/" + doc.getId()+"/ingredient_list";
-                                CollectionReference collectionReferenceMealIngredientList = db.collection(ingredient_path);
+                                CollectionReference collectionReferenceMealIngredientList = db.collection(ingredient_path); // connecting to ingredient list
+
 
                                 collectionReferenceMealIngredientList.addSnapshotListener(new EventListener<QuerySnapshot>() {
                                     @Override
                                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                                         Log.d(TAG, "Meal Plan" + doc.getId());
+
+                                        // Need to grab information for meal plan list here so that it can be compared with the ingredient list
+                                        for (QueryDocumentSnapshot mealPlanDoc : queryDocumentSnapshots) {
+                                            String mealPlanIngredientDescription = mealPlanDoc.getId();
+                                            int mealPlanIngredientAmount = (int) mealPlanDoc.getData().get("Amount");
+                                            String mealPlanIngredientCatgeory = (String) mealPlanDoc.getData().get("Category");
+                                            Timestamp mealPlanIngredientBBD = (Timestamp) mealPlanDoc.getData().get("Best Before Date:");
+                                            String mealPlanIngredientStorage = (String) mealPlanDoc.getData().get("Location");
+                                            String mealPlanIngredientUnit = (String) mealPlanDoc.getData().get("Unit");
+                                            mealPlanIngredientList.add(new Ingredient(
+                                                    mealPlanIngredientDescription,
+                                                    mealPlanIngredientBBD,
+                                                    mealPlanIngredientStorage
+                                                    mealPlanIngredientAmount,
+                                                    mealPlanIngredientUnit,
+                                                    mealPlanIngredientCatgeory));
+                                        }
+
+                                        // Pulling information from ingredient list to compare with the meal plan ingredient list
+                                        ingredientReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                                ArrayList<Ingredient> ingredientsStored = new ArrayList<>();
+
+                                                for (QueryDocumentSnapshot ingredientDoc : queryDocumentSnapshots) {
+
+                                                }
+
+                                            }
+
+                                        });
+
                                         for (QueryDocumentSnapshot ingredientDoc : queryDocumentSnapshots) {
-                                            
+
                                         }
                                     }
-                                })
+                                });
                             }
                         }
                     });
-                    Ingredient addingredient = new Ingredient(description,
-                            null,
-                            null,
-                            amount,
-                            unit,
-                            category);
-                    shoppingCartList.add(new ShoppingList(addingredient, pickup));
                 }
                     shoppingListAdapter.notifyDataSetChanged();
                 }

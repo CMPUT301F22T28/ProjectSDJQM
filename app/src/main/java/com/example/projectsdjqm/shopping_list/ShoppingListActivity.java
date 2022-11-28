@@ -297,6 +297,10 @@ public class ShoppingListActivity extends AppCompatActivity {
             }
         });
         // Need to delay so that allMealPlan
+        Handler handler2 = new Handler();
+        handler2.postDelayed(new Runnable() {
+        @Override
+        public void run () {
             ArrayList<String> ingredientDescriptionList = new ArrayList<>();
             ArrayList<Ingredient> ingredientArrayList = new ArrayList<>();
             Log.d(TAG, "---------------------------------size of all meal plans date" + allMealPlanDate.size());
@@ -374,10 +378,17 @@ public class ShoppingListActivity extends AppCompatActivity {
             // ---------------------------------------
             // mealplan recipes
 
+        }
+    }, 200);
+
+
         //grab items based on meal plan and ingredient storage
         //shopping list should be generated if
         //    1. meal plan exist but
         //    2. ingredient missing from storage
+
+
+
         //call sort function to sort list
         spinner = findViewById(R.id.shopping_list_sort_spinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

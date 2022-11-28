@@ -242,6 +242,7 @@ public class ShoppingListActivity extends AppCompatActivity {
             }
         });
 
+        // Need to delay so that allMealPlan
         Handler handler2 = new Handler();
         handler2.postDelayed(new Runnable() {
         @Override
@@ -259,17 +260,23 @@ public class ShoppingListActivity extends AppCompatActivity {
                                     Log.d(TAG, "Category here?" + mealPlanDoc.getData().get("Category"));
                                     String mealPlanIngredientDescription = mealPlanDoc.getId();
                                     String mealPlanIngredientCategory = (String) mealPlanDoc.getData().get("Category");
-                                    //int mealPlanIngredientAmount = (int) mealPlanDoc.getData().get("Amount");
+                                    int mealPlanIngredientAmount = Integer.valueOf(mealPlanDoc.getData().get("Amount").toString());
                                     String mealPlanIngredientUnit = (String) mealPlanDoc.getData().get("Unit");
 
                                     Ingredient addMealPlanIngredient = new Ingredient(mealPlanIngredientDescription,
                                             null,
                                             null,
-                                            2,
+                                            mealPlanIngredientAmount,
                                             mealPlanIngredientUnit,
                                             mealPlanIngredientCategory);
 
-                                    shoppingCartList.add(new ShoppingList(addMealPlanIngredient, pickup));
+                                    ShoppingList addToShoppingList = new ShoppingList(addMealPlanIngredient, pickup);
+
+                                    if (!shoppingCartList.contains(addToShoppingList)) {
+                                        shoppingCartList.add(addToShoppingList);
+                                    }
+
+
                                 }
                                 shoppingListAdapter.notifyDataSetChanged();
                             }
@@ -279,64 +286,13 @@ public class ShoppingListActivity extends AppCompatActivity {
             // mealplan recipes
 
         }
-    }, 500);
+    }, 200);
 
 
         //grab items based on meal plan and ingredient storage
         //shopping list should be generated if
         //    1. meal plan exist but
         //    2. ingredient missing from storage
-
-
-
-        /*
-        mealplancollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
-                    FirebaseFirestoreException error) {
-                //shoppingCartList.clear();
-
-                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
-                {
-                    String ingredient_path = "MealPlans"+"/"+doc.getId()+"/"+"ingredient List";
-                    CollectionReference collectionReference_mealPlan_ingredient = db.collection(ingredient_path);
-
-                    collectionReference_mealPlan_ingredient.
-                            addSnapshotListener(new EventListener<QuerySnapshot>()
-                            {
-                                @Override
-                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
-                                        FirebaseFirestoreException error) {
-                                    Log.d(TAG, "meal plan" + doc.getId());
-                                    for (QueryDocumentSnapshot ingredientDoc : queryDocumentSnapshots) {
-                                        String mealPlanIngredientDescription = ingredientDoc.getId();
-                                        //Log.d(TAG, "meal plan ingredients: " + mealPlanIngredientDescription);
-                                        //Log.d(TAG, "meal plan ingredient catgeory: " + ingredientDoc.getData().get("Category"));
-                                        //Log.d(TAG, "meal plan ingredient amount: " + ingredientDoc.getData().get("Amount"));
-                                        //Log.d(TAG, "meal plan ingredient unit: " + ingredientDoc.getData().get("unit"));
-                                        String mealPlanIngredientCategory = (String) ingredientDoc.getData().get("Category");
-                                        int mealPlanIngredientAmount = (int) ingredientDoc.getData().get("Amount");
-                                        String mealPlanIngredientUnit = (String) ingredientDoc.getData().get("Unit");
-
-                                        Ingredient addMealPlanIngredient = new Ingredient(mealPlanIngredientDescription,
-                                                null,
-                                                null,
-                                                mealPlanIngredientAmount,
-                                                mealPlanIngredientUnit,
-                                                mealPlanIngredientCategory);
-
-                                        //shoppingCartList.add(new ShoppingList(addMealPlanIngredient, pickup));
-
-                                    }
-                                    //shoppingListAdapter.notifyDataSetChanged();
-                                }
-                            });
-                }
-
-            }
-        });
-
-         */
 
         //call sort function to sort list
         spinner = findViewById(R.id.shopping_list_sort_spinner);

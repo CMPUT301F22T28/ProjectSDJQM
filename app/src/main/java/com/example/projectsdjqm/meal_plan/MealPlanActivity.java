@@ -176,6 +176,7 @@ public class MealPlanActivity extends AppCompatActivity
 
         // main collection reference of mealplan
         collectionReference.addSnapshotListener((queryDocumentSnapshots, error) -> {
+            mealplanList.clear();
             for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
             {
                 String mealplan_id = doc.getId();

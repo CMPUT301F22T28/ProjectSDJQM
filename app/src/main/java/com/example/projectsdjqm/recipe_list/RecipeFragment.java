@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -88,6 +89,7 @@ public class RecipeFragment extends DialogFragment {
                              String category,
                              Drawable photo,
                              ArrayList<Ingredient> list);
+        void onRemoveIngredient(String recipeTitle, Ingredient ingredient);
     }
 
     // attr init
@@ -181,10 +183,12 @@ public class RecipeFragment extends DialogFragment {
             recipeCategory.setText(recipe.getRecipeCategory());
             recipeComments.setText(recipe.getComments());
             recipePreparationTime.setText(String.valueOf(recipe.getPreparationTime()));
-            list = recipe.getListofIngredients();
-            ingAdapter = new IngredientInRecipeAdapter(getContext(),list);
-            ingredientListViewOnFragment.setAdapter(ingAdapter);
-            ingAdapter.notifyDataSetChanged();
+//            list = recipe.getListofIngredients();
+//            ingAdapter = new IngredientInRecipeAdapter(getContext(),list);
+//            ingredientListViewOnFragment.setAdapter(ingAdapter);
+//            list.addAll(recipe.getListofIngredients());
+            ingAdapter.addAll(recipe.getListofIngredients());
+//            ingAdapter.notifyDataSetChanged();
             setListViewHeightBasedOnChildren(ingredientListViewOnFragment);
 //            ingAdapter.notifyDataSetChanged();
             recipePhoto.setImageDrawable(recipe.getPhotograph());
@@ -237,6 +241,23 @@ public class RecipeFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 new AddIngredientFragment().show(getChildFragmentManager(),null);
+            }
+        });
+        ingredientListViewOnFragment.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Ingredient ingredient = (Ingredient) adapterView.getItemAtPosition(i);
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Delete the ingredient?")
+                        .setPositiveButton("delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                listener.onRemoveIngredient(recipeTitle.getText().toString(),ingredient);
+                            }
+                        })
+                        .setNegativeButton("cancel", null)
+                        .show();
+//                listener.onRemoveIngredient(recipeTitle.getText().toString(),ingredient);
             }
         });
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -407,7 +428,7 @@ public class RecipeFragment extends DialogFragment {
         if(requestCode == requestCodeForTakePhoto && resultCode == Activity.RESULT_OK) {
             assert data != null;
             Bitmap b =(Bitmap) data.getExtras().get("data");
-            photo.setImageBitmap(b);
+            recipePhoto.setImageBitmap(b);
             // Get the data from an ImageView as bytes
             final String photokey = recipeTitle.getText().toString().replace(" ","");
             StorageReference imageRef = storageReference.child("images/" + photokey);
@@ -434,7 +455,7 @@ public class RecipeFragment extends DialogFragment {
         }else if (requestCode == requestCodeForChoosePhoto && resultCode == Activity.RESULT_OK) {
             assert data != null;
             Uri uri = data.getData();
-            photo.setImageURI(uri);
+            recipePhoto.setImageURI(uri);
 
             // set photokey for image upload
             final String photokey = recipeTitle.getText().toString().replace(" ","");

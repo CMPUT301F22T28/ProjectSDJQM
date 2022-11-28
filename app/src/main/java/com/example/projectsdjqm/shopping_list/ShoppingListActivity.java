@@ -42,6 +42,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -50,6 +52,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -286,7 +289,23 @@ public class ShoppingListActivity extends AppCompatActivity {
                                                 mealPlanIngredientCategory);
                                         ingredientDescriptionList.add(mealPlanIngredientDescription);
                                         ShoppingList addToShoppingList = new ShoppingList(addMealPlanIngredient, pickup);
-                                        shoppingCartList.add(addToShoppingList);
+                                        //shoppingCartList.add(addToShoppingList);
+
+                                        Map<String, Object> shoppingListData = new HashMap<>();
+                                        shoppingListData.put("Amount", mealPlanIngredientAmount);
+                                        shoppingListData.put("Category", mealPlanIngredientCategory);
+                                        shoppingListData.put("Unit", mealPlanIngredientUnit);
+
+                                        db.collection("ShoppingLists").document(mealPlanIngredientDescription)
+                                                .set(shoppingListData, SetOptions.merge())
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        Log.d(TAG, mealPlanIngredientDescription + " data has been added successfully");
+                                                    }
+                                                });
+
+                                        shoppingListAdapter.add(addToShoppingList);
                                     } else {
                                         for (int i=0; i<shoppingCartList.size(); i++) {
                                             if (Objects.equals(shoppingCartList.get(i).getIngredient().getIngredientDescription(), mealPlanIngredientDescription)) {
@@ -299,7 +318,7 @@ public class ShoppingListActivity extends AppCompatActivity {
                                                         mealPlanIngredientUnit,
                                                         mealPlanIngredientCategory);
                                                 shoppingCartList.remove(i);
-                                                shoppingCartList.add(new ShoppingList(ing,false));
+                                                //shoppingCartList.add(new ShoppingList(ing,false));
                                             }
                                         }
                                     }

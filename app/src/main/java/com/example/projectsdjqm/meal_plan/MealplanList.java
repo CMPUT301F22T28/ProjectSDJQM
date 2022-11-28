@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 import com.example.projectsdjqm.MainActivity;
 import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
+import com.example.projectsdjqm.ingredient_storage.IngredientList;
 import com.example.projectsdjqm.recipe_list.Recipe;
 import com.example.projectsdjqm.recipe_list.RecipeList;
 
@@ -26,26 +28,62 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * MealplanList
- * @version 1.2
+ * MealplanList aims to create an arrayadapter that matches
+ * our desired layout of Mealplan class
+ * @version 3.5
  * @author Jianming Ma
  * @date Nov.23rd, 2022
  */
 public class MealplanList extends ArrayAdapter<Mealplan> {
-
     // attr init
-    private ArrayList<Mealplan> mealplanList;
-    private Context context;
+    private final ArrayList<Mealplan> mealplanList;
+
+    /**
+     * Interface for edit / delete listeners
+     */
+    public interface recipeScaleListener {
+        /**
+         * This method that is called when the listview of recipe scale list
+         * is pressed
+         * @param position index of clicked element within scale list
+         * @param mealplan_position index of clicked element within mealplan list
+         */
+        void onRecipeScaleListPressed(int position, int mealplan_position);
+    }
+
+    private final Context context;
+    private recipeScaleListener scalelistener;
+    private Integer seletedItem;
+    private Integer mealplan_position;
 
 
-    // constructor
+    /**
+     * This is a constructor to create MealplanList object.
+     * packagename.classname#MealplanList
+     * @param context Context
+     * @param mealplanList  data to be bounded with a ListView
+     */
     public MealplanList(Context context, ArrayList<Mealplan> mealplanList) {
         super(context, 0, mealplanList);
         this.mealplanList = mealplanList;
         this.context = context;
     }
 
-    // view inflater
+    /**
+     * This is the setter of listener
+     * @param scalelistener scalelistener
+     */
+    public void setScalelistener(recipeScaleListener scalelistener) {
+        this.scalelistener = scalelistener;
+    }
+
+    /**
+     * This is an override method GetView
+     * @param position Position of the data displayed by the view in the data set
+     * @param convertView The old view to reuse, if possible
+     * @param parent The parent that this view will eventually be attached to
+     * @return A View corresponding to the data at the specified position
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -55,6 +93,7 @@ public class MealplanList extends ArrayAdapter<Mealplan> {
         }
 //        will implement the meal plan content depending on the recipe list here
         Mealplan mealplan = mealplanList.get(position);
+        mealplan_position = position;
 
         // Set mealplan Date
         TextView mealplan_date = view.findViewById(R.id.mealplan_date);
@@ -83,16 +122,40 @@ public class MealplanList extends ArrayAdapter<Mealplan> {
                 new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, ingredientList_str);
         ingredientListview.setAdapter(ingredientAdapter);
         setListViewHeightBasedOnChildren(ingredientListview);
+
+        // Set recipe scale list
+        ListView recipe_scale_view = view.findViewById(R.id.recipe_scale);
+        ArrayList<Integer> recipe_scale_list = mealplan.getRecipeScale();
+        ArrayAdapter<Integer> scaleAdapter =
+                new ArrayAdapter<Integer>(context, android.R.layout.simple_list_item_1, recipe_scale_list);
+        recipe_scale_view.setAdapter(scaleAdapter);
+        recipe_scale_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (scalelistener != null) {
+                    scalelistener.onRecipeScaleListPressed(position,mealplan_position);
+                }
+            }
+        });
+        setListViewHeightBasedOnChildren(recipe_scale_view);
         return view;
     }
 
-
+    /**
+     * This is a method to return string type of mealplan date
+     * @param mealplan certain mealplan instance
+     * @return string format of mealplan date
+     */
     private String get_mealplan_Date(Mealplan mealplan) {
         Date date = mealplan.getMealplan_date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return String.format(dateFormat.format(date));
     }
 
+    /**
+     * This method that is called after adapter is set in order to adjust listview layout
+     * @param listView listview of certain arraylist
+     */
     public void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {

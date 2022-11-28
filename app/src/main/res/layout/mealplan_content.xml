@@ -38,13 +38,25 @@
                     android:layout_marginRight="20dp"
                     android:text="Recipes: "
                     android:textSize="16dp" />
-
-                <ListView
-                    android:id="@+id/mealplan_r_list"
+                <LinearLayout
+                    android:layout_marginBottom="10dp"
+                    android:padding="3dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                </ListView>
+                    <ListView
+                        android:id="@+id/mealplan_r_list"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content">
+                    </ListView>
+
+                    <ListView
+                        android:id="@+id/recipe_scale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                    </ListView>
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout

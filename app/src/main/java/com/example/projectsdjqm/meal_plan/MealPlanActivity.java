@@ -11,7 +11,6 @@ import static android.system.Os.remove;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,20 +52,23 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
 /**
- * MealPlanActivity
- * @version 1.2
+ * MealPlanActivity that links all display and fragment java files.
+ * @version 3.4
  * @author Jianming Ma
  * @date Nov.23rd, 2022
  */
 public class MealPlanActivity extends AppCompatActivity
         implements MealplanFragment.OnFragmentInteractionListener,
-                    MealplanStorageFragment.DataPassListener{
+                    MealplanStorageFragment.DataPassListener,
+                    MealplanList.recipeScaleListener,
+                    MealplanScaleFragment.OnMealplanScaleFragmentListener{
 
     
     // initialization of variables
@@ -74,12 +76,15 @@ public class MealPlanActivity extends AppCompatActivity
     FirebaseFirestore db;
     final String TAG = "Mealplan Activity";
     ListView mealplanListView;
-    ArrayAdapter<Mealplan> mealplanAdapter;
+    MealplanList mealplanAdapter;
     ArrayList<Mealplan> mealplanList;
     Recipe selectedMealplan;
     MealplanFragment addMealplanFragment = new MealplanFragment();
     MealplanStorageFragment mealplanStorageFragment = null;
     MealplanFragment add1MealplanFragment = null;
+    MealplanScaleFragment editRecipeScale = null;
+    private int recipe_position;
+    private int mealplan_index;
 
 
 
@@ -91,6 +96,7 @@ public class MealPlanActivity extends AppCompatActivity
         Log.d(TAG, "onCreate");
         db = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = db.collection("MealPlans");
+
 
         // bottom nav initialization
         bottomNavigationView = findViewById(R.id.nav_view);
@@ -134,12 +140,11 @@ public class MealPlanActivity extends AppCompatActivity
         mealplanList = new ArrayList<Mealplan>();
 
         ArrayList<Ingredient> ingredientList = new ArrayList<>();
-        Ingredient testc = new Ingredient("apple",new Date(2020,2,1),Ingredient.Location.Fridge,1,"kg","here");
-        ingredientList.add(testc);
-        ArrayList<Recipe> recipeList = new ArrayList<>();
+        ArrayList<ArrayList<Recipe>> recipeList = new ArrayList<>();
         Drawable icon = ContextCompat.getDrawable(this, R.drawable.ic_notifications_black_24dp);
 
         mealplanAdapter = new MealplanList(this, mealplanList);
+        mealplanAdapter.setScalelistener(this);
         mealplanListView.setAdapter(mealplanAdapter);
 
         final FloatingActionButton addButton = findViewById(R.id.add_meal_plan);
@@ -153,6 +158,7 @@ public class MealPlanActivity extends AppCompatActivity
 
         // Pull mealplanlist from database
         // Initialization of main collection
+        final ArrayList<Recipe>[] recipelist = new ArrayList[]{new ArrayList<>()};
         db.collection("MealPlans")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -169,8 +175,8 @@ public class MealPlanActivity extends AppCompatActivity
                 });
 
         // main collection reference of mealplan
-        ArrayList<Recipe> recipelist = new ArrayList<>();
         collectionReference.addSnapshotListener((queryDocumentSnapshots, error) -> {
+            mealplanList.clear();
             for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
             {
                 String mealplan_id = doc.getId();
@@ -179,9 +185,10 @@ public class MealPlanActivity extends AppCompatActivity
                 Date mealplan_date = null;
                 try{
                     mealplan_date = dateFormat.parse(mealplan_id);
-                } catch (java.text.ParseException e) {
+                } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                ArrayList<Integer> recipeScale = (ArrayList<Integer>) doc.getData().get("Recipe Scale");
                 // path of recipe list within mealplan collection
                 String recipe_path = "MealPlans"+"/"+mealplan_id+"/"+"recipe List";
                 CollectionReference collectionReference_mealplan_recipe = db.collection(recipe_path);
@@ -205,7 +212,7 @@ public class MealPlanActivity extends AppCompatActivity
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
                             FirebaseFirestoreException error) {
-                        recipelist.clear();
+                        recipelist[0] = new ArrayList<Recipe>();
                         for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
                         {
                             String title = doc.getId();
@@ -214,7 +221,7 @@ public class MealPlanActivity extends AppCompatActivity
                             String category = (String) doc.getData().get("Category");
                             String comm = (String) doc.getData().get("Comments");
                             // add snap shot of Ingredient List of recipe list subcollection
-                            recipelist.add(new Recipe(
+                            recipelist[0].add(new Recipe(
                                     title,
                                     preptime,
                                     numser,
@@ -222,8 +229,8 @@ public class MealPlanActivity extends AppCompatActivity
                                     comm,
                                     icon,
                                     ingredientList));
-
                         }
+                        recipeList.add(recipelist[0]);
                     }
                 });
 
@@ -253,6 +260,7 @@ public class MealPlanActivity extends AppCompatActivity
                             FirebaseFirestoreException error) {
                         ArrayList<Ingredient> ingredientlist = new ArrayList<>();
                         ingredientlist.clear();
+                        int count = 0;
                         for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
                         {
                             Log.d(TAG, String.valueOf(doc.getData().get("Category")));
@@ -283,7 +291,7 @@ public class MealPlanActivity extends AppCompatActivity
                                     unit,
                                     category));
                         }
-                        Mealplan test = new Mealplan(recipelist, ingredientlist, finalMealplan_date);
+                        Mealplan test = new Mealplan(recipelist[0], ingredientlist, finalMealplan_date, recipeScale);
                         mealplanList.add(test);
                         mealplanAdapter.notifyDataSetChanged();
 
@@ -293,7 +301,11 @@ public class MealPlanActivity extends AppCompatActivity
         });
     }
 
-
+    /**
+     * This method that is called when the ok button of mealplan adding
+     * fragment is pressed
+     * @param mealplan mealplan instance that is sent by the adding fragment
+     */
     public void onOkPressedAdd(Mealplan mealplan) {
         if (mealplanStorageFragment != null) {
             mealplanStorageFragment.dismiss();
@@ -304,6 +316,7 @@ public class MealPlanActivity extends AppCompatActivity
         final Date mealplan_date = mealplan.getMealplan_date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String mealplan_date_str = String.format(dateFormat.format(mealplan_date));
+        final ArrayList<Integer> recipeScale = mealplan.getRecipeScale();
 
         HashMap<String, Object> data = new HashMap<>();
         HashMap<String, Object> nestedData_rec = new HashMap<>();
@@ -311,6 +324,7 @@ public class MealPlanActivity extends AppCompatActivity
 
         // Store mealplan into database
         data.put("Mealplan_Date",mealplan_date);
+        data.put("Recipe Scale",recipeScale);
         collectionReference
                 .document(mealplan_date_str)
                 .set(data)
@@ -363,6 +377,11 @@ public class MealPlanActivity extends AppCompatActivity
         mealplanAdapter.add(mealplan);
     }
 
+    /**
+     * This method is called when the ADD button of mealplan adding fragment
+     * (either recipelist or ingredientlist) is pressed
+     * aims to show mealplan storage fragment instance
+     */
     public void add_meal_plan_from_storage() {
         if (mealplanStorageFragment != null) {
             mealplanStorageFragment.dismiss();
@@ -372,10 +391,13 @@ public class MealPlanActivity extends AppCompatActivity
 
 
     }
-    public void passData(String data) {
 
-    }
-
+    /**
+     * This method that is called when the ok button of mealplan storage
+     * fragment is pressed
+     * @param rec_sel_list arraylist of integers that contains the index of seleted recipes
+     * @param ingre_sel_list arraylist of integers that contains the index of seleted ingredients
+     */
     public void On_storage_pressed(ArrayList<Integer> rec_sel_list,ArrayList<Integer> ingre_sel_list) {
         Bundle bundle = new Bundle();
         bundle.putIntegerArrayList("rec_sel_list", rec_sel_list);
@@ -396,6 +418,10 @@ public class MealPlanActivity extends AppCompatActivity
         add1MealplanFragment.setArguments(bundle);
     }
 
+    /**
+     * This method that is called after adapter is set in order to adjust listview layout
+     * @param listView listview of certain arraylist
+     */
     public void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {
@@ -412,5 +438,46 @@ public class MealPlanActivity extends AppCompatActivity
         listView.setLayoutParams(params);
     }
 
+    /**
+     * This method that is called when the listview of recipe scale list
+     * is pressed
+     * @param position index of clicked element within scale list
+     * @param mealplan_position index of clicked element within mealplan list
+     */
+    @Override
+    public void onRecipeScaleListPressed(int position, int mealplan_position) {
+        recipe_position = position;
+        mealplan_index = mealplan_position-1;
+        editRecipeScale = new MealplanScaleFragment();
+        editRecipeScale.show(getSupportFragmentManager(),"Edit scale");
+    }
 
+    /**
+     * This method that is called when the ok button of mealplan Scale
+     * fragment is pressed
+     * @param recipeScale user changed recipe scale
+     */
+    @Override
+    public void OnScaleOkpressedAdd(int recipeScale) {
+        ArrayList<Integer> recipeScale_list = mealplanList.get(mealplan_index).getRecipeScale();
+        final Date mealplan_date = mealplanList.get(mealplan_index).getMealplan_date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String mealplan_date_str = String.format(dateFormat.format(mealplan_date));
+
+        recipeScale_list.set(recipe_position,recipeScale);
+        final CollectionReference collectionReference = db.collection("MealPlans");
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("Mealplan_Date",mealplan_date);
+        data.put("Recipe Scale",recipeScale_list);
+        mealplanAdapter.notifyDataSetChanged();
+        collectionReference
+                .document(mealplan_date_str)
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, mealplan_date + " data has been added successfully!");
+                    }
+                });
+    }
 }

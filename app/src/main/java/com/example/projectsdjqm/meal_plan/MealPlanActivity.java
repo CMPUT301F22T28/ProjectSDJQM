@@ -59,8 +59,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 /**
- * MealPlanActivity
- * @version 1.2
+ * MealPlanActivity that links all display and fragment java files.
+ * @version 3.4
  * @author Jianming Ma
  * @date Nov.23rd, 2022
  */
@@ -301,7 +301,11 @@ public class MealPlanActivity extends AppCompatActivity
         });
     }
 
-
+    /**
+     * This method that is called when the ok button of mealplan adding
+     * fragment is pressed
+     * @param mealplan mealplan instance that is sent by the adding fragment
+     */
     public void onOkPressedAdd(Mealplan mealplan) {
         if (mealplanStorageFragment != null) {
             mealplanStorageFragment.dismiss();
@@ -373,6 +377,11 @@ public class MealPlanActivity extends AppCompatActivity
         mealplanAdapter.add(mealplan);
     }
 
+    /**
+     * This method is called when the ADD button of mealplan adding fragment
+     * (either recipelist or ingredientlist) is pressed
+     * aims to show mealplan storage fragment instance
+     */
     public void add_meal_plan_from_storage() {
         if (mealplanStorageFragment != null) {
             mealplanStorageFragment.dismiss();
@@ -382,10 +391,13 @@ public class MealPlanActivity extends AppCompatActivity
 
 
     }
-    public void passData(String data) {
 
-    }
-
+    /**
+     * This method that is called when the ok button of mealplan storage
+     * fragment is pressed
+     * @param rec_sel_list arraylist of integers that contains the index of seleted recipes
+     * @param ingre_sel_list arraylist of integers that contains the index of seleted ingredients
+     */
     public void On_storage_pressed(ArrayList<Integer> rec_sel_list,ArrayList<Integer> ingre_sel_list) {
         Bundle bundle = new Bundle();
         bundle.putIntegerArrayList("rec_sel_list", rec_sel_list);
@@ -406,6 +418,10 @@ public class MealPlanActivity extends AppCompatActivity
         add1MealplanFragment.setArguments(bundle);
     }
 
+    /**
+     * This method that is called after adapter is set in order to adjust listview layout
+     * @param listView listview of certain arraylist
+     */
     public void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {
@@ -422,7 +438,12 @@ public class MealPlanActivity extends AppCompatActivity
         listView.setLayoutParams(params);
     }
 
-
+    /**
+     * This method that is called when the listview of recipe scale list
+     * is pressed
+     * @param position index of clicked element within scale list
+     * @param mealplan_position index of clicked element within mealplan list
+     */
     @Override
     public void onRecipeScaleListPressed(int position, int mealplan_position) {
         recipe_position = position;
@@ -431,6 +452,11 @@ public class MealPlanActivity extends AppCompatActivity
         editRecipeScale.show(getSupportFragmentManager(),"Edit scale");
     }
 
+    /**
+     * This method that is called when the ok button of mealplan Scale
+     * fragment is pressed
+     * @param recipeScale user changed recipe scale
+     */
     @Override
     public void OnScaleOkpressedAdd(int recipeScale) {
         ArrayList<Integer> recipeScale_list = mealplanList.get(mealplan_index).getRecipeScale();
@@ -441,6 +467,7 @@ public class MealPlanActivity extends AppCompatActivity
         recipeScale_list.set(recipe_position,recipeScale);
         final CollectionReference collectionReference = db.collection("MealPlans");
         HashMap<String, Object> data = new HashMap<>();
+        data.put("Mealplan_Date",mealplan_date);
         data.put("Recipe Scale",recipeScale_list);
         mealplanAdapter.notifyDataSetChanged();
         collectionReference

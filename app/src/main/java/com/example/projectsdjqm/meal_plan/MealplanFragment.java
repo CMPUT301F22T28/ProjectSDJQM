@@ -56,14 +56,29 @@ import java.util.GregorianCalendar;
 
 /**
  * MealplanFragment:
- * mealplan adding fragment
+ * mealplan adding fragment that used to add a new
+ * meaplan to the mealplan list
  * @author Jianming Ma
  * @date Nov.23rd, 2022
  */
 
 public class MealplanFragment extends DialogFragment {
+    /**
+     * Interface for add / edit listeners
+     */
     public interface OnFragmentInteractionListener {
+        /**
+         * This method that is called when the ok button of mealplan adding
+         * fragment is pressed
+         * @param mealplan mealplan instance that is sent by the adding fragment
+         */
         void onOkPressedAdd(Mealplan mealplan);
+
+        /**
+         * This method is called when the ADD button of mealplan adding fragment
+         * (either recipelist or ingredientlist) is pressed
+         * aims to show mealplan storage fragment instance
+         */
         void add_meal_plan_from_storage();
     }
 
@@ -85,17 +100,26 @@ public class MealplanFragment extends DialogFragment {
     FirebaseFirestore db;
 
 
-
+    /**
+     * This is a constructor to create MealplanFragment object.
+     * packagename.classname#MealplanFragment
+     * @param mealplan current mealplan to be edited
+     */
     public MealplanFragment(Mealplan mealplan) {
         super();
         this.mealplan = mealplan;
     }
     public MealplanFragment() {
         super();
-
     }
 
-    // fragment interaction listener
+    /**
+     * This is an override method onAttach
+     * Called when a fragment is first attached to its context,
+     * Create the fragment iteraction listener
+     * @param context context
+     * @throws RuntimeException
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -107,7 +131,13 @@ public class MealplanFragment extends DialogFragment {
     }
 
 
-    // layout inflater to update fields
+    /**
+     * This is an override method onCreateDialog
+     * layout inflater to update fields
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment
+     * @return Dialog Return a new Dialog instance to be displayed by the Fragment
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

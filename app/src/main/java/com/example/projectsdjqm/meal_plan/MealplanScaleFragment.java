@@ -15,14 +15,35 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.projectsdjqm.R;
 
+/**
+ * MealplanScaleFragment
+ * @version 3.5
+ * @author Jianming Ma
+ * @date Nov.23rd, 2022
+ */
 public class MealplanScaleFragment extends DialogFragment {
     private OnMealplanScaleFragmentListener listener;
     private EditText recipe_scale_text;
 
+    /**
+     * Interface for add / edit listeners
+     */
     public interface OnMealplanScaleFragmentListener {
+        /**
+         * This method that is called when the ok button of mealplan Scale
+         * fragment is pressed
+         * @param recipeScale user changed recipe scale
+         */
         void OnScaleOkpressedAdd(int recipeScale);
     }
 
+    /**
+     * This is an override method onAttach
+     * Called when a fragment is first attached to its context,
+     * Create the fragment listener
+     * @param context context
+     * @throws RuntimeException
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -33,6 +54,13 @@ public class MealplanScaleFragment extends DialogFragment {
         }
     }
 
+    /**
+     * This is an override method onCreateDialog
+     * layout inflater to update fields
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment
+     * @return Dialog Return a new Dialog instance to be displayed by the Fragment
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

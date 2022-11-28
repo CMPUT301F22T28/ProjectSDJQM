@@ -28,8 +28,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * MealplanList
- * @version 1.2
+ * MealplanList aims to create an arrayadapter that matches
+ * our desired layout of Mealplan class
+ * @version 3.5
  * @author Jianming Ma
  * @date Nov.23rd, 2022
  */
@@ -37,7 +38,16 @@ public class MealplanList extends ArrayAdapter<Mealplan> {
     // attr init
     private final ArrayList<Mealplan> mealplanList;
 
+    /**
+     * Interface for edit / delete listeners
+     */
     public interface recipeScaleListener {
+        /**
+         * This method that is called when the listview of recipe scale list
+         * is pressed
+         * @param position index of clicked element within scale list
+         * @param mealplan_position index of clicked element within mealplan list
+         */
         void onRecipeScaleListPressed(int position, int mealplan_position);
     }
 
@@ -47,18 +57,33 @@ public class MealplanList extends ArrayAdapter<Mealplan> {
     private Integer mealplan_position;
 
 
-    // constructor
+    /**
+     * This is a constructor to create MealplanList object.
+     * packagename.classname#MealplanList
+     * @param context Context
+     * @param mealplanList  data to be bounded with a ListView
+     */
     public MealplanList(Context context, ArrayList<Mealplan> mealplanList) {
         super(context, 0, mealplanList);
         this.mealplanList = mealplanList;
         this.context = context;
     }
 
+    /**
+     * This is the setter of listener
+     * @param scalelistener scalelistener
+     */
     public void setScalelistener(recipeScaleListener scalelistener) {
         this.scalelistener = scalelistener;
     }
 
-    // view inflater
+    /**
+     * This is an override method GetView
+     * @param position Position of the data displayed by the view in the data set
+     * @param convertView The old view to reuse, if possible
+     * @param parent The parent that this view will eventually be attached to
+     * @return A View corresponding to the data at the specified position
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -116,13 +141,21 @@ public class MealplanList extends ArrayAdapter<Mealplan> {
         return view;
     }
 
-
+    /**
+     * This is a method to return string type of mealplan date
+     * @param mealplan certain mealplan instance
+     * @return string format of mealplan date
+     */
     private String get_mealplan_Date(Mealplan mealplan) {
         Date date = mealplan.getMealplan_date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return String.format(dateFormat.format(date));
     }
 
+    /**
+     * This method that is called after adapter is set in order to adjust listview layout
+     * @param listView listview of certain arraylist
+     */
     public void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {

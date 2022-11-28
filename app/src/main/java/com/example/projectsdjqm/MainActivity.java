@@ -1,7 +1,7 @@
 /**
  * MainActivity
  * @version 1.1
- * @author Defrim Binakaj & Muchen Li
+ * @author Defrim Binakaj, Muchen Li
  * @date Oct 29, 2022
  */
 package com.example.projectsdjqm;

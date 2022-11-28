@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import android.app.Activity;
 import android.widget.EditText;
@@ -36,8 +37,8 @@ public class ShoppingListTest {
     private Solo solo;
 
     @Rule
-    public ActivityTestRule<RecipeListActivity> rule =
-            new ActivityTestRule<>(RecipeListActivity.class, true, true);
+    public ActivityTestRule<ShoppingListActivity> rule =
+            new ActivityTestRule<>(ShoppingListActivity.class, true, true);
 
     /**
      * Runs before all tests and creates solo instance.
@@ -59,8 +60,8 @@ public class ShoppingListTest {
 
     @Test
     public void checkActivitySwitch(){
-        // Asserts that the current activity is the RecipeListActivity. Otherwise, show “Wrong Activity”
-        solo.assertCurrentActivity("Wrong Activity", RecipeListActivity.class);
+        // Asserts that the current activity is the ShoppingListActivity. Otherwise, show “Wrong Activity”
+        solo.assertCurrentActivity("Wrong Activity", ShoppingListActivity.class);
         // press the main page navigation bar within the recipe page to check intent shifting
         onView(withId(R.id.navigation_home))
                 .perform(click());
@@ -87,24 +88,13 @@ public class ShoppingListTest {
      * Check for adding,viewing,editing and deleting an ingredient
      */
 
-    @Test
-    public void check_pickup_ingredient(){
-        // Asserts that the current activity is the RecipeListActivity.
-        // Otherwise, show “Wrong Activity”
-        solo.assertCurrentActivity("Wrong Activity", ShoppingListActivity.class );
-        // try to click on the checkbox to see if it's prompt dialog
-        solo.clickOnView(solo.getView(R.id.box));
-
-
-    }
 
     @Test
     public void testSort() {
-        solo.assertCurrentActivity("Wrong activity", RecipeListActivity.class);
+        solo.assertCurrentActivity("Wrong activity", ShoppingListActivity.class);
         onView(withId(R.id.shopping_list_sort_spinner)).perform(click());
         onData(allOf(is(instanceOf(String.class)), is("Category"))).perform(click());
         onView(withId(R.id.shopping_list_sort_spinner)).perform(click());
         onData(allOf(is(instanceOf(String.class)), is("Description"))).perform(click());
-        onView(withId(R.id.shopping_list_sort_spinner)).perform(click());
     }
 }

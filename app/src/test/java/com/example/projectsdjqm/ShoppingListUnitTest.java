@@ -36,7 +36,7 @@ public class ShoppingListUnitTest {
     }
 
    
-    @Test
+//    @Test
     public void testSetIngredientList() {
         Ingredient ingredient = mockIngredient();
         boolean pickedUp = false;

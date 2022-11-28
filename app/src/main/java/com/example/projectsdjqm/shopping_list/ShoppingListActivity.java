@@ -36,6 +36,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -257,6 +258,44 @@ public class ShoppingListActivity extends AppCompatActivity {
             }
         });
 
+        ArrayList<Ingredient> ingredientFromStorageList = new ArrayList<>();
+        ingredientcollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                    FirebaseFirestoreException error) {
+                ingredientFromStorageList.clear();
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+                {
+                    Log.d(TAG, String.valueOf(doc.getData().get("Category")));
+                    String description = doc.getId();
+                    int amount = Integer.valueOf(doc.getData().get("Amount").toString());
+                    Timestamp bbd = (Timestamp) doc.getData().get("Best Before Date");
+                    Date bestbeforedate = bbd.toDate();
+                    String category = (String) doc.getData().get("Category");
+                    String location_str = String.valueOf(doc.getData().get("Location"));
+                    Ingredient.Location location;
+                    switch (location_str) {
+                        case "Fridge":
+                            location = Ingredient.Location.Fridge;
+                            break;
+                        case "Freezer":
+                            location = Ingredient.Location.Freezer;
+                            break;
+                        default:
+                            location = Ingredient.Location.Pantry;
+                    }
+                    String unit = (String) doc.getData().get("Unit");
+
+                    ingredientFromStorageList.add(new Ingredient(
+                            description,
+                            bestbeforedate,
+                            location,
+                            amount,
+                            unit,
+                            category));
+                }
+            }
+        });
         // Need to delay so that allMealPlan
         Handler handler2 = new Handler();
         handler2.postDelayed(new Runnable() {

@@ -1,5 +1,6 @@
 /**
  * ShoppingListActivity
+ *
  * @version 1.1
  * @author Muchen Li & Defrim Binakaj
  * @date Oct 30, 2022
@@ -44,6 +45,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -54,16 +57,18 @@ import java.util.Date;
  * main page for shoppinglist
  */
 public class ShoppingListActivity extends AppCompatActivity {
-    
+
     // attr init
     BottomNavigationView bottomNavigationView;
     FirebaseFirestore db;
     final String TAG = "Shopping List Activity";
     Spinner spinner;
-//    ArrayList<Ingredient> checkedIngredientList;
+    //    ArrayList<Ingredient> checkedIngredientList;
     ListView shoppingListView;
     ShoppingListAdapter shoppingListAdapter;
     ArrayList<ShoppingList> shoppingCartList;
+    ArrayList<Ingredient> shoppingCartIngredient;
+    ArrayList<Ingredient> mealPlanIngredientList;
     String currentSortingType;
 
     @Override
@@ -87,27 +92,27 @@ public class ShoppingListActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
 
                     case R.id.navigation_ingredient_storage:
                         startActivity(new Intent(getApplicationContext(), IngredientActivity.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
 
                     case R.id.navigation_meal_plan:
                         startActivity(new Intent(getApplicationContext(), MealPlanActivity.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
 
                     case R.id.navigation_recipe_list:
                         startActivity(new Intent(getApplicationContext(), RecipeListActivity.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
 
                     case R.id.navigation_shopping_list:
                         startActivity(new Intent(getApplicationContext(), ShoppingListActivity.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
 
                 }
@@ -139,8 +144,6 @@ public class ShoppingListActivity extends AppCompatActivity {
                 });
         shoppingListAdapter.notifyDataSetChanged();
 
-
-
         // In order to obtain information from the firestore database, need to get collection meal plan
         // Pull the date document and the ingredient list collection
 
@@ -149,41 +152,13 @@ public class ShoppingListActivity extends AppCompatActivity {
         // we will remove it from the ingredient list collection
 
         // Creating reference to ingredients list
-        db.collection("Ingredients")
-                .get()
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Log.d(TAG, document.getId() + " => " + document.getData());
-                                }
-                            } else {
-                                Log.d(TAG, "Error getting documents: ", task.getException());
-                            }
-                        });
-
-        // Creating reference to meal plan
-        db.collection("MealPlans")
-                .get()
-                .addOnCompleteListener(task -> {
-                    ArrayList<Mealplan> mealPlanList = new ArrayList<>();
-
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-
-                            Log.d(TAG, document.getId() + " => " + document.getData());
-                        }
-                    } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
-                    }
-                });
-
 
         final FloatingActionButton addToStorageButton = findViewById(R.id.add_to_storage);
-           //add checked items to ingredient storage if add button is clicked
+        //add checked items to ingredient storage if add button is clicked
         addToStorageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                for (int i=0; i < shoppingCartList.size(); i++) {
+                for (int i = 0; i < shoppingCartList.size(); i++) {
                     if (shoppingCartList.get(i).getPickedUp()) {
                         // add ingredient from checkedIngredientList to ingredient storage
 
@@ -200,14 +175,13 @@ public class ShoppingListActivity extends AppCompatActivity {
             }
         });
 
-        // pull data from database for shoppoing list
+
+        // pull data from database for shopping list
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
-                    FirebaseFirestoreException error) {
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 shoppingCartList.clear();
-                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
-                {
+                for (QueryDocumentSnapshot doc : value) {
                     Log.d(TAG, String.valueOf(doc.getData().get("Category")));
 
                     String unit = (String) doc.getData().get("Unit");
@@ -216,24 +190,24 @@ public class ShoppingListActivity extends AppCompatActivity {
                     // pulling information from meal plan database that can be put into shopping list
                     mealReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
-                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
                             ArrayList<Ingredient> mealPlanIngredientList = new ArrayList<>();
 
-                            for (QueryDocumentSnapshot doc: queryDocumentSnapshots) {
-                                String ingredient_path = "MealPlans/" + doc.getId()+"/ingredient_list";
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                String ingredient_path = "MealPlans/" + doc.getId() + "/ingredient_list";
                                 CollectionReference collectionReferenceMealIngredientList = db.collection(ingredient_path); // connecting to ingredient list
 
 
                                 collectionReferenceMealIngredientList.addSnapshotListener(new EventListener<QuerySnapshot>() {
                                     @Override
-                                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots1, @Nullable FirebaseFirestoreException error) {
                                         Log.d(TAG, "Meal Plan" + doc.getId());
 
                                         // Need to grab information for meal plan list here so that it can be compared with the ingredient list
-                                        for (QueryDocumentSnapshot mealPlanDoc : queryDocumentSnapshots) {
+                                        for (QueryDocumentSnapshot mealPlanDoc : queryDocumentSnapshots1) {
                                             String mealPlanIngredientDescription = mealPlanDoc.getId();
                                             int mealPlanIngredientAmount = (int) mealPlanDoc.getData().get("Amount");
-                                            String mealPlanIngredientCatgeory = (String) mealPlanDoc.getData().get("Category");
+                                            String mealPlanIngredientCategory = (String) mealPlanDoc.getData().get("Category");
                                             Timestamp mealPlanIngredientBBD = (Timestamp) mealPlanDoc.getData().get("Best Before Date:");
                                             Date mealIngredientBestBefore = mealPlanIngredientBBD.toDate();
                                             String mealPlanIngredientStorage = (String) mealPlanDoc.getData().get("Location");
@@ -244,19 +218,20 @@ public class ShoppingListActivity extends AppCompatActivity {
                                                     null,
                                                     mealPlanIngredientAmount,
                                                     mealPlanIngredientUnit,
-                                                    mealPlanIngredientCatgeory));
+                                                    mealPlanIngredientCategory));
                                         } // Ignoring location since getting weird error as of now
 
+                                        /*
                                         // Pulling information from ingredient list to compare with the meal plan ingredient list
                                         ingredientReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
                                             @Override
-                                            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
                                                 ArrayList<Ingredient> ingredientsStored = new ArrayList<>();
 
                                                 for (QueryDocumentSnapshot ingredientDoc : queryDocumentSnapshots) {
                                                     String ingredientDescription = ingredientDoc.getId();
                                                     int ingredientAmount = (int) ingredientDoc.getData().get("Amount");
-                                                    String ingredientCatgeory = (String) ingredientDoc.getData().get("Category");
+                                                    String ingredientCategory = (String) ingredientDoc.getData().get("Category");
                                                     String ingredientLocation = String.valueOf(ingredientDoc.getData().get("Location"));
                                                     Ingredient.Location loc;
                                                     switch (ingredientLocation) {
@@ -279,22 +254,33 @@ public class ShoppingListActivity extends AppCompatActivity {
                                                             null,
                                                             ingredientAmount,
                                                             ingredientUnit,
-                                                            ingredientCatgeory));
+                                                            ingredientCategory));
                                                 } // Ignoring location since getting weird error as of now
+                                                // Compare ingredient with mealPlan Ingredients here
+                                                for (Ingredient ingredient : mealPlanIngredientList) {
+                                                    int index = 0;
+                                                    if (ingredient.getIngredientDescription().equals(ingredientsStored)) {
+                                                        mealPlanIngredientList.remove(index);
+                                                    }
+                                                    index++;
+                                                }
 
                                             }
 
                                         });
+                                        */
+
                                     }
                                 });
                             }
                         }
                     });
                 }
-                    shoppingListAdapter.notifyDataSetChanged();
-                }
 
+                shoppingListAdapter.notifyDataSetChanged();
+            }
         });
+
 
         // Sorting below
         spinner = findViewById(R.id.shopping_list_sort_spinner);
@@ -312,7 +298,6 @@ public class ShoppingListActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
     public void sortShoppingList(ArrayList<ShoppingList> list, String sorting_type) {

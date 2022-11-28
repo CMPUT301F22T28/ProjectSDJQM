@@ -120,3 +120,9 @@ Consistent and clear
 Total = 7.11
 
 ## N.B..Not all parts are marked so this is not final score
+
+## DEMO RUBRIC
+
+Demo ability / Polished / Clear and coherent / Motivated / Compelling, holds attention, tells a story / Coverage of features logically organized by customer usage / Well explained user interface / Easy to follow user roles / Realistic data and inputs / All members present / Team well coordinated in demo / Within time limit / No misspellings / Clear vocals from everyone / Eye contact, rarely consulting or reading notes / Involves the audience / Good and concise responses to questions
+
+

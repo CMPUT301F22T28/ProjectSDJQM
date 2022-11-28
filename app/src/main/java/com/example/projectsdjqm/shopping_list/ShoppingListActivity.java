@@ -21,6 +21,7 @@ import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import com.example.projectsdjqm.ingredient_storage.IngredientActivity;
 import com.example.projectsdjqm.ingredient_storage.IngredientList;
 import com.example.projectsdjqm.meal_plan.MealPlanActivity;
+import com.example.projectsdjqm.meal_plan.Mealplan;
 import com.example.projectsdjqm.recipe_list.RecipeFragment;
 import com.example.projectsdjqm.recipe_list.RecipeListActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -39,6 +40,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -46,7 +48,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-
 
 /**
  * ShoppingListActivity:
@@ -69,8 +70,12 @@ public class ShoppingListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.shopping_list_main);
+
+        // database variables initialized
         db = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = db.collection("ShoppingLists");
+        CollectionReference mealReference = db.collection("MealPlans");
+        CollectionReference ingredientReference = db.collection("Ingredients");
 
 
         // bottom nav
@@ -120,6 +125,7 @@ public class ShoppingListActivity extends AppCompatActivity {
         boolean pickup = false;
 
         // Getting information from shopping list
+        // Here we are retrieving information from the Shopping List
         db.collection("ShoppingLists")
                 .get()
                 .addOnCompleteListener(task -> {
@@ -141,6 +147,8 @@ public class ShoppingListActivity extends AppCompatActivity {
         // Once the ingredient list is collected then we want to create another collection that pulls from
         // ingredient database and checks if that ingredient already exists in the storage, if it does then
         // we will remove it from the ingredient list collection
+
+        // Creating reference to ingredients list
         db.collection("Ingredients")
                 .get()
                         .addOnCompleteListener(task -> {
@@ -153,17 +161,22 @@ public class ShoppingListActivity extends AppCompatActivity {
                             }
                         });
 
-        db.collection("MealPlans").document().collection("ingredient list")
+        // Creating reference to meal plan
+        db.collection("MealPlans")
                 .get()
                 .addOnCompleteListener(task -> {
+                    ArrayList<Mealplan> mealPlanList = new ArrayList<>();
+
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
+
                             Log.d(TAG, document.getId() + " => " + document.getData());
                         }
                     } else {
                         Log.d(TAG, "Error getting documents: ", task.getException());
                     }
                 });
+
 
         final FloatingActionButton addToStorageButton = findViewById(R.id.add_to_storage);
            //add checked items to ingredient storage if add button is clicked
@@ -187,6 +200,7 @@ public class ShoppingListActivity extends AppCompatActivity {
             }
         });
 
+        // pull data from database
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
@@ -214,6 +228,31 @@ public class ShoppingListActivity extends AppCompatActivity {
 //                    }
                     String unit = (String) doc.getData().get("Unit");
 
+                    CollectionReference collectionReference_mealPlan_shopping = db.collection("MealPlans");
+                    ArrayList<Ingredient> mealPlanIngredientList = new ArrayList<>();
+
+                    // pulling information from meal plan database that can be put into shopping list
+                    collectionReference_mealPlan_shopping.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                            ArrayList<Ingredient> ingredientList = new ArrayList<>();
+                            mealPlanIngredientList.clear();
+                            for (QueryDocumentSnapshot doc: queryDocumentSnapshots) {
+                                String ingredient_path = "MealPlans/" + doc.getId()+"/ingredient_list";
+                                CollectionReference collectionReferenceMealIngredientList = db.collection(ingredient_path);
+
+                                collectionReferenceMealIngredientList.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                        Log.d(TAG, "Meal Plan" + doc.getId());
+                                        for (QueryDocumentSnapshot ingredientDoc : queryDocumentSnapshots) {
+                                            
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    });
                     Ingredient addingredient = new Ingredient(description,
                             null,
                             null,
@@ -227,6 +266,7 @@ public class ShoppingListActivity extends AppCompatActivity {
 
         });
 
+        // Sorting below
         spinner = findViewById(R.id.shopping_list_sort_spinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -242,6 +282,8 @@ public class ShoppingListActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     public void sortShoppingList(ArrayList<ShoppingList> list, String sorting_type) {
         switch (sorting_type) {

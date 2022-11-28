@@ -447,7 +447,7 @@ public class MealPlanActivity extends AppCompatActivity
     @Override
     public void onRecipeScaleListPressed(int position, int mealplan_position) {
         recipe_position = position;
-        mealplan_index = mealplan_position-1;
+        mealplan_index = mealplan_position;
         editRecipeScale = new MealplanScaleFragment();
         editRecipeScale.show(getSupportFragmentManager(),"Edit scale");
     }

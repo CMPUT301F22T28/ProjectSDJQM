@@ -50,6 +50,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class ShoppingListActivity extends AppCompatActivity {
@@ -258,7 +259,8 @@ public class ShoppingListActivity extends AppCompatActivity {
         handler2.postDelayed(new Runnable() {
         @Override
         public void run () {
-
+            ArrayList<String> ingredientDescriptionList = new ArrayList<>();
+            ArrayList<Ingredient> ingredientArrayList = new ArrayList<>();
             Log.d(TAG, "---------------------------------size of all meal plans date" + allMealPlanDate.size());
             for (int i = 0; i < allMealPlanDate.size(); i++) {
                 //Log.d(TAG, "Running through list: " + allMealPlanDate.get(i));
@@ -274,20 +276,40 @@ public class ShoppingListActivity extends AppCompatActivity {
                                     int mealPlanIngredientAmount = Integer.valueOf(mealPlanDoc.getData().get("Amount").toString());
                                     String mealPlanIngredientUnit = (String) mealPlanDoc.getData().get("Unit");
 
-                                    Ingredient addMealPlanIngredient = new Ingredient(mealPlanIngredientDescription,
-                                            null,
-                                            null,
-                                            mealPlanIngredientAmount,
-                                            mealPlanIngredientUnit,
-                                            mealPlanIngredientCategory);
+                                    // remove duplicates and add up amounts
+                                    if (!ingredientDescriptionList.contains(mealPlanIngredientDescription)) {
+                                        Ingredient addMealPlanIngredient = new Ingredient(mealPlanIngredientDescription,
+                                                null,
+                                                null,
+                                                mealPlanIngredientAmount,
+                                                mealPlanIngredientUnit,
+                                                mealPlanIngredientCategory);
+                                        ingredientDescriptionList.add(mealPlanIngredientDescription);
+                                        ShoppingList addToShoppingList = new ShoppingList(addMealPlanIngredient, pickup);
+                                        shoppingCartList.add(addToShoppingList);
+                                    } else {
+                                        for (int i=0; i<shoppingCartList.size(); i++) {
+                                            if (Objects.equals(shoppingCartList.get(i).getIngredient().getIngredientDescription(), mealPlanIngredientDescription)) {
+                                                int totalAmount = mealPlanIngredientAmount + shoppingCartList.get(i).getIngredient()
+                                                        .getIngredientAmount();
+                                                Ingredient ing = new Ingredient(mealPlanIngredientDescription,
+                                                        null,
+                                                        null,
+                                                        totalAmount,
+                                                        mealPlanIngredientUnit,
+                                                        mealPlanIngredientCategory);
+                                                shoppingCartList.remove(i);
+                                                shoppingCartList.add(new ShoppingList(ing,false));
+                                            }
+                                        }
+                                    }
 
-                                    ShoppingList addToShoppingList = new ShoppingList(addMealPlanIngredient, pickup);
+
 
                                     // Attempting to remove duplicates
-                                    shoppingCartList.add(addToShoppingList);
-                                    Set<ShoppingList> set = new HashSet<>(shoppingCartList);
-                                    shoppingCartList.clear();
-                                    shoppingCartList.addAll(set);
+//                                    Set<ShoppingList> set = new HashSet<>(shoppingCartList);
+//                                    shoppingCartList.clear();
+//                                    shoppingCartList.addAll(set);
                                 }
 
 

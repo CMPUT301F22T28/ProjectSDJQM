@@ -74,8 +74,8 @@ AddIngredientFragment.OnAddIngreidentFragmentIteractionListener{
     private FirebaseStorage storage;
     private StorageReference storageReference;
     final String TAG = "Recipes Activity";
-    ListView recipeListView;
-    RecipeList recipeAdapter;
+    public ListView recipeListView;
+    public RecipeList recipeAdapter;
     public ArrayList<Recipe> recipeList;
     Recipe selectedRecipe;
     Spinner spinnerForRecipe;

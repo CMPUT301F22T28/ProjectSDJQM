@@ -77,7 +77,7 @@ public class AddIngredientFragment extends DialogFragment {
                 .setView(view)
                 .setTitle("Add Ingredient")
                 .setNegativeButton("Cancel", null)
-                .setPositiveButton("OK", null)
+                .setPositiveButton("ok", null)
                 .create();
         alertDialog.show();
 

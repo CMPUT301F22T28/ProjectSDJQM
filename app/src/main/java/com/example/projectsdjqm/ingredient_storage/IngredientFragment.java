@@ -1,7 +1,8 @@
 /**
  * IngredientFragment
- * @version 1
- * @author Muchen Li
+ * @version 2.1
+ * @author Muchen Li, Qingya Ye
+ * @date Nov 27, 2022
  */
 package com.example.projectsdjqm.ingredient_storage;
 
@@ -18,22 +19,18 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import com.example.projectsdjqm.R;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-/**
- * IngredientFragment:
- * Fragment of the ingredient storage
- */
 public class IngredientFragment extends DialogFragment {
+    /**
+     * Interface for fragment interaction listener
+     */
     public interface OnFragmentInteractionListener {
         void onOkPressedAdd(Ingredient newIngredient);
         void onOkPressedEdit(Ingredient ingredient,
@@ -44,7 +41,7 @@ public class IngredientFragment extends DialogFragment {
                              String unit,
                              String category);
     }
-    
+
     // attr init
     private EditText ingredientDescription;
     private DatePicker ingredientBestBeforeDate;
@@ -57,17 +54,21 @@ public class IngredientFragment extends DialogFragment {
     private EditText ingredientCategory;
     private Ingredient ingredient;
     private Boolean isEdit = false;
-
     private OnFragmentInteractionListener listener;
 
-    // Constructor for editing
+    /**
+     * This is a constructor to create IngredientFragment
+     * @param ingredient
+     */
     public IngredientFragment(Ingredient ingredient) {
         super();
         this.ingredient = ingredient;
         this.isEdit = true;
     }
 
-    // Default constructor
+    /**
+     * Default constructor
+     */
     public IngredientFragment() {
         super();
     }
@@ -204,31 +205,11 @@ public class IngredientFragment extends DialogFragment {
                 ex.printStackTrace();
             }
 
-            // check unit  input
-//            int unit = 0;
-//            try {
-//                if (!IngredientUnitInput.isEmpty()) {
-//                    unit = Integer.parseInt(IngredientUnitInput);
-//
-//                    if (unit < 1) {
-//                        isValid = false;
-//                        ingredientUnit.setError("Enter a positive number");
-//                    }
-//                } else {
-//                    isValid = false;
-//                    ingredientUnit.setError("Enter a positive number");
-//                }
-//            } catch (NumberFormatException ex) {
-//                isValid = false;
-//                ingredientUnit.setError("Enter a positive number");
-//                ex.printStackTrace();
-//            }
-
             if (IngredientUnitInput.length() < 1) {
                 isValid = false;
-                ingredientDescription.setError("Enter a name");
+                ingredientUnit.setError("Enter a unit");
             } else if (IngredientUnitInput.length() > Ingredient.MAX_LENGTH_NAME) {
-                ingredientDescription.setError("Name must be less than 30 characters");
+                ingredientUnit.setError("It must be less than 30 characters");
                 isValid = false;
             }
 

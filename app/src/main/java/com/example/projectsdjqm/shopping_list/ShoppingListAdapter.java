@@ -1,3 +1,10 @@
+/**
+ * ShoppingList
+ * @version 2.1
+ * @author  Muchen Li, Qingya Ye
+ * @date Nov 25, 2022
+ * shoppinglist class
+ */
 package com.example.projectsdjqm.shopping_list;
 
 import android.app.AlertDialog;
@@ -10,30 +17,25 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
-import com.example.projectsdjqm.ingredient_storage.IngredientFragment;
-import com.example.projectsdjqm.ingredient_storage.IngredientList;
-
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * ShoppingListAdapter:
  * Custom array adapter for shoppinglist
  */
 public class ShoppingListAdapter extends ArrayAdapter<ShoppingList> {
-
-    // attr init
-    private ArrayList<ShoppingList> shoppingList;
+    private final String TAG = "Picked up";
     private Context context;
-    final String TAG = "Picked up";
 
-    // constructor
+    /**
+     * This is a constructor to create ShoppingListAdapter
+     * @param context
+     * @param shoppingList
+     */
     public ShoppingListAdapter(Context context, ArrayList<ShoppingList> shoppingList) {
         super(context,0, shoppingList);
         this.context = context;
@@ -55,11 +57,9 @@ public class ShoppingListAdapter extends ArrayAdapter<ShoppingList> {
         CheckBox checkbox = view.findViewById(R.id.box);
 
         description.setText(ingredient.getIngredientDescription());
-
         category.setText(String.format("Category: %s", ingredient.getIngredientCategory()));
         amount.setText(String.format("Amount: %s", ingredient.getIngredientAmount()));
         unit.setText(String.format("Unit: %s", ingredient.getIngredientUnit()));
-
 
         checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -67,13 +67,9 @@ public class ShoppingListAdapter extends ArrayAdapter<ShoppingList> {
                 if (checkbox.isChecked()) {
 //                    checkboxListener.onItemChecked(ingredient);
                     shoppingList.setPickedUp(true);
-                    // As a meal planner, I want to note that I have picked up an ingredient on the
-                    // shopping list. may need to change
                     new AlertDialog.Builder(getContext())
-                            .setMessage("You have picked up "+(shoppingList.getIngredient().getIngredientDescription())
-                            +". Please confirm the amount and unit.")
+                            .setMessage("You have picked up "+(shoppingList.getIngredient().getIngredientDescription()+"."))
                             .setPositiveButton("Ok",null)
-                            .setNegativeButton("Cancel",null)
                             .show();
                             Log.d(TAG,"picked up "+shoppingList.getIngredient().getIngredientDescription()+" "+shoppingList.getPickedUp());
                 } else {
@@ -82,7 +78,6 @@ public class ShoppingListAdapter extends ArrayAdapter<ShoppingList> {
                 }
             }
         });
-
         return view;
     }
     

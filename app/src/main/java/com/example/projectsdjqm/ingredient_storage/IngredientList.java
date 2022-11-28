@@ -1,15 +1,9 @@
 /**
  * IngredientList
  * Custom array adapter for Ingredient
- *
- * @version 1.1
- * @update fixed some minor bugs
- * @author Muchen Li
- * @date Oct 30, 2022
- *
- * @version 1.0
- * @author Muchen Li
- * @date Oct 27, 2022
+ * @version 2.1
+ * @author Muchen Li, Qingya Ye
+ * @date Nov 27, 2022
  */
 package com.example.projectsdjqm.ingredient_storage;
 
@@ -20,12 +14,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.example.projectsdjqm.R;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,7 +29,9 @@ import java.util.Date;
 public class IngredientList extends ArrayAdapter<Ingredient> {
     private IngredientButtonListener ingredientButtonListener;
 
-    // Interface for ingredient button lister
+    /**
+     * Interface for ingredient button lister
+     */
     public interface IngredientButtonListener {
         void onEditIngredientClickListener(int position);
         void onDeleteIngredientClickListener(int position);
@@ -47,19 +40,26 @@ public class IngredientList extends ArrayAdapter<Ingredient> {
     private final ArrayList<Ingredient> ingredientList;
     private final Context context;
 
-    // Constructor for IngredientList
+    /**
+     * Constructor for IngredientList
+     * @param context
+     * @param ingredientList
+     */
     public IngredientList(Context context, ArrayList<Ingredient> ingredientList) {
         super(context,0, ingredientList);
         this.context = context;
         this.ingredientList = ingredientList;
     }
 
-    // Ingredient button listener
+    /**
+     * Ingredient button listener
+     * @param ingredientButtonListener
+     */
     public void setIngredientButtonListener(IngredientButtonListener ingredientButtonListener) {
         this.ingredientButtonListener = ingredientButtonListener;
     }
 
-    // view manip
+    // view main
     @NonNull
     @Override
     public View getView(int position, @Nullable View view, @Nullable ViewGroup parent) {

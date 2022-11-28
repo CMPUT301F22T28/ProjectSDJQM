@@ -1,3 +1,10 @@
+/**
+ * AddIngredientFragment:
+ * This class defines a custom DialogFragment to add an Ingredient
+ * @author Qingya Ye
+ * @version 1.0
+ * @date Nov. 22nd, 2022
+ */
 package com.example.projectsdjqm.recipe_list;
 
 import android.app.AlertDialog;
@@ -9,11 +16,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
 
@@ -21,15 +26,26 @@ public class AddIngredientFragment extends DialogFragment {
 
     private EditText description;
     private EditText category;
-    private EditText unitCost;
+    private EditText unit;
     private EditText amount;
     private OnAddIngreidentFragmentIteractionListener listener;
 
-
     public interface OnAddIngreidentFragmentIteractionListener {
+        /**
+         * This method will be used to add an ingredient to the ingredient list when the positive
+         * button of the dialog is pressed
+         * @param ingredient a candidate ingredient to be added
+         */
         void onAddIngredientOkPressed(Ingredient ingredient);
     }
 
+    /**
+     * This is an override method onAttach
+     * Called when a fragment is first attached to its context,
+     * Create the fragment iteraction listener
+     * @param context context
+     * @throws RuntimeException
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -39,6 +55,13 @@ public class AddIngredientFragment extends DialogFragment {
             throw new RuntimeException(context + "This is not the correct fragment!");
         }
     }
+
+    /**
+     * This is an override method onCreateDialog
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment
+     * @return Dialog Return a new Dialog instance to be displayed by the Fragment
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -46,7 +69,7 @@ public class AddIngredientFragment extends DialogFragment {
 
         description = view.findViewById(R.id.description_l);
         category = view.findViewById(R.id.category_l);
-        unitCost = view.findViewById(R.id.unit_cost_l);
+        unit = view.findViewById(R.id.unit_cost_l);
         amount = view.findViewById(R.id.count_l);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -54,7 +77,7 @@ public class AddIngredientFragment extends DialogFragment {
                 .setView(view)
                 .setTitle("Add Ingredient")
                 .setNegativeButton("Cancel", null)
-                .setPositiveButton("OK", null)
+                .setPositiveButton("ok", null)
                 .create();
         alertDialog.show();
 
@@ -64,6 +87,10 @@ public class AddIngredientFragment extends DialogFragment {
         return alertDialog;
     }
 
+    /**
+     * CustomListener
+     * This is a class implements View.OnClickListener
+     */
     class CustomListener implements View.OnClickListener {
         private final Dialog dialog;
 
@@ -71,11 +98,17 @@ public class AddIngredientFragment extends DialogFragment {
             this.dialog = dialog;
         }
 
+        /**
+         * This is an override method onClick
+         * @param v View
+         * when it is clicked, get the ingredient data from the DialogFragment, and add to an
+         * ingredient list
+         */
         @Override
         public void onClick(View v) {
             String descriptionInput = description.getText().toString();
             String categoryInput = category.getText().toString();
-            String unitInput = unitCost.getText().toString();
+            String unitInput = unit.getText().toString();
             String amountInputStr = amount.getText().toString();
             boolean isValid = true;
 
@@ -94,31 +127,11 @@ public class AddIngredientFragment extends DialogFragment {
                 category.setError("Enter a name");
             }
 
-            // check unit cost input
-//            int unitCostInput = 0;
-//            try {
-//                if (!unitCostInputStr.isEmpty()) {
-//                    unitCostInput = Integer.parseInt(unitCostInputStr);
-//
-//                    if (unitCostInput < 1) {
-//                        isValid = false;
-//                        unitCost.setError("Enter a positive number");
-//                    }
-//                } else {
-//                    isValid = false;
-//                    unitCost.setError("Enter a positive number");
-//                }
-//            } catch (NumberFormatException ex) {
-//                isValid = false;
-//                unitCost.setError("Enter a positive number");
-//                Log.d("NumberFormatLog", "error on numberformat is " + ex.getMessage());
-//                ex.printStackTrace();
-//            }
             if (unitInput.length() < 1) {
                 isValid = false;
-                description.setError("Enter a unit");
+                unit.setError("Enter a unit");
             } else if (unitInput.length() > Ingredient.MAX_LENGTH_NAME) {
-                description.setError("Name must be less than 30 characters");
+                unit.setError("Unit must be less than 30 characters");
                 isValid = false;
             }
 

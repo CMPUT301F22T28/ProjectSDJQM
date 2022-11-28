@@ -1,14 +1,13 @@
 /**
- * RecipeFragment
- * @version 1
- * @author Qingya Ye
+ * RecipeFragment:
+ * fragment for the recipe list
+ * @author Qingya Ye, Muchen Li
+ * @version 1.0
  */
 package com.example.projectsdjqm.recipe_list;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-
 import static com.example.projectsdjqm.recipe_list.RecipeList.setListViewHeightBasedOnChildren;
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,19 +23,17 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TimePicker;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
-
 import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -44,21 +41,33 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-/**
- * RecipeFragment:
- * fragment for the recipe list
- */
 
 public class RecipeFragment extends DialogFragment {
     public static ArrayList<Ingredient> l = new ArrayList<>();
+    /**
+     * Interface for add / edit listeners
+     */
     public interface OnFragmentInteractionListener {
+        /**
+         * a method that add a recipe to recipe list and database
+         * @param recipe the recipe to be added
+         */
         void onOkPressedAdd(Recipe recipe);
+
+        /**
+         * a method that edit a existing recipe
+         * @param recipe the recipe to be edited
+         * @param title new title
+         * @param preparationTime new preparation time
+         * @param servingNumber new serving number
+         * @param comments new comments
+         * @param category new category
+         * @param photo new photo
+         * @param list new list of ingredients
+         */
         void onOkPressedEdit(Recipe recipe,
                              String title,
                              int preparationTime,
@@ -67,11 +76,11 @@ public class RecipeFragment extends DialogFragment {
                              String category,
                              Drawable photo,
                              ArrayList<Ingredient> list);
+        void onRemoveIngredient(String recipeTitle, Ingredient ingredient);
     }
 
     // attr init
     private EditText recipeTitle;
-    // preparation time should change to a time selector? can discuss and decide in project part 4
     private EditText recipePreparationTime;
     private EditText recipeServingNumber;
     private EditText recipeCategory;
@@ -92,7 +101,11 @@ public class RecipeFragment extends DialogFragment {
     private final int requestCodeForChoosePhoto = 2;
     private OnFragmentInteractionListener listener;
 
-    // super call (constructor)
+    /**
+     * This is a constructor to create RecipeFragment object.
+     * packagename.classname#RecipeFragment
+     * @param recipe current recipe to be edited
+     */
     public RecipeFragment(Recipe recipe) {
         super();
         this.recipe = recipe;
@@ -103,7 +116,13 @@ public class RecipeFragment extends DialogFragment {
 
     }
 
-    // fragment interaction listener
+    /**
+     * This is an override method onAttach
+     * Called when a fragment is first attached to its context,
+     * Create the fragment iteraction listener
+     * @param context context
+     * @throws RuntimeException
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -114,7 +133,13 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
-    // layout inflater to update fields
+    /**
+     * This is an override method onCreateDialog
+     * layout inflater to update fields
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment
+     * @return Dialog Return a new Dialog instance to be displayed by the Fragment
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -145,12 +170,8 @@ public class RecipeFragment extends DialogFragment {
             recipeCategory.setText(recipe.getRecipeCategory());
             recipeComments.setText(recipe.getComments());
             recipePreparationTime.setText(String.valueOf(recipe.getPreparationTime()));
-            list = recipe.getListofIngredients();
-            ingAdapter = new IngredientInRecipeAdapter(getContext(),list);
-            ingredientListViewOnFragment.setAdapter(ingAdapter);
-            ingAdapter.notifyDataSetChanged();
+            ingAdapter.addAll(recipe.getListofIngredients());
             setListViewHeightBasedOnChildren(ingredientListViewOnFragment);
-//            ingAdapter.notifyDataSetChanged();
             recipePhoto.setImageDrawable(recipe.getPhotograph());
         }
         takePhotoButton.setOnClickListener(view12 -> {
@@ -203,6 +224,22 @@ public class RecipeFragment extends DialogFragment {
                 new AddIngredientFragment().show(getChildFragmentManager(),null);
             }
         });
+        ingredientListViewOnFragment.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Ingredient ingredient = (Ingredient) adapterView.getItemAtPosition(i);
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Delete the ingredient?")
+                        .setPositiveButton("delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                listener.onRemoveIngredient(recipeTitle.getText().toString(),ingredient);
+                            }
+                        })
+                        .setNegativeButton("cancel", null)
+                        .show();
+            }
+        });
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         AlertDialog alertDialog = builder
                 .setView(view)
@@ -218,7 +255,10 @@ public class RecipeFragment extends DialogFragment {
         return alertDialog;
     }
 
-    // view click listener
+    /**
+     * CustomListener
+     * This is a class implements View.OnClickListener
+     */
     class CustomListener implements View.OnClickListener {
         private final Dialog dialog;
 
@@ -240,7 +280,6 @@ public class RecipeFragment extends DialogFragment {
             list = new ArrayList<Ingredient>();
             for (int i = 0; i < ingredientListViewOnFragment.getAdapter().getCount(); i++) {
                 list.add((Ingredient) ingredientListViewOnFragment.getAdapter().getItem(i));
-//                list.set(i, (Ingredient) ingredientListViewOnFragment.getAdapter().getItem(i));
             }
             // check title
             if (title.length() < 1) {
@@ -320,6 +359,18 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Override method onRequestPermissionsResult:
+     * Two actions with different request Code:
+     * (request code == 1) start an Intent to take photo if the grant results are PERMISSION_GRANTED
+     * (request code == 2) start an intent to choose a photo from album if grant results are
+     * PERMISSION_GRANTED
+     *
+     * @param requestCode The request code passed in requestPermissions
+     * @param permissions The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions which is either
+     * PERMISSION_GRANTED or PERMISSION_DENIED. Never null.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -341,12 +392,22 @@ public class RecipeFragment extends DialogFragment {
             }
         }
     }
+
+    /**
+     * Override method onActivityResult
+     * Called when an activity (from startActivityResult) launched exits
+     * Get additional data,an image, with getExtras(), store it to firebase storage
+     * @param requestCode The integer request code originally supplied to startActivityForResult()
+     * @param resultCode The integer result code returned by the child activity through its
+     * setResult()
+     * @param data An Intent, which can return result data to the caller
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == requestCodeForTakePhoto && resultCode == Activity.RESULT_OK) {
             assert data != null;
             Bitmap b =(Bitmap) data.getExtras().get("data");
-            photo.setImageBitmap(b);
+            recipePhoto.setImageBitmap(b);
             // Get the data from an ImageView as bytes
             final String photokey = recipeTitle.getText().toString().replace(" ","");
             StorageReference imageRef = storageReference.child("images/" + photokey);
@@ -373,7 +434,7 @@ public class RecipeFragment extends DialogFragment {
         }else if (requestCode == requestCodeForChoosePhoto && resultCode == Activity.RESULT_OK) {
             assert data != null;
             Uri uri = data.getData();
-            photo.setImageURI(uri);
+            recipePhoto.setImageURI(uri);
 
             // set photokey for image upload
             final String photokey = recipeTitle.getText().toString().replace(" ","");

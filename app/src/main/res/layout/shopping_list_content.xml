@@ -35,13 +35,23 @@
             android:textSize="18sp"
             android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/shoppinglist_category"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:text="Category"
-            android:layout_marginTop="5dp"/>
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/shoppinglist_category"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginEnd="10dp"
+                android:text="Category"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,19 +62,21 @@
 
             <TextView
                 android:id="@+id/shoppinglist_amount"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="10dp"
                 android:text="Amount"
                 android:layout_weight="1"/>
 
             <TextView
                 android:id="@+id/shoppinglist_unit"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Unit"
                 android:layout_weight="1"/>
+
         </LinearLayout>
+
     </LinearLayout>
 
 

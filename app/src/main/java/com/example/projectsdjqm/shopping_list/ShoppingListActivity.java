@@ -21,9 +21,13 @@ import com.example.projectsdjqm.ingredient_storage.Ingredient;
 import com.example.projectsdjqm.ingredient_storage.IngredientActivity;
 import com.example.projectsdjqm.meal_plan.MealPlanActivity;
 import com.example.projectsdjqm.recipe_list.RecipeListActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import android.app.AlertDialog;
@@ -54,7 +58,10 @@ public class ShoppingListActivity extends AppCompatActivity {
     private ListView shoppingListView;
     private ShoppingListAdapter shoppingListAdapter;
     private ArrayList<ShoppingList> shoppingCartList;
+
     public ArrayList<String> allMealPlanDate = new ArrayList<>();
+
+
     private String currentSortingType;
     private Calendar calendar;
     private boolean pickup = false;
@@ -239,6 +246,7 @@ public class ShoppingListActivity extends AppCompatActivity {
                     Log.d(TAG, "Added new item to shopping list");
                 }
                 shoppingListAdapter.notifyDataSetChanged();
+
             }
         });
 
@@ -293,6 +301,8 @@ public class ShoppingListActivity extends AppCompatActivity {
         //shopping list should be generated if
         //    1. meal plan exist but
         //    2. ingredient missing from storage
+
+
 
         //call sort function to sort list
         spinner = findViewById(R.id.shopping_list_sort_spinner);

@@ -1,7 +1,8 @@
 /**
- * RecipeList
- * @version 1
+ * RecipeList:
+ * Custom array adapter for the recipe list
  * @author Qingya Ye
+ * @version 1.1
  */
 package com.example.projectsdjqm.recipe_list;
 
@@ -15,23 +16,18 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.example.projectsdjqm.R;
 import com.example.projectsdjqm.ingredient_storage.Ingredient;
-
 import java.util.ArrayList;
 
-/**
- * RecipeList:
- * Custom array adapter for the recipe list
- */
 public class RecipeList extends ArrayAdapter<Recipe> {
     private RecipeButtonListener recipeButtonListener;
 
-    // make interface for edit / delete listeners
+    /**
+     * Interface for edit / delete listeners
+     */
     public interface RecipeButtonListener {
         void onEditRecipeClickListener(int position);
         void onDeleteRecipeClickListener(int position);
@@ -41,16 +37,30 @@ public class RecipeList extends ArrayAdapter<Recipe> {
     private final ArrayList<Recipe> recipeList;
     private final Context context;
 
-    // constructor
+    /**
+     * This is a constructor to create RecipeList object.
+     * packagename.classname#RecipeList
+     * @param context Context
+     * @param recipeList  data to be bounded with a ListView
+     */
     public RecipeList(@NonNull Context context, ArrayList<Recipe> recipeList) {
         super(context, 0, recipeList);
         this.context = context;
         this.recipeList = recipeList;
     }
+
     // Ingredient button listener
     public void setRecipeButtonListener(RecipeButtonListener recipeButtonListener) {
         this.recipeButtonListener = recipeButtonListener;
     }
+
+    /**
+     * This is an override method GetView
+     * @param position Position of the data displayed by the view in the data set
+     * @param view The old view to reuse, if possible
+     * @param parent The parent that this view will eventually be attached to
+     * @return A View corresponding to the data at the specified position
+     */
     @NonNull
     @Override
     public View getView(int position,
@@ -84,8 +94,6 @@ public class RecipeList extends ArrayAdapter<Recipe> {
         ImageView photographImageView = view.findViewById(R.id.recipe_photograph);
         TextView listOfIngredientsTextView = view.findViewById(R.id.recipe_ingredient_list);
         ArrayList<Ingredient> ingredientList = recipe.getListofIngredients();
-//        ArrayList<Ingredient> ingredientList = new ArrayList<Ingredient>();
-//        ingredientList.add(new Ingredient("aaple",null,null,2,2,"category"));
         ListView ingredientListview = view.findViewById(R.id.ingredient_list_onRecipe);
         IngredientInRecipeAdapter adapter = new IngredientInRecipeAdapter(getContext(),ingredientList);
         ingredientListview.setAdapter(adapter);
@@ -100,14 +108,6 @@ public class RecipeList extends ArrayAdapter<Recipe> {
         commentsTextView.setText(String.format("Comments:\n%s", recipe.getComments()));
         photographImageView.setImageDrawable(recipe.getPhotograph());
 
-        ArrayList<Ingredient> list = recipe.getListofIngredients();
-//        StringBuilder text = new StringBuilder("\n");
-//        for (int i=0; i<list.size(); i++) {
-//            String temp = list.get(i).getIngredientDescription();
-////            String temp_amount = list.get(i).get
-//            text.append(temp);
-//            text.append(" ,\n");
-//        }
         listOfIngredientsTextView.setText(String.format("Ingredients: "));
 
         viewHolder.editButton.setOnClickListener(view1 -> {
@@ -130,6 +130,10 @@ public class RecipeList extends ArrayAdapter<Recipe> {
         Button deleteButton;
     }
 
+    /**
+     * This is a method that calculate and set the width and height of a ListView
+     * @param listView the candidate listview to be used in calculation
+     */
     public static void setListViewHeightBasedOnChildren(ListView listView) {
         // get the corresponding adapter
         ListAdapter listAdapter = listView.getAdapter();

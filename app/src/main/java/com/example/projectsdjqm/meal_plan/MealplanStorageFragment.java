@@ -51,7 +51,7 @@ import java.util.Date;
 
 /**
  * MealplanStorageFragment
- * @version 1.1
+ * @version 3.5
  * @author Jianming Ma
  * @date Nov.23rd, 2022
  */
@@ -67,11 +67,26 @@ public class MealplanStorageFragment extends DialogFragment {
     private ArrayList<Integer> ingre_sel_list = new ArrayList<>();
     View view;
 
+    /**
+     * Interface for add / edit listeners
+     */
     public interface DataPassListener {
-        public void passData(String data);
+        /**
+         * This method that is called when the ok button of mealplan storage
+         * fragment is pressed
+         * @param rec_sel_list arraylist of integers that contains the index of seleted recipes
+         * @param ingre_sel_list arraylist of integers that contains the index of seleted ingredients
+         */
         public void On_storage_pressed(ArrayList<Integer> rec_sel_list, ArrayList<Integer> ingre_sel_list);
     }
 
+    /**
+     * This is an override method onAttach
+     * Called when a fragment is first attached to its context,
+     * Create the fragment listener
+     * @param context context
+     * @throws RuntimeException
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -82,6 +97,16 @@ public class MealplanStorageFragment extends DialogFragment {
         }
     }
 
+    /**
+     * This is an override method onCreateView
+     * layout inflater to update fields
+     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment
+     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
+     * The fragment should not add the view itself, but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment
+     * @return view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -226,7 +251,6 @@ public class MealplanStorageFragment extends DialogFragment {
 
         });
 
-
         Button addButton = view.findViewById(R.id.add_storage_button);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,8 +258,6 @@ public class MealplanStorageFragment extends DialogFragment {
                 mCallback.On_storage_pressed(rec_sel_list,ingre_sel_list);
             }
         });
-
-
 
         return view;
     }

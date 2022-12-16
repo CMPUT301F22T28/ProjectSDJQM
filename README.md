@@ -126,3 +126,25 @@ Total = 7.11
 Demo ability / Polished / Clear and coherent / Motivated / Compelling, holds attention, tells a story / Coverage of features logically organized by customer usage / Well explained user interface / Easy to follow user roles / Realistic data and inputs / All members present / Team well coordinated in demo / Within time limit / No misspellings / Clear vocals from everyone / Eye contact, rarely consulting or reading notes / Involves the audience / Good and concise responses to questions
 
 
+## Project Part3 Complete Feedback
+
+## Object Oriented Design
+2 = 
+"UML was not present in the wiki.
+• Clean design: yes
+• Design intent is clear: somehat
+• Properly OO: no, many relations don't have any multiplicity, why some classes don't have any attributes or functions, some relations that are compositon but all the relations are shown to be aggregation.
+• Clearly separates concerns: yes
+• Layering in design, including entity, control, and boundary objects: no, there are no separate classes to interact with db
+• Comprehensive information hiding: yes
+• Proper encapsulation: yes
+• Clear classes and interfaces: yes
+• Important elements described: nothing is explained in the uml
+• Correct notation: somewhat
+• Neatly laid out and labeled diagrams: no labels are present to explain the different parts of diagram
+• Helpful explanations or commentary: no explanation is present
+• Consistent with requirements, code, tests, and documentation: some classes that are present in code but not in uml"
+
+## Code Documentation
+
+No proper documentation.
